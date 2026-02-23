@@ -8,7 +8,7 @@ public class User {
     private final long createdAt; // 계정 생성 시간, 값이 변할수 없다.
     private long updatedAt; // 계정 수정 후 시간, 처음에는 계정 생성 시간과 동일
     private String name; // 사용자 이름
-    private String nickName; // 사용자 닉네임
+    private String nickname; // 사용자 닉네임
     private String email;
     private String phoneNumber;
     private String profileImageURL; // 프로필 사진 주소
@@ -17,18 +17,28 @@ public class User {
 
 
     public enum Status {
-        ONLINE, AWAY, DO_NOT_DISTURB, OFFLINE
+        ONLINE("온라인"), AWAY("자리비움"), DO_NOT_DISTURB("방해 금지"), OFFLINE("오프라인");
+
+        private final String description;
+
+        Status(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 
     // 'id', 'createdAt'는 생성자에서 초기화하세요.
-    public User(String name, String nickName,
+    public User(String name, String nickname,
                 String email, String phoneNumber,
                 String profileImageURL, Status status) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
         this.name = name;
-        this.nickName = nickName;
+        this.nickname = nickname;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.profileImageURL = profileImageURL;
@@ -41,14 +51,14 @@ public class User {
     public long getUpdatedAt() { return updatedAt; } // 수정 시간
 
     public String getName() { return name; }
-    public String getNickName() { return nickName; }
+    public String getNickname() { return nickname; }
     public String getEmail() { return email; }
     public String getPhoneNumber() { return phoneNumber; }
     public String getProfileImageURL() { return profileImageURL; }
-    public Status getUserStatus() { return status; }
+    public String getUserStatus() { return status.getDescription(); }
 
     // update메서드
-    private void update() {
+    public void update() {
         this.updatedAt = System.currentTimeMillis();
     }
 
@@ -56,8 +66,8 @@ public class User {
         this.name = name;
         update();
     }
-    public void updateNickName(String nickName) {
-        this.nickName = nickName;
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
         update();
     }
     public void updateEmail(String email) {
@@ -81,9 +91,9 @@ public class User {
     @Override
     public String toString() {
         return "유저 UUID : " + id
-                + "\n 생성 시간 : " + createdAt + ", 수정한 시간 : " + updatedAt
-                + "\n 유저 이름 : " + name + ", 유저 닉네임 : " + nickName
+                + "\n 생성 시간 : " + createdAt + ", 최근 수정 시간 : " + updatedAt
+                + "\n 유저 이름 : " + name + ", 유저 닉네임 : " + nickname
                 + "\n 유저 이메일 : " + email + ", 유저 전화번호 : " + phoneNumber
-                + "\n 프로필 사진 URL : " + profileImageURL + ", 유저 상태 : " + status;
+                + "\n 프로필 사진 URL : " + profileImageURL + ", 유저 상태 : " + status.getDescription();
     }
 }
