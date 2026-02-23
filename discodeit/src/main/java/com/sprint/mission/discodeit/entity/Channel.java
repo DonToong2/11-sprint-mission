@@ -1,0 +1,62 @@
+package com.sprint.mission.discodeit.entity;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+public class Channel {
+    // 필수
+    private final UUID id;
+    private final long createdAt;
+    private long updatedAt;
+    // 어디 그룹에 속한 채널인가
+    private String group; // 채널 그룹
+    private String name; // 채널 이름
+    private List<User> members; // 채널 멤버
+
+    // 생성자
+    public Channel(String group, String name, List<User> members) {
+        this.id = UUID.randomUUID();
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = this.createdAt;
+        this.group = group;
+        this.name = name;
+        this.members = members;
+    }
+
+    // getter
+    public UUID getId() { return id; }
+    public long getCreatedAt() { return createdAt; }
+    public long getUpdatedAt() { return updatedAt; }
+    public String getGroup() { return group; }
+    public String getName() { return name; }
+    public List<User> getMembers() { return members; }
+
+    // update(set)
+    private void update() {
+        this.updatedAt = System.currentTimeMillis();
+    }
+    public void updateGroup(String group) {
+        this.group = group;
+        update();
+    }
+    public void updateName(String name) {
+        this.name = name;
+        update();
+    }
+    public void updateMember(List<User> members) {
+        this.members = members;
+        update();
+    }
+
+    @Override
+    public String toString() {
+        String memberNames = members.stream()
+                .map(User::getName)
+                .collect(Collectors.joining(",", "[", "]"));
+        return "유저 UUID : " + id
+                + "\n 생성 시간 : " + createdAt + ", 수정한 시간 : " + updatedAt
+                + "\n 채널 이름 : " + name + ", 채널이 속해있는 그룹 : " + group
+                + "\n 채널 멤버 : " + memberNames;
+    }
+}
