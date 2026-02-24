@@ -16,6 +16,7 @@ public class JCFUserService implements UserService {
     public void createUser(User user) {
         users.put(user.getId(), user);
         System.out.println("유저를 추가하였습니다.");
+        System.out.println();
     }
 
 
@@ -24,36 +25,43 @@ public class JCFUserService implements UserService {
     public void readUserName(UUID id) {
         User user = users.get(id);
         System.out.println("유저 이름 : " + user.getName());
+        System.out.println();
     }
     @Override
     public void readUserNickname(UUID id) {
         User user = users.get(id);
         System.out.println("유저 별명 : " + user.getNickname());
+        System.out.println();
     }
     @Override
     public void readUserEmail(UUID id) {
         User user = users.get(id);
         System.out.println("유저 이메일 : " + user.getEmail());
+        System.out.println();
     }
     @Override
     public void readUserPhoneNumber(UUID id) {
         User user = users.get(id);
         System.out.println("유저 휴대폰 번호 : " + user.getPhoneNumber());
+        System.out.println();
     }
     @Override
     public void readUserProfileImageURL(UUID id) {
         User user = users.get(id);
         System.out.println("유저 프로필 이미지 : " + user.getProfileImageURL());
+        System.out.println();
     }
     @Override
     public void readUserStatus(UUID id) {
         User user = users.get(id);
         System.out.println("유저 상태 : " + user.getUserStatus());
+        System.out.println();
     }
     @Override
     public void readUserAll(UUID id) {
         User user = users.get(id);
         System.out.println("=====유저 정보=====\n" + user);
+        System.out.println();
     }
 
 
@@ -65,6 +73,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 전 유저 이름 : " + user.getName());
         user.updateName(newName);
         System.out.println("수정 후 유저 이름 : " + user.getName());
+        System.out.println();
     }
     @Override
     public void updateUserNickname(UUID id, String newNickname) {
@@ -72,6 +81,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 전 유저 별명 : " + user.getNickname());
         user.updateNickname(newNickname);
         System.out.println("수정 후 유저 별명 : " + user.getNickname());
+        System.out.println();
     }
     @Override
     public void updateUserEmail(UUID id, String newEmail) {
@@ -79,6 +89,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 전 유저 이메일 : " + user.getEmail());
         user.updateEmail(newEmail);
         System.out.println("수정 후 유저 이메일 : " + user.getEmail());
+        System.out.println();
     }
     @Override
     public void updatePhoneNumber(UUID id, String newPhoneNumber) {
@@ -86,6 +97,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 전 유저 전화번호 : " + user.getPhoneNumber());
         user.updatePhoneNumber(newPhoneNumber);
         System.out.println("수정 후 유저 전화번호 : " + user.getPhoneNumber());
+        System.out.println();
     }
     @Override
     public void updateUserProfileImageURL(UUID id, String newProfileImageURL) {
@@ -93,6 +105,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 전 유저 프로필 이미지 : " + user.getProfileImageURL());
         user.updateProfileImageURL(newProfileImageURL);
         System.out.println("수정 후 유저 프로필 이미지 : " + user.getProfileImageURL());
+        System.out.println();
     }
     @Override
     public void updateUserStatus(UUID id, User.Status newStatus) {
@@ -100,6 +113,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 전 유저 상태 : " + user.getUserStatus());
         user.updateStatus(newStatus);
         System.out.println("수정 후 유저 상태 : " + user.getUserStatus());
+        System.out.println();
     }
 
     // Delete
@@ -113,5 +127,7 @@ public class JCFUserService implements UserService {
         else {
             System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
         }
+        System.out.println();
     }
+
 }

@@ -14,6 +14,7 @@ public class JCFChannelService implements ChannelService {
     public void createChannel(Channel channel) {
         channels.put(channel.getId(), channel);
         System.out.println("채널을 생성하였습니다.");
+        System.out.println();
     }
 
     // Read
@@ -21,11 +22,13 @@ public class JCFChannelService implements ChannelService {
     public void readChannelName(UUID id) {
         Channel channel = channels.get(id);
         System.out.println("채널 이름 : " + channel.getName());
+        System.out.println();
     }
     @Override
     public void readChannelGroup(UUID id) {
         Channel channel = channels.get(id);
         System.out.println("속해있는 채널의 그룹 : " + channel.getGroup());
+        System.out.println();
     }
     @Override
     public void readChannelMembers(UUID id) {
@@ -36,11 +39,13 @@ public class JCFChannelService implements ChannelService {
         else {
             System.out.println("채널 멤버 : [" + channel.getMembers() + "]");
         }
+        System.out.println();
     }
     @Override
     public void readChannelAll(UUID id) {
         Channel channel = channels.get(id);
         System.out.println("=====채널 정보=====\n" + channel);
+        System.out.println();
     }
 
     // Update
@@ -50,6 +55,7 @@ public class JCFChannelService implements ChannelService {
         System.out.println("수정 전 채널 이름 : " + channel.getName());
         channel.updateName(newName);
         System.out.println("수정 후 채널 이름 : " + channel.getName());
+        System.out.println();
     }
     @Override
     public void updateChannelGroup(UUID id, String newGroup) {
@@ -57,6 +63,7 @@ public class JCFChannelService implements ChannelService {
         System.out.println("수정 전 속한 채널 그룹 : " + channel.getGroup());
         channel.updateGroup(newGroup);
         System.out.println("수정 후 속한 채널 그룹 : " + channel.getGroup());
+        System.out.println();
     }
     @Override
     public void updateChannelMembersAdd(UUID id, String addMember) {
@@ -66,6 +73,7 @@ public class JCFChannelService implements ChannelService {
         members.add(addMember);
         channel.updateMember(members);
         System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
+        System.out.println();
     }
     @Override
     public void updateChannelMembersRemove(UUID id, String removeMember) {
@@ -75,6 +83,7 @@ public class JCFChannelService implements ChannelService {
         members.remove(removeMember);
         channel.updateMember(members);
         System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
+        System.out.println();
     }
 
     // Delete
@@ -88,5 +97,6 @@ public class JCFChannelService implements ChannelService {
         else {
             System.out.println("채널" + channel.getName() + "이(가) 삭제되었습니다.");
         }
+        System.out.println();
     }
 }

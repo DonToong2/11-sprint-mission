@@ -6,11 +6,11 @@ public class Message {
     private final UUID id;
     private final long createdAt;
     private long updatedAt;
-    private String content;
-    private User writer;
-    private Channel channel;
+    private String content; // 메시지 내용
+    private final String writer; // 메시지 작성자, 변경 불가
+    private final String channel; // 메시지가 작성된 채널, 변경 불가
 
-    public Message(String content, User writer, Channel channel) {
+    public Message(String content, String writer, String channel) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
@@ -26,8 +26,8 @@ public class Message {
     public long getCreatedAt() { return createdAt; }
     public long getUpdatedAt() { return updatedAt; }
     public String getContent() { return content; }
-    public User getWriter() { return writer; }
-    public Channel channel() { return channel; }
+    public String getWriter() { return writer; }
+    public String getChannel() { return channel; }
 
     // update
     private void update() {
@@ -37,12 +37,14 @@ public class Message {
         this.content = content;
         update();
     }
-    public void updateWriter(User writer) {
-        this.writer = writer;
-        update();
-    }
-    public void updateChannel(Channel channel) {
-        this.channel = channel;
-        update();
+
+    @Override
+    public String toString() {
+        return "메시지 UUID : " + id
+                + "\n 메시지 생성 시간 : " + createdAt
+                + ", 메시지 수정 시간 : " + updatedAt
+                + "\n 메시지 내용 : " + content
+                + "\n 메시지 작성자 : " + writer
+                + ", 메시지가 작성된 채널 : " + channel;
     }
 }

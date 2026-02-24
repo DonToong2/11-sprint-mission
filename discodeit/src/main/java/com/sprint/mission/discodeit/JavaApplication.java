@@ -1,8 +1,10 @@
 package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
+import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
 import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 
 import java.util.ArrayList;
@@ -12,8 +14,9 @@ public class JavaApplication {
     public static void main(String[] args) {
         JCFUserService userService = new JCFUserService();
         JCFChannelService channelService = new JCFChannelService();
+        JCFMessageService messageService = new JCFMessageService();
 
-        System.out.println("=====유저 서비스 테스트=====");
+        System.out.println("==========유저 서비스 테스트==========");
         User user1 = new User(
                 "홍길동",
                 "GuilDong",
@@ -56,7 +59,10 @@ public class JavaApplication {
         userService.deleteUser(user1.getId());
 
 
-        System.out.println("=====채널 서비스 테스트=====");
+
+
+
+        System.out.println("==========채널 서비스 테스트==========");
         List<String> members1 = new ArrayList<>();
         Channel channel1 = new Channel(
                 "자유",
@@ -68,6 +74,7 @@ public class JavaApplication {
         // 채널 생성
         channelService.createChannel(channel1);
 
+
         // 채널 조회
         channelService.readChannelName(channel1.getId());
         channelService.readChannelGroup(channel1.getId());
@@ -78,15 +85,45 @@ public class JavaApplication {
         // 채널 수정
         channelService.updateChannelGroup(channel1.getId(), "스터디 그룹");
         channelService.updateChannelName(channel1.getId(), "스터디1");
-        channelService.updateChannelMembersAdd(channel1.getId(), user1.getName());
 
-        channelService.readChannelAll(channel1.getId()); // 수정 시각 확인을 위한 코드
+        channelService.updateChannelMembersAdd(channel1.getId(), user1.getName());
+        channelService.readChannelAll(channel1.getId()); // 채널 수정 시각, 멤버가 추가되었는지 확인
+
         channelService.updateChannelMembersRemove(channel1.getId(), user1.getName());
-        channelService.readChannelAll(channel1.getId()); // 수정 시각 확인을 위한 코드
+        channelService.readChannelAll(channel1.getId()); // 채널 수정 시각, 멤버가 삭제되었는지 확인
 
 
         // 채널 삭제
         channelService.deleteChannel(channel1.getId());
         channelService.deleteChannel(channel1.getId());
+
+
+
+
+
+        System.out.println("==========채널 서비스 테스트==========");
+        Message message1 = new Message("안녕하세요",
+                user1.getName(),
+                channel1.getName());
+
+
+        // 메시지 생성
+        messageService.createMessage(message1);
+
+        // 메시지 조회
+        messageService.readMessageContent(message1.getId());
+        messageService.readMessageWriter(message1.getId());
+        messageService.readMessageChannel(message1.getId());
+        messageService.readMessageAll(message1.getId());
+
+        // 메시지 수정
+        messageService.updateMessageContent(message1.getId(), "감사합니다");
+        messageService.readMessageAll(message1.getId()); // 수정된 메시지, 최근 수정 시각 확인
+
+        // 메시지 삭제
+        messageService.deleteMessage(message1.getId());
+
+        // 메시지가 삭제되었는지 다시 삭제 시도 후 확인
+        messageService.deleteMessage(message1.getId());
     }
 }
