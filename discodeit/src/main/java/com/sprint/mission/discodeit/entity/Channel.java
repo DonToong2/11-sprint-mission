@@ -12,10 +12,10 @@ public class Channel {
     // 어디 그룹에 속한 채널인가
     private String group; // 채널 그룹
     private String name; // 채널 이름
-    private List<User> members; // 채널 멤버
+    private List<String> members; // 채널 멤버
 
     // 생성자
-    public Channel(String group, String name, List<User> members) {
+    public Channel(String group, String name, List<String> members) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
@@ -30,7 +30,7 @@ public class Channel {
     public long getUpdatedAt() { return updatedAt; }
     public String getGroup() { return group; }
     public String getName() { return name; }
-    public List<User> getMembers() { return members; }
+    public List<String> getMembers() { return members; }
 
     // update(set)
     private void update() {
@@ -44,7 +44,7 @@ public class Channel {
         this.name = name;
         update();
     }
-    public void updateMember(List<User> members) {
+    public void updateMember(List<String> members) {
         this.members = members;
         update();
     }
@@ -52,8 +52,8 @@ public class Channel {
     @Override
     public String toString() {
         String memberNames = members.stream()
-                .map(User::getName)
                 .collect(Collectors.joining(",", "[", "]"));
+
         return "유저 UUID : " + id
                 + "\n 생성 시간 : " + createdAt + ", 수정한 시간 : " + updatedAt
                 + "\n 채널 이름 : " + name + ", 채널이 속해있는 그룹 : " + group

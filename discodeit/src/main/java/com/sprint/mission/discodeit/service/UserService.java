@@ -16,7 +16,6 @@ public interface UserService {
     void readUserStatus(UUID id);
     void readUserAll(UUID id);
 
-
     void updateUserName(UUID id, String newName);
     void updateUserNickname(UUID id, String newNickname);
     void updateUserEmail(UUID id, String newEmail);
