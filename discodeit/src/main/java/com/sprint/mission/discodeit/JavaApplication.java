@@ -22,36 +22,49 @@ public class JavaApplication {
         MessageService messageService = new JCFMessageService();
 
         System.out.println("==========유저 서비스 테스트==========");
-//        User user1 = new User(
-//                "홍길동",
-//                "GilDong",
-//                "guildong@gmail.com",
-//                "010-1234-5678",
-//                "none",
-//                User.Status.AWAY
-//        );
-//        User user2 = new User(
-//                "아무개",
-//                "Mugae",
-//                "Mugae@gmail.com",
-//                "010-9872-5547",
-//                "handsome_muage",
-//                User.Status.ONLINE
-//        );
+        User user1 = new User(
+                "홍길동",
+                "GilDong",
+                "guildong@gmail.com",
+                "010-1234-5678",
+                "none",
+                User.Status.AWAY
+        );
+        User user2 = new User(
+                "아무개",
+                "Mugae",
+                "Mugae@gmail.com",
+                "010-9872-5547",
+                "handsome_muage",
+                User.Status.ONLINE
+        );
 
-        // 유저 등록
-//        userService.createUser(user1);
-//        userService.createUser(user2);
+        // ========== 유저 등록 ========== //
+        userService.createUser(user1);
+        userService.createUser(user2);
 
 
-        // 유저 조회
+        // ==========유저 조회========== //
+        // JCF
 //        userService.readUserAll(user1.getId());
-        userService.readUserAll( ((FileUserService) userService).findIdByNickname("GilDong") );
-        userService.readUserAll( ((FileUserService) userService).findIdByNickname("Mugae") );
-        userService.readUserAll( ((FileUserService) userService).findIdByNickname("DonToong") );
-//
-//
-//        // 유저 수정
+
+        // File
+        // 조회용 UUID
+        String nick0 = "DonToong"; // 아직 존재하지 않는 유저 -> Update 메서드 후 생성
+        String nick1 = "GilDong"; // Update 메서드 후 사라짐
+        String nick2 = "Mugae";
+        UUID id0 = ((FileUserService) userService).findIdByNickname(nick0);
+        UUID id1 = ((FileUserService) userService).findIdByNickname(nick1);
+        UUID id2 = ((FileUserService) userService).findIdByNickname(nick2);
+        userService.readUserAll(id1);
+        userService.readUserAll(id2);
+
+        // (테스트용) 없는 닉네임의 User 검색
+        userService.readUserAll(id0);
+
+
+        // 유저 수정
+        // JCF
 //        userService.updateUserName(user1.getId(), "김명근");
 //        userService.updateUserNickname(user1.getId(), "DonToong");
 //        userService.updateUserEmail(user1.getId(), "rlaaudrms369@naver.com");
@@ -59,14 +72,30 @@ public class JavaApplication {
 //        userService.updateUserProfileImageURL(user1.getId(), "dog");
 //        userService.updateUserStatus(user1.getId(), User.Status.ONLINE);
 //
-//        userService.readUserAll(user1.getId()); // 수정 시각 확인을 위한 코드
+//        userService.readUserAll(user1.getId()); // 수정 시각 체크 및 수정 확인
 //
-//
-//        // 유저 삭제
+         // File
+        userService.updateUserName(id1, "김명근");
+        userService.updateUserNickname(id1, "DonToong");
+        userService.updateUserEmail(id1, "rlaaudrms369@naver.com");
+        userService.updatePhoneNumber(id1, "010-5009-8324");
+        userService.updateUserProfileImageURL(id1, "dog");
+        userService.updateUserStatus(id1, User.Status.ONLINE);
+
+        userService.readUserAll(id1); // 수정 시각 체크 및 수정 확인
+
+        // ========== 유저 삭제 ========== //
+        // JCF
 //        userService.deleteUser(user1.getId());
 //
 //        // 유저가 삭제되었는지 삭제 시도 후 확인
 //        userService.deleteUser(user1.getId());
+
+        // File
+        userService.deleteUser(id1);
+
+        // 유저가 삭제되었는지 삭제 시도 후 확인
+        userService.deleteUser(id1);
 //
 //
 //

@@ -46,7 +46,17 @@ public class FileUserService implements UserService {
 
     }
 
-    // 기존 JCFUserService
+    // 닉네임으로 UUID 호출
+    public UUID findIdByNickname(String nickname) {
+        load();
+        for (Map.Entry<UUID, User> user : users.entrySet()) {
+            if (user.getValue().getNickname().equals(nickname)) {
+                return user.getKey();
+            }
+        }
+        return null;
+    }
+
     // Create
     @Override
     public void createUser(User user) {
@@ -58,21 +68,12 @@ public class FileUserService implements UserService {
 
 
     // Read
-    public UUID findIdByNickname(String nickname) {
-        load();
-        for (Map.Entry<UUID, User> user : users.entrySet()) {
-            if (user.getValue().getNickname().equals(nickname)) {
-                return user.getKey();
-            }
-        }
-        return null;
-    }
-
     @Override
     public void readUserAll(UUID id) {
         load();
         User user = users.get(id);
 
+        // NPE 방지
         if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else { System.out.println("=====유저 정보=====\n" + user); }
 
@@ -84,56 +85,107 @@ public class FileUserService implements UserService {
     // 같은 키, 다른 Value를 put 하면 키는 그대로, Value만 갱신된다.
     @Override
     public void updateUserName(UUID id, String newName) {
+        load();
         User user = users.get(id);
-        System.out.println("수정 전 유저 이름 : " + user.getName());
-        user.updateName(newName);
-        System.out.println("수정 후 유저 이름 : " + user.getName());
+
+        // NPE 방지
+        if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            System.out.println("수정 전 유저 이름 : " + user.getName());
+            user.updateName(newName);
+            System.out.println("수정 후 유저 이름 : " + user.getName());
+            save();
+        }
         System.out.println();
     }
+
     @Override
     public void updateUserNickname(UUID id, String newNickname) {
+        load();
         User user = users.get(id);
-        System.out.println("수정 전 유저 별명 : " + user.getNickname());
-        user.updateNickname(newNickname);
-        System.out.println("수정 후 유저 별명 : " + user.getNickname());
+
+        // NPE 방지
+        if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            System.out.println("수정 전 유저 별명 : " + user.getNickname());
+            user.updateNickname(newNickname);
+            System.out.println("수정 후 유저 별명 : " + user.getNickname());
+            save();
+        }
         System.out.println();
     }
+
     @Override
     public void updateUserEmail(UUID id, String newEmail) {
+        load();
         User user = users.get(id);
-        System.out.println("수정 전 유저 이메일 : " + user.getEmail());
-        user.updateEmail(newEmail);
-        System.out.println("수정 후 유저 이메일 : " + user.getEmail());
+
+        // NPE 방지
+        if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            System.out.println("수정 전 유저 이메일 : " + user.getEmail());
+            user.updateEmail(newEmail);
+            System.out.println("수정 후 유저 이메일 : " + user.getEmail());
+            save();
+        }
         System.out.println();
     }
+
     @Override
     public void updatePhoneNumber(UUID id, String newPhoneNumber) {
+        load();
         User user = users.get(id);
-        System.out.println("수정 전 유저 전화번호 : " + user.getPhoneNumber());
-        user.updatePhoneNumber(newPhoneNumber);
-        System.out.println("수정 후 유저 전화번호 : " + user.getPhoneNumber());
+
+        // NPE 방지
+        if (user == null) {
+            System.out.println("해당 유저가 존재하지 않습니다.");
+        } else {
+            System.out.println("수정 전 유저 전화번호 : " + user.getPhoneNumber());
+            user.updatePhoneNumber(newPhoneNumber);
+            System.out.println("수정 후 유저 전화번호 : " + user.getPhoneNumber());
+            save();
+        }
         System.out.println();
     }
+
     @Override
     public void updateUserProfileImageURL(UUID id, String newProfileImageURL) {
+        load();
         User user = users.get(id);
-        System.out.println("수정 전 유저 프로필 이미지 : " + user.getProfileImageURL());
-        user.updateProfileImageURL(newProfileImageURL);
-        System.out.println("수정 후 유저 프로필 이미지 : " + user.getProfileImageURL());
+
+        // NPE 방지
+        if (user == null) {
+            System.out.println("해당 유저가 존재하지 않습니다.");
+        } else {
+            System.out.println("수정 전 유저 프로필 이미지 : " + user.getProfileImageURL());
+            user.updateProfileImageURL(newProfileImageURL);
+            System.out.println("수정 후 유저 프로필 이미지 : " + user.getProfileImageURL());
+            save();
+        }
         System.out.println();
     }
+
     @Override
     public void updateUserStatus(UUID id, User.Status newStatus) {
+        load();
         User user = users.get(id);
-        System.out.println("수정 전 유저 상태 : " + user.getUserStatus());
-        user.updateStatus(newStatus);
-        System.out.println("수정 후 유저 상태 : " + user.getUserStatus());
+
+        // NPE 방지
+        if (user == null) {
+            System.out.println("해당 유저가 존재하지 않습니다.");
+        } else {
+            System.out.println("수정 전 유저 상태 : " + user.getUserStatus());
+            user.updateStatus(newStatus);
+            System.out.println("수정 후 유저 상태 : " + user.getUserStatus());
+            save();
+        }
         System.out.println();
     }
 
     // Delete
     @Override
     public void deleteUser(UUID id) {
+        load();
         User user = users.get(id);
         users.remove(id);
         if (user == null) {
@@ -141,6 +193,7 @@ public class FileUserService implements UserService {
         }
         else {
             System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
+            save();
         }
         System.out.println();
     }
