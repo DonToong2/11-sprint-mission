@@ -41,7 +41,7 @@ public class FileChannelService implements ChannelService {
 
     }
 
-    // 닉네임으로 UUID 호출
+    // 채널명으로 UUID 호출
     public UUID findIdByName(String name) {
         load();
         for (Map.Entry<UUID, Channel> channel : channels.entrySet()) {
