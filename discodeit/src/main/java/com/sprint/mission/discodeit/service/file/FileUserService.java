@@ -71,11 +71,12 @@ public class FileUserService implements UserService {
     @Override
     public void readUserAll(UUID id) {
         load();
-        User user = users.get(id);
 
         // NPE 방지
-        if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
-        else { System.out.println("=====유저 정보=====\n" + user); }
+        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            User user = users.get(id);
+            System.out.println("=====유저 정보=====\n" + user); }
 
         System.out.println();
     }
@@ -86,11 +87,11 @@ public class FileUserService implements UserService {
     @Override
     public void updateUserName(UUID id, String newName) {
         load();
-        User user = users.get(id);
 
         // NPE 방지
-        if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
+            User user = users.get(id);
             System.out.println("수정 전 유저 이름 : " + user.getName());
             user.updateName(newName);
             System.out.println("수정 후 유저 이름 : " + user.getName());
@@ -102,11 +103,11 @@ public class FileUserService implements UserService {
     @Override
     public void updateUserNickname(UUID id, String newNickname) {
         load();
-        User user = users.get(id);
 
         // NPE 방지
-        if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
+            User user = users.get(id);
             System.out.println("수정 전 유저 별명 : " + user.getNickname());
             user.updateNickname(newNickname);
             System.out.println("수정 후 유저 별명 : " + user.getNickname());
@@ -118,11 +119,11 @@ public class FileUserService implements UserService {
     @Override
     public void updateUserEmail(UUID id, String newEmail) {
         load();
-        User user = users.get(id);
 
         // NPE 방지
-        if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
+            User user = users.get(id);
             System.out.println("수정 전 유저 이메일 : " + user.getEmail());
             user.updateEmail(newEmail);
             System.out.println("수정 후 유저 이메일 : " + user.getEmail());
@@ -134,12 +135,11 @@ public class FileUserService implements UserService {
     @Override
     public void updatePhoneNumber(UUID id, String newPhoneNumber) {
         load();
-        User user = users.get(id);
 
         // NPE 방지
-        if (user == null) {
-            System.out.println("해당 유저가 존재하지 않습니다.");
-        } else {
+        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            User user = users.get(id);
             System.out.println("수정 전 유저 전화번호 : " + user.getPhoneNumber());
             user.updatePhoneNumber(newPhoneNumber);
             System.out.println("수정 후 유저 전화번호 : " + user.getPhoneNumber());
@@ -151,12 +151,11 @@ public class FileUserService implements UserService {
     @Override
     public void updateUserProfileImageURL(UUID id, String newProfileImageURL) {
         load();
-        User user = users.get(id);
 
         // NPE 방지
-        if (user == null) {
-            System.out.println("해당 유저가 존재하지 않습니다.");
-        } else {
+        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            User user = users.get(id);
             System.out.println("수정 전 유저 프로필 이미지 : " + user.getProfileImageURL());
             user.updateProfileImageURL(newProfileImageURL);
             System.out.println("수정 후 유저 프로필 이미지 : " + user.getProfileImageURL());
@@ -168,12 +167,11 @@ public class FileUserService implements UserService {
     @Override
     public void updateUserStatus(UUID id, User.Status newStatus) {
         load();
-        User user = users.get(id);
 
         // NPE 방지
-        if (user == null) {
-            System.out.println("해당 유저가 존재하지 않습니다.");
-        } else {
+        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            User user = users.get(id);
             System.out.println("수정 전 유저 상태 : " + user.getUserStatus());
             user.updateStatus(newStatus);
             System.out.println("수정 후 유저 상태 : " + user.getUserStatus());
@@ -186,11 +184,9 @@ public class FileUserService implements UserService {
     @Override
     public void deleteUser(UUID id) {
         load();
-        User user = users.get(id);
-        if (!users.containsKey(id)) {
-            System.out.println("해당 유저는 존재하지 않습니다.");
-        }
+        if (!users.containsKey(id)) { System.out.println("해당 유저는 존재하지 않습니다."); }
         else {
+            User user = users.get(id);
             users.remove(id);
             System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
             save();
