@@ -34,6 +34,7 @@ public class JCFChannelService implements ChannelService {
         System.out.println("수정 후 채널 이름 : " + channel.getName());
         System.out.println();
     }
+
     @Override
     public void updateChannelGroup(UUID id, String newGroup) {
         Channel channel = channels.get(id);
@@ -42,6 +43,7 @@ public class JCFChannelService implements ChannelService {
         System.out.println("수정 후 속한 채널 그룹 : " + channel.getGroup());
         System.out.println();
     }
+
     @Override
     public void updateChannelMembersAdd(UUID id, String addMember) {
         Channel channel = channels.get(id);
@@ -52,6 +54,7 @@ public class JCFChannelService implements ChannelService {
         System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
         System.out.println();
     }
+
     @Override
     public void updateChannelMembersRemove(UUID id, String removeMember) {
         Channel channel = channels.get(id);

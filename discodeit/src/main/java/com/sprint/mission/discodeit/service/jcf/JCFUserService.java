@@ -39,6 +39,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 후 유저 이름 : " + user.getName());
         System.out.println();
     }
+
     @Override
     public void updateUserNickname(UUID id, String newNickname) {
         User user = users.get(id);
@@ -47,6 +48,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 후 유저 별명 : " + user.getNickname());
         System.out.println();
     }
+
     @Override
     public void updateUserEmail(UUID id, String newEmail) {
         User user = users.get(id);
@@ -55,6 +57,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 후 유저 이메일 : " + user.getEmail());
         System.out.println();
     }
+
     @Override
     public void updatePhoneNumber(UUID id, String newPhoneNumber) {
         User user = users.get(id);
@@ -63,6 +66,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 후 유저 전화번호 : " + user.getPhoneNumber());
         System.out.println();
     }
+
     @Override
     public void updateUserProfileImageURL(UUID id, String newProfileImageURL) {
         User user = users.get(id);
@@ -71,6 +75,7 @@ public class JCFUserService implements UserService {
         System.out.println("수정 후 유저 프로필 이미지 : " + user.getProfileImageURL());
         System.out.println();
     }
+    
     @Override
     public void updateUserStatus(UUID id, User.Status newStatus) {
         User user = users.get(id);
