@@ -22,11 +22,10 @@ public class JCFUserService implements UserService {
 
     // Read
     @Override
-    public void readAllUsers() {
-        for(User user : users.values()) {
-            System.out.println("=====유저 정보=====\n" + user);
-            System.out.println();
-        }
+    public void readUserAll(UUID id) {
+        User user = users.get(id);
+        System.out.println("=====유저 정보=====\n" + user);
+        System.out.println();
     }
 
 

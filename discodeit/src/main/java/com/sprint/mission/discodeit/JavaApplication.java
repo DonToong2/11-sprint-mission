@@ -17,42 +17,38 @@ import java.util.UUID;
 
 public class JavaApplication {
     public static void main(String[] args) {
-        UserService userService = new JCFUserService();
+        UserService userService = new FileUserService();
         ChannelService channelService = new JCFChannelService();
         MessageService messageService = new JCFMessageService();
 
         System.out.println("==========유저 서비스 테스트==========");
-        User user1 = new User(
-                "홍길동",
-                "GilDong",
-                "guildong@gmail.com",
-                "010-1234-5678",
-                "none",
-                User.Status.AWAY
-        );
-        User user2 = new User(
-                "아무개",
-                "Mugae",
-                "Mugae@gmail.com",
-                "010-9872-5547",
-                "handsome_muage",
-                User.Status.ONLINE
-        );
+//        User user1 = new User(
+//                "홍길동",
+//                "GilDong",
+//                "guildong@gmail.com",
+//                "010-1234-5678",
+//                "none",
+//                User.Status.AWAY
+//        );
+//        User user2 = new User(
+//                "아무개",
+//                "Mugae",
+//                "Mugae@gmail.com",
+//                "010-9872-5547",
+//                "handsome_muage",
+//                User.Status.ONLINE
+//        );
 
         // 유저 등록
-        userService.createUser(user1);
-        userService.createUser(user2);
+//        userService.createUser(user1);
+//        userService.createUser(user2);
 
 
         // 유저 조회
-//        userService.readUserName(user1.getId());
-//        userService.readUserNickname(user1.getId());
-//        userService.readUserPhoneNumber(user1.getId());
-//        userService.readUserEmail(user1.getId());
-//        userService.readUserPhoneNumber(user1.getId());
-//        userService.readUserProfileImageURL(user1.getId());
-//        userService.readUserStatus(user1.getId());
-        userService.readAllUsers();
+//        userService.readUserAll(user1.getId());
+        userService.readUserAll( ((FileUserService) userService).findIdByNickname("GilDong") );
+        userService.readUserAll( ((FileUserService) userService).findIdByNickname("Mugae") );
+        userService.readUserAll( ((FileUserService) userService).findIdByNickname("DonToong") );
 //
 //
 //        // 유저 수정

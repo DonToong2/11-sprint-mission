@@ -8,7 +8,7 @@ public interface UserService {
 
     void createUser(User user);
 
-    void readAllUsers();
+    void readUserAll(UUID id);
 
     void updateUserName(UUID id, String newName);
     void updateUserNickname(UUID id, String newNickname);

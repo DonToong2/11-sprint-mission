@@ -39,7 +39,7 @@ public class FileUserService implements UserService {
         ObjectInputStream ois = new ObjectInputStream(fis)) {
             Map<UUID, User> loadUsers = (Map<UUID, User>) ois.readObject();
             users.clear(); // 한 번 비우고
-            users.putAll(loadUsers); // 불러온다.
+            users.putAll(loadUsers); // 불러온다.(기존에 있던 데이터까지 같이 로드될 수 있기 때문에)
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -58,12 +58,25 @@ public class FileUserService implements UserService {
 
 
     // Read
+    public UUID findIdByNickname(String nickname) {
+        load();
+        for (Map.Entry<UUID, User> user : users.entrySet()) {
+            if (user.getValue().getNickname().equals(nickname)) {
+                return user.getKey();
+            }
+        }
+        return null;
+    }
+
     @Override
-    public void readAllUsers() {
-//        User user = users.get(id);
-//        load();
-//        System.out.println("=====유저 정보=====\n" + user);
-//        System.out.println();
+    public void readUserAll(UUID id) {
+        load();
+        User user = users.get(id);
+
+        if (user == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else { System.out.println("=====유저 정보=====\n" + user); }
+
+        System.out.println();
     }
 
 
