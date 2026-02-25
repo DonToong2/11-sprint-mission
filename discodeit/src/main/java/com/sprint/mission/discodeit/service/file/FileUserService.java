@@ -187,11 +187,11 @@ public class FileUserService implements UserService {
     public void deleteUser(UUID id) {
         load();
         User user = users.get(id);
-        users.remove(id);
-        if (user == null) {
+        if (!users.containsKey(id)) {
             System.out.println("해당 유저는 존재하지 않습니다.");
         }
         else {
+            users.remove(id);
             System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
             save();
         }
