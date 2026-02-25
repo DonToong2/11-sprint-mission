@@ -67,7 +67,11 @@ public class FileChannelService implements ChannelService {
     public void readChannelAll(UUID id) {
         load();
         Channel channel = channels.get(id);
-        System.out.println("=====채널 정보=====\n" + channel);
+        // NPE 방지
+        if (channel == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            System.out.println("=====채널 정보=====\n" + channel);
+        }
         System.out.println();
     }
 
@@ -76,10 +80,15 @@ public class FileChannelService implements ChannelService {
     public void updateChannelName(UUID id, String newName) {
         load();
         Channel channel = channels.get(id);
-        System.out.println("수정 전 채널 이름 : " + channel.getName());
-        channel.updateName(newName);
-        System.out.println("수정 후 채널 이름 : " + channel.getName());
-        save();
+
+        // NPE 방지
+        if (channel == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            System.out.println("수정 전 채널 이름 : " + channel.getName());
+            channel.updateName(newName);
+            System.out.println("수정 후 채널 이름 : " + channel.getName());
+            save();
+        }
         System.out.println();
     }
 
@@ -87,10 +96,15 @@ public class FileChannelService implements ChannelService {
     public void updateChannelGroup(UUID id, String newGroup) {
         load();
         Channel channel = channels.get(id);
-        System.out.println("수정 전 속한 채널 그룹 : " + channel.getGroup());
-        channel.updateGroup(newGroup);
-        System.out.println("수정 후 속한 채널 그룹 : " + channel.getGroup());
-        save();
+
+        // NPE 방지
+        if (channel == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            System.out.println("수정 전 속한 채널 그룹 : " + channel.getGroup());
+            channel.updateGroup(newGroup);
+            System.out.println("수정 후 속한 채널 그룹 : " + channel.getGroup());
+            save();
+        }
         System.out.println();
     }
 
@@ -98,12 +112,17 @@ public class FileChannelService implements ChannelService {
     public void updateChannelMembersAdd(UUID id, String addMember) {
         load();
         Channel channel = channels.get(id);
-        List<String> members = new ArrayList<>(channel.getMembers());
-        System.out.println("수정 전 채널 멤버 : " + channel.getMembers());
-        members.add(addMember);
-        channel.updateMember(members);
-        System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
-        save();
+
+        // NPE 방지
+        if (channel == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            List<String> members = new ArrayList<>(channel.getMembers());
+            System.out.println("수정 전 채널 멤버 : " + channel.getMembers());
+            members.add(addMember);
+            channel.updateMember(members);
+            System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
+            save();
+        }
         System.out.println();
     }
 
@@ -111,12 +130,17 @@ public class FileChannelService implements ChannelService {
     public void updateChannelMembersRemove(UUID id, String removeMember) {
         load();
         Channel channel = channels.get(id);
-        List<String> members = new ArrayList<>(channel.getMembers());
-        System.out.println("수정 전 채널 멤버 : " + channel.getMembers());
-        members.remove(removeMember);
-        channel.updateMember(members);
-        System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
-        save();
+
+        // NPE 방지
+        if (channel == null) { System.out.println("해당 유저가 존재하지 않습니다."); }
+        else {
+            List<String> members = new ArrayList<>(channel.getMembers());
+            System.out.println("수정 전 채널 멤버 : " + channel.getMembers());
+            members.remove(removeMember);
+            channel.updateMember(members);
+            System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
+            save();
+        }
         System.out.println();
     }
 
