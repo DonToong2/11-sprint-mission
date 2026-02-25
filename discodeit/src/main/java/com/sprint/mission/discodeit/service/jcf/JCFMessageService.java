@@ -40,12 +40,12 @@ public class JCFMessageService implements MessageService {
     @Override
     public void deleteMessage(UUID id) {
         Message message = messages.get(id);
-        messages.remove(id);
-        if (message == null) {
+        if (!messages.containsKey(id)) {
             System.out.println("해당 메시지가 존재하지 않습니다.");
         }
         else {
             System.out.println("메시지가 삭제되었습니다.");
+            messages.remove(id);
         }
         System.out.println();
     }

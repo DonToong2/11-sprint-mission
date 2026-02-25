@@ -70,12 +70,12 @@ public class JCFChannelService implements ChannelService {
     @Override
     public void deleteChannel(UUID id) {
         Channel channel = channels.get(id);
-        channels.remove(id);
-        if (channel == null) {
+        if (!channels.containsKey(id)) {
             System.out.println("해당 채널은 존재하지 않습니다.");
         }
         else {
             System.out.println("채널" + channel.getName() + "이(가) 삭제되었습니다.");
+            channels.remove(id);
         }
         System.out.println();
     }
