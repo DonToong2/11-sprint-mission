@@ -9,7 +9,7 @@ public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // 필수
-    private final transient UUID id;
+    private final UUID id;
     private final long createdAt;
     private long updatedAt;
 
