@@ -17,6 +17,7 @@ import java.util.UUID;
 
 public class JavaApplication {
     public static void main(String[] args) {
+        System.out.println("git user.name, user.email 일치 테스트");
         UserService userService = new FileUserService();
         ChannelService channelService = new JCFChannelService();
         MessageService messageService = new JCFMessageService();
