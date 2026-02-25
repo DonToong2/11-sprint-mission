@@ -19,29 +19,6 @@ public class JCFChannelService implements ChannelService {
 
     // Read
     @Override
-    public void readChannelName(UUID id) {
-        Channel channel = channels.get(id);
-        System.out.println("채널 이름 : " + channel.getName());
-        System.out.println();
-    }
-    @Override
-    public void readChannelGroup(UUID id) {
-        Channel channel = channels.get(id);
-        System.out.println("속해있는 채널의 그룹 : " + channel.getGroup());
-        System.out.println();
-    }
-    @Override
-    public void readChannelMembers(UUID id) {
-        Channel channel = channels.get(id);
-        if (channel.getMembers().isEmpty()) {
-            System.out.println("채널 멤버가 없습니다.");
-        }
-        else {
-            System.out.println("채널 멤버 : [" + channel.getMembers() + "]");
-        }
-        System.out.println();
-    }
-    @Override
     public void readChannelAll(UUID id) {
         Channel channel = channels.get(id);
         System.out.println("=====채널 정보=====\n" + channel);

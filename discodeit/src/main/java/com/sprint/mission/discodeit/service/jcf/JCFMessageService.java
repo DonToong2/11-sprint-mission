@@ -20,24 +20,6 @@ public class JCFMessageService implements MessageService {
 
     // Read
     @Override
-    public void readMessageContent(UUID id) {
-        Message message = messages.get(id);
-        System.out.println("메시지 내용 : " + message.getContent());
-        System.out.println();
-    }
-    @Override
-    public void readMessageWriter(UUID id) {
-        Message message = messages.get(id);
-        System.out.println("메시지 작성자 : " + message.getWriter());
-        System.out.println();
-    }
-    @Override
-    public void readMessageChannel(UUID id) {
-        Message message = messages.get(id);
-        System.out.println("메시지가 작성된 채널 : " + message.getChannel());
-        System.out.println();
-    }
-    @Override
     public void readMessageAll(UUID id) {
         Message message = messages.get(id);
         System.out.println("=====메시지 정보=====\n" + message);

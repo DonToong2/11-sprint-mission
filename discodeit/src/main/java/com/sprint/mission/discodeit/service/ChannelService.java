@@ -8,9 +8,6 @@ import java.util.UUID;
 public interface ChannelService {
     void createChannel(Channel channel);
 
-    void readChannelName(UUID id);
-    void readChannelGroup(UUID id);
-    void readChannelMembers(UUID id);
     void readChannelAll(UUID id);
 
     void updateChannelName(UUID id, String newName);
