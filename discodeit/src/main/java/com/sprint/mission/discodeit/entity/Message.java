@@ -1,11 +1,19 @@
 package com.sprint.mission.discodeit.entity;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Message {
-    private final UUID id;
+public class Message implements Serializable {
+
+    // 객체 직렬화
+    private static final long serialVersionUID = 1L;
+
+    // 필수
+    private final transient UUID id;
     private final long createdAt;
     private long updatedAt;
+
+    // 어떤 채널의 멤버가 메시지를 작성하였는가
     private String content; // 메시지 내용
     private final String writer; // 메시지 작성자, 변경 불가
     private final String channel; // 메시지가 작성된 채널, 변경 불가

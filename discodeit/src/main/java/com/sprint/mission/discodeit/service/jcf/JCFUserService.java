@@ -22,46 +22,11 @@ public class JCFUserService implements UserService {
 
     // Read
     @Override
-    public void readUserName(UUID id) {
-        User user = users.get(id);
-        System.out.println("유저 이름 : " + user.getName());
-        System.out.println();
-    }
-    @Override
-    public void readUserNickname(UUID id) {
-        User user = users.get(id);
-        System.out.println("유저 별명 : " + user.getNickname());
-        System.out.println();
-    }
-    @Override
-    public void readUserEmail(UUID id) {
-        User user = users.get(id);
-        System.out.println("유저 이메일 : " + user.getEmail());
-        System.out.println();
-    }
-    @Override
-    public void readUserPhoneNumber(UUID id) {
-        User user = users.get(id);
-        System.out.println("유저 휴대폰 번호 : " + user.getPhoneNumber());
-        System.out.println();
-    }
-    @Override
-    public void readUserProfileImageURL(UUID id) {
-        User user = users.get(id);
-        System.out.println("유저 프로필 이미지 : " + user.getProfileImageURL());
-        System.out.println();
-    }
-    @Override
-    public void readUserStatus(UUID id) {
-        User user = users.get(id);
-        System.out.println("유저 상태 : " + user.getUserStatus());
-        System.out.println();
-    }
-    @Override
-    public void readUserAll(UUID id) {
-        User user = users.get(id);
-        System.out.println("=====유저 정보=====\n" + user);
-        System.out.println();
+    public void readAllUsers() {
+        for(User user : users.values()) {
+            System.out.println("=====유저 정보=====\n" + user);
+            System.out.println();
+        }
     }
 
 

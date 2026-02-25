@@ -1,16 +1,23 @@
 package com.sprint.mission.discodeit.entity;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class User {
-    // 공통
+public class User implements Serializable {
+
+    // 객체 직렬화
+    private static final long serialVersionUID = 1L;
+
+    // 필수
     private final UUID id; // 사용자 ID, 값이 변하면 안된다.
     private final long createdAt; // 계정 생성 시간, 값이 변할수 없다.
     private long updatedAt; // 계정 수정 후 시간, 처음에는 계정 생성 시간과 동일
+
+    // 사용자에 대한 데이터
     private String name; // 사용자 이름
-    private String nickname; // 사용자 닉네임
-    private String email;
-    private String phoneNumber;
+    private String nickname; // 사용자 닉네임, 중복 불가
+    private String email; // 사용자 이메일, 중복 불가
+    private String phoneNumber; // 사용자 전화번호, 중복 불가
     private String profileImageURL; // 프로필 사진 주소
     //private boolean isOneLine;
     private Status status; // 디스코드 접속 상태(온라인, 자리비움, 방해 금지, 오프라인)

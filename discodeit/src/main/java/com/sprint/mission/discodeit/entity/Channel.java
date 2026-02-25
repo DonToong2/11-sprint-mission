@@ -1,14 +1,20 @@
 package com.sprint.mission.discodeit.entity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class Channel {
+public class Channel implements Serializable {
+
+    // 객체 직렬화
+    private static final long serialVersionUID = 1L;
+
     // 필수
-    private final UUID id;
+    private final transient UUID id;
     private final long createdAt;
     private long updatedAt;
+
     // 어디 그룹에 속한 채널인가
     private String group; // 채널 그룹
     private String name; // 채널 이름
