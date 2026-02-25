@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.file.FileChannelService;
+import com.sprint.mission.discodeit.service.file.FileMessageService;
 import com.sprint.mission.discodeit.service.file.FileUserService;
 import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
 import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
@@ -20,7 +21,7 @@ public class JavaApplication {
     public static void main(String[] args) {
         UserService userService = new FileUserService();
         ChannelService channelService = new FileChannelService();
-        MessageService messageService = new JCFMessageService();
+        MessageService messageService = new FileMessageService();
 
         System.out.println("==========유저 서비스 테스트==========");
         User user1 = new User(
@@ -175,35 +176,65 @@ public class JavaApplication {
 
         // File
         channelService.deleteChannel(channelId1);
+
         // 채널이 삭제되었는지 삭제 시도 후 확인
         channelService.deleteChannel(channelId1);
 
 
 
 
-//        System.out.println("==========메시지 서비스 테스트==========");
-//        Message message1 = new Message("안녕하세요",
-//                user1.getName(),
-//                channel1.getName());
-//
-//
-//        // 메시지 생성
-//        messageService.createMessage(message1);
-//
-//        // 메시지 조회
-//        messageService.readMessageContent(message1.getId());
-//        messageService.readMessageWriter(message1.getId());
-//        messageService.readMessageChannel(message1.getId());
+        System.out.println("==========메시지 서비스 테스트==========");
+        Message message1 = new Message("안녕하세요",
+                user1.getName(),
+                channel1.getName());
+
+
+        // ========== 메시지 생성 ========== //
+        messageService.createMessage(message1);
+
+
+        // ========== 메시지 조회 ========== //
+//        // JCF
 //        messageService.readMessageAll(message1.getId());
-//
-//        // 메시지 수정
+
+        // 조회용 UUID
+        String messageContent0 = "감사합니다"; // 아직 존재하지 않는 채널 -> Update 메서드 후 생성
+        String messageContent1 = "안녕하세요"; // Update 메서드 후 사라짐
+        String messageContent2 = "어서오세요";
+        UUID messageId0 = ((FileMessageService) messageService).findByContent(messageContent0);
+        UUID messageId1 = ((FileMessageService) messageService).findByContent(messageContent1);
+        UUID messageId2 = ((FileMessageService) messageService).findByContent(messageContent2);
+        
+        // File
+        messageService.readMessageAll(messageId1);
+        messageService.readMessageAll(messageId2);
+
+        // (테스트용) 없는 닉네임의 Message 검색
+        messageService.readMessageAll(messageId0);
+
+
+        // ========== 메시지 수정 ========== //
+
+//        // JCF
 //        messageService.updateMessageContent(message1.getId(), "감사합니다");
 //        messageService.readMessageAll(message1.getId()); // 수정된 메시지, 최근 수정 시각 확인
-//
-//        // 메시지 삭제
+
+        // File
+        messageService.updateMessageContent(messageId1, "감사합니다");
+        messageService.readMessageAll(messageId1); // 수정된 메시지, 최근 수정 시각 확인
+
+
+        // ========== 메시지 삭제 ========== //
+//        // JCF
 //        messageService.deleteMessage(message1.getId());
 //
 //        // 메시지가 삭제되었는지 다시 삭제 시도 후 확인
 //        messageService.deleteMessage(message1.getId());
+
+        // File
+        messageService.deleteMessage(messageId1);
+
+        // 메시지가 삭제되었는지 다시 삭제 시도 후 확인
+        messageService.deleteMessage(messageId1);
     }
 }

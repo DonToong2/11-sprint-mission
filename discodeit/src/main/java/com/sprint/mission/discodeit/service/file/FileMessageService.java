@@ -103,7 +103,7 @@ public class FileMessageService implements MessageService {
         if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
         else {
             Message message = messages.get(id);
-            System.out.println("메시지가 삭제되었습니다.");
+            System.out.println("메시지 \"" + message.getContent() + "\"이(가) 삭제되었습니다.");
             messages.remove(id);
             save();
         }
