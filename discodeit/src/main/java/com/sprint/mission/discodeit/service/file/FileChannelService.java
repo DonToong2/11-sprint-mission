@@ -1,7 +1,6 @@
 package com.sprint.mission.discodeit.service.file;
 
 import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.ChannelService;
 
 import java.io.*;
@@ -45,9 +44,9 @@ public class FileChannelService implements ChannelService {
     // 닉네임으로 UUID 호출
     public UUID findIdByName(String name) {
         load();
-        for (Map.Entry<UUID, Channel> user : channels.entrySet()) {
-            if (user.getValue().getName().equals(name)) {
-                return user.getKey();
+        for (Map.Entry<UUID, Channel> channel : channels.entrySet()) {
+            if (channel.getValue().getName().equals(name)) {
+                return channel.getKey();
             }
         }
         return null;
