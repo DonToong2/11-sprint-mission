@@ -89,7 +89,7 @@ public class JCFUserService implements UserService {
     @Override
     public void deleteUser(UUID id) {
         User user = users.get(id);
-        if (!users.containsKey(user)) {
+        if (!users.containsKey(id)) {
             System.out.println("해당 유저는 존재하지 않습니다.");
         }
         else {
