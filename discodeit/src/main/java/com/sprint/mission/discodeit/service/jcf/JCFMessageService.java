@@ -21,30 +21,37 @@ public class JCFMessageService implements MessageService {
     // Read
     @Override
     public void readMessageAll(UUID id) {
-        Message message = messages.get(id);
-        System.out.println("=====메시지 정보=====\n" + message);
+        // NPE 방지
+        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
+        else {
+            Message message = messages.get(id);
+            System.out.println("=====메시지 정보=====\n" + message);
+        }
         System.out.println();
     }
 
     // Update
     @Override
     public void updateMessageContent(UUID id, String newContent) {
-        Message message = messages.get(id);
-        System.out.println("수정 전 메시지 : " + message.getContent());
-        message.updateContent(newContent);
-        System.out.println("수정 후 메시지 : " + message.getContent());
+        // NPE 방지
+        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
+        else {
+            Message message = messages.get(id);
+            System.out.println("수정 전 메시지 : " + message.getContent());
+            message.updateContent(newContent);
+            System.out.println("수정 후 메시지 : " + message.getContent());
+        }
         System.out.println();
     }
 
     // Delete
     @Override
     public void deleteMessage(UUID id) {
-        Message message = messages.get(id);
-        if (!messages.containsKey(id)) {
-            System.out.println("해당 메시지가 존재하지 않습니다.");
-        }
+        // NPE 방지
+        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
         else {
-            System.out.println("메시지가 삭제되었습니다.");
+            Message message = messages.get(id);
+            System.out.println("메시지 \"" + message.getContent() + "\"이(가) 삭제되었습니다.");
             messages.remove(id);
         }
         System.out.println();
