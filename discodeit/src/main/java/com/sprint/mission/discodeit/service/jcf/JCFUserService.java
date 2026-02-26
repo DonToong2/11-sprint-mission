@@ -2,7 +2,6 @@ package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
-import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.service.UserService;
 
 import java.util.HashMap;
@@ -27,7 +26,12 @@ public class JCFUserService implements UserService {
     // Create
     @Override
     public void createUser(User user) {
-//        users.put(user.getId(), user); // 저장 로직
+        // 저장 로직 분리 전
+//        users.put(user.getId(), user);
+//        System.out.println("유저를 추가하였습니다.");
+//        System.out.println();
+
+        // 저장 로직 분리 후
         userRepository.insertUser(user);
         System.out.println("유저를 추가하였습니다.");
         System.out.println();
@@ -37,7 +41,7 @@ public class JCFUserService implements UserService {
     // Read
     @Override
     public void readUserAll(UUID id) {
-        // 분리 전
+        // 저장 로직 분리 전
 //        // NPE 방지
 //        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
 //        else {
@@ -46,7 +50,7 @@ public class JCFUserService implements UserService {
 //
 //        System.out.println();
 
-        // 분리 후
+        // 저장 로직 분리 후
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -61,7 +65,7 @@ public class JCFUserService implements UserService {
     // 같은 키, 다른 Value를 put 하면 키는 그대로, Value만 갱신된다.
     @Override
     public void updateUserName(UUID id, String newName) {
-        // 분리 전
+        // 저장 로직 분리 전
 //        // NPE 방지
 //        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
 //        else {
@@ -73,7 +77,7 @@ public class JCFUserService implements UserService {
 //        }
 //        System.out.println();
 
-        // 분리 후
+        // 저장 로직 분리 후
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -88,7 +92,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public void updateUserNickname(UUID id, String newNickname) {
-        // 분리 전
+        // 저장 로직 분리 전
 //        // NPE 방지
 //        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
 //        else {
@@ -99,7 +103,7 @@ public class JCFUserService implements UserService {
 //        }
 //        System.out.println();
 
-        // 분리 후
+        // 저장 로직 분리 후
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -113,7 +117,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public void updateUserEmail(UUID id, String newEmail) {
-        // 분리 전
+        // 저장 로직 분리 전
 //        // NPE 방지
 //        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
 //        else {
@@ -124,7 +128,7 @@ public class JCFUserService implements UserService {
 //        }
 //        System.out.println();
 
-        // 분리 후
+        // 저장 로직 분리 후
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -138,7 +142,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public void updatePhoneNumber(UUID id, String newPhoneNumber) {
-        // 분리 전
+        // 저장 로직 분리 전
 //        // NPE 방지
 //        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
 //        else {
@@ -149,7 +153,7 @@ public class JCFUserService implements UserService {
 //        }
 //        System.out.println();
 
-        // 분리 후
+        // 저장 로직 분리 후
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -163,7 +167,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public void updateUserProfileImageURL(UUID id, String newProfileImageURL) {
-        // 분리 전
+        // 저장 로직 분리 전
 //        // NPE 방지
 //        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
 //        else {
@@ -174,7 +178,7 @@ public class JCFUserService implements UserService {
 //        }
 //        System.out.println();
 
-        // 분리 후
+        // 저장 로직 분리 후
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -188,7 +192,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public void updateUserStatus(UUID id, User.Status newStatus) {
-        // 분리 전
+        // 저장 로직 분리 전
 //        // NPE 방지
 //        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
 //        else {
@@ -199,7 +203,7 @@ public class JCFUserService implements UserService {
 //        }
 //        System.out.println();
 
-        // 분리 후
+        // 저장 로직 분리 후
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
