@@ -12,7 +12,7 @@ public class JCFChannelRepository implements ChannelRepository {
     private final Map<UUID, Channel> channels = new HashMap<>();
 
     @Override
-    public void InsertChannel(Channel channel) {
+    public void insertChannel(Channel channel) {
         channels.put(channel.getId(), channel);
     }
 
@@ -20,10 +20,15 @@ public class JCFChannelRepository implements ChannelRepository {
     public boolean isExistsChannel(UUID id) {
         return channels.containsKey(id);
     }
+
     @Override
     public Channel findChannel(UUID id) {
         return channels.get(id);
     }
+
+    @Override
+    public void updateChannel(Channel channel) { }
+
     @Override
     public void deleteChannel(UUID id) {
         channels.remove(id);

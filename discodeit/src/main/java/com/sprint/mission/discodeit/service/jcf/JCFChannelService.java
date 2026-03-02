@@ -25,7 +25,7 @@ public class JCFChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        channelRepository.InsertChannel(channel);
+        channelRepository.insertChannel(channel);
         System.out.println("채널을 생성하였습니다.");
         System.out.println();
     }

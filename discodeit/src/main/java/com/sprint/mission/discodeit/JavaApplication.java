@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
@@ -28,19 +29,20 @@ public class JavaApplication {
     public static void main(String[] args) {
         // JCF Service and Repository
 //        UserRepository userRepository = new JCFUserRepository();
-        ChannelRepository channelRepository = new JCFChannelRepository();
+//        ChannelRepository channelRepository = new JCFChannelRepository();
         MessageRepository messageRepository = new JCFMessageRepository();
 
 //        UserService userService = new JCFUserService(userRepository);
-        ChannelService channelService = new JCFChannelService(channelRepository);
+//        ChannelService channelService = new JCFChannelService(channelRepository);
         MessageService messageService = new JCFMessageService(messageRepository);
 
 
         // File Service and Repository
         UserRepository userRepository = new FileUserRepository();
+        ChannelRepository channelRepository = new FileChannelRepository();
 
-        UserService userService = new FileUserService((FileUserRepository) userRepository);
-//        ChannelService channelService = new FileChannelService();
+        UserService userService = new FileUserService(userRepository);
+        ChannelService channelService = new FileChannelService(channelRepository);
 //        MessageService messageService = new FileMessageService();
 
         System.out.println("==========유저 서비스 테스트==========");
@@ -147,58 +149,58 @@ public class JavaApplication {
 
         // ========== 채널 조회 ========== //
 //        // JCF
-        channelService.readChannelAll(channel1.getId());
+//        channelService.readChannelAll(channel1.getId());
 
         // File
         // 조회용 UUID
-//        String channelName0 = "스터디1"; // 아직 존재하지 않는 채널 -> Update 메서드 후 생성
-//        String channelName1 = "소통"; // Update 메서드 후 사라짐
-//        String channelName2 = "바나나";
-//        UUID channelId0 = ( (FileChannelService) channelService).findIdByName(channelName0);
-//        UUID channelId1 = ( (FileChannelService) channelService).findIdByName(channelName1);
-//        UUID channelId2 = ( (FileChannelService) channelService).findIdByName(channelName2);
-//
-//        channelService.readChannelAll(channelId1);
-//        channelService.readChannelAll(channelId2);
+        String channelName0 = "스터디1"; // 아직 존재하지 않는 채널 -> Update 메서드 후 생성
+        String channelName1 = "소통"; // Update 메서드 후 사라짐
+        String channelName2 = "바나나";
+        UUID channelId0 = ( (FileChannelRepository) channelRepository).findIdByName(channelName0);
+        UUID channelId1 = ( (FileChannelRepository) channelRepository).findIdByName(channelName1);
+        UUID channelId2 = ( (FileChannelRepository) channelRepository).findIdByName(channelName2);
+
+        channelService.readChannelAll(channelId1);
+        channelService.readChannelAll(channelId2);
 
         // (테스트용) 없는 이름의 채널 검색
-//        channelService.readChannelAll(channelId0);
+        channelService.readChannelAll(channelId0);
 
 
         // ========== 채널 수정 ========== //
-//        // JCF
-        channelService.updateChannelGroup(channel1.getId(), "스터디 그룹");
-        channelService.updateChannelName(channel1.getId(), "스터디1");
+        // JCF
+//        channelService.updateChannelGroup(channel1.getId(), "스터디 그룹");
+//        channelService.updateChannelName(channel1.getId(), "스터디1");
 
-        channelService.updateChannelMembersAdd(channel1.getId(), user1.getName());
-        channelService.readChannelAll(channel1.getId()); // 채널 수정 시각, 멤버가 추가되었는지 확인
+//        channelService.updateChannelMembersAdd(channel1.getId(), user1.getName());
+//        channelService.readChannelAll(channel1.getId()); // 채널 수정 시각, 멤버가 추가되었는지 확인
 
-        channelService.updateChannelMembersRemove(channel1.getId(), user1.getName());
-        channelService.readChannelAll(channel1.getId()); // 채널 수정 시각, 멤버가 삭제되었는지 확인
+//        channelService.updateChannelMembersRemove(channel1.getId(), user1.getName());
+//        channelService.readChannelAll(channel1.getId()); // 채널 수정 시각, 멤버가 삭제되었는지 확인
 
         // File
-//        channelService.updateChannelGroup(channelId1, "스터디 그룹");
-//        channelService.updateChannelName(channelId1, "스터디1");
-//
-//        channelService.updateChannelMembersAdd(channelId1, "아무개");
-//        channelService.updateChannelMembersAdd(channelId1, "김명근");
-//        channelService.readChannelAll(channelId1); // 채널 수정 시각, 멤버가 추가되었는지 확인
-//
-//        channelService.updateChannelMembersRemove(channelId1, "아무개");
-//        channelService.readChannelAll(channelId1); // 채널 수정 시각, 멤버가 삭제되었는지 확인
+        channelService.updateChannelGroup(channelId1, "스터디 그룹");
+        channelService.updateChannelName(channelId1, "스터디1");
+
+        channelService.updateChannelMembersAdd(channelId1, "아무개");
+        channelService.updateChannelMembersAdd(channelId1, "김명근");
+        channelService.readChannelAll(channelId1); // 채널 수정 시각, 멤버가 추가되었는지 확인
+
+        channelService.updateChannelMembersRemove(channelId1, "아무개");
+        channelService.readChannelAll(channelId1); // 채널 수정 시각, 멤버가 삭제되었는지 확인
 
 
         // ========== 채널 삭제 ========== //
         // JCF
-        channelService.deleteChannel(channel1.getId());
+//        channelService.deleteChannel(channel1.getId());
         // 채널이 삭제되었는지 삭제 시도 후 확인
-        channelService.deleteChannel(channel1.getId());
+//        channelService.deleteChannel(channel1.getId());
 
         // File
-//        channelService.deleteChannel(channelId1);
+        channelService.deleteChannel(channelId1);
 
         // 채널이 삭제되었는지 삭제 시도 후 확인
-//        channelService.deleteChannel(channelId1);
+        channelService.deleteChannel(channelId1);
 
 
 
@@ -222,9 +224,9 @@ public class JavaApplication {
 //        String messageContent0 = "감사합니다"; // 아직 존재하지 않는 채널 -> Update 메서드 후 생성
 //        String messageContent1 = "안녕하세요"; // Update 메서드 후 사라짐
 //        String messageContent2 = "어서오세요";
-//        UUID messageId0 = ((FileMessageService) messageService).findByContent(messageContent0);
-//        UUID messageId1 = ((FileMessageService) messageService).findByContent(messageContent1);
-//        UUID messageId2 = ((FileMessageService) messageService).findByContent(messageContent2);
+//        UUID messageId0 = ((FileMessageService) messageRepository).findByContent(messageContent0);
+//        UUID messageId1 = ((FileMessageService) messageRepository).findByContent(messageContent1);
+//        UUID messageId2 = ((FileMessageService) messageRepository).findByContent(messageContent2);
 //        messageService.readMessageAll(messageId1);
 //        messageService.readMessageAll(messageId2);
 //
