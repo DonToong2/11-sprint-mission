@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
+import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
@@ -30,20 +31,21 @@ public class JavaApplication {
         // JCF Service and Repository
 //        UserRepository userRepository = new JCFUserRepository();
 //        ChannelRepository channelRepository = new JCFChannelRepository();
-        MessageRepository messageRepository = new JCFMessageRepository();
+//        MessageRepository messageRepository = new JCFMessageRepository();
 
 //        UserService userService = new JCFUserService(userRepository);
 //        ChannelService channelService = new JCFChannelService(channelRepository);
-        MessageService messageService = new JCFMessageService(messageRepository);
+//        MessageService messageService = new JCFMessageService(messageRepository);
 
 
         // File Service and Repository
         UserRepository userRepository = new FileUserRepository();
         ChannelRepository channelRepository = new FileChannelRepository();
+        MessageRepository messageRepository = new FileMessageRepository();
 
         UserService userService = new FileUserService(userRepository);
         ChannelService channelService = new FileChannelService(channelRepository);
-//        MessageService messageService = new FileMessageService();
+        MessageService messageService = new FileMessageService(messageRepository);
 
         System.out.println("==========유저 서비스 테스트==========");
         User user1 = new User(
@@ -217,45 +219,46 @@ public class JavaApplication {
 
         // ========== 메시지 조회 ========== //
         // JCF
-        messageService.readMessageAll(message1.getId());
+//        messageService.readMessageAll(message1.getId());
         
         // File
-//        // 조회용 UUID
-//        String messageContent0 = "감사합니다"; // 아직 존재하지 않는 채널 -> Update 메서드 후 생성
-//        String messageContent1 = "안녕하세요"; // Update 메서드 후 사라짐
-//        String messageContent2 = "어서오세요";
-//        UUID messageId0 = ((FileMessageService) messageRepository).findByContent(messageContent0);
-//        UUID messageId1 = ((FileMessageService) messageRepository).findByContent(messageContent1);
-//        UUID messageId2 = ((FileMessageService) messageRepository).findByContent(messageContent2);
-//        messageService.readMessageAll(messageId1);
-//        messageService.readMessageAll(messageId2);
-//
-//        // (테스트용) 없는 닉네임의 Message 검색
-//        messageService.readMessageAll(messageId0);
+        // 조회용 UUID
+        String messageContent0 = "감사합니다"; // 아직 존재하지 않는 채널 -> Update 메서드 후 생성
+        String messageContent1 = "안녕하세요"; // Update 메서드 후 사라짐
+        String messageContent2 = "어서오세요";
+        UUID messageId0 = ((FileMessageRepository) messageRepository).findByContent(messageContent0);
+        UUID messageId1 = ((FileMessageRepository) messageRepository).findByContent(messageContent1);
+        UUID messageId2 = ((FileMessageRepository) messageRepository).findByContent(messageContent2);
+        messageService.readMessageAll(messageId1);
+        messageService.readMessageAll(messageId2);
+
+        // (테스트용) 없는 닉네임의 Message 검색
+        messageService.readMessageAll(messageId0);
 
 
         // ========== 메시지 수정 ========== //
 
         // JCF
-        messageService.updateMessageContent(message1.getId(), "감사합니다");
-        messageService.readMessageAll(message1.getId()); // 수정된 메시지, 최근 수정 시각 확인
+//        messageService.updateMessageContent(message1.getId(), "감사합니다");
+//        messageService.readMessageAll(message1.getId()); // 수정된 메시지, 최근 수정 시각 확인
 
         // File
-//        messageService.updateMessageContent(messageId1, "감사합니다");
-//        messageService.readMessageAll(messageId1); // 수정된 메시지, 최근 수정 시각 확인
+        messageService.updateMessageContent(messageId1, "감사합니다");
+        messageService.readMessageAll(messageId1); // 수정된 메시지, 최근 수정 시각 확인
 
 
         // ========== 메시지 삭제 ========== //
         // JCF
-        messageService.deleteMessage(message1.getId());
+//        messageService.deleteMessage(message1.getId());
 
         // 메시지가 삭제되었는지 다시 삭제 시도 후 확인
-        messageService.deleteMessage(message1.getId());
+//        messageService.deleteMessage(message1.getId());
 
         // File
-//        messageService.deleteMessage(messageId1);
+        messageService.deleteMessage(messageId1);
 
         // 메시지가 삭제되었는지 다시 삭제 시도 후 확인
-//        messageService.deleteMessage(messageId1);
+        messageService.deleteMessage(messageId1);
+        
     }
 }

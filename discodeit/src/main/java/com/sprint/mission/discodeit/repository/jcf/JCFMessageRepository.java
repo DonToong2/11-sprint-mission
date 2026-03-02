@@ -18,5 +18,7 @@ public class JCFMessageRepository implements MessageRepository {
     @Override
     public Message findMessage(UUID id) { return messages.get(id); }
     @Override
+    public void updateMessage(Message message) { }
+    @Override
     public void deleteMessage(UUID id) { messages.remove(id); }
 }

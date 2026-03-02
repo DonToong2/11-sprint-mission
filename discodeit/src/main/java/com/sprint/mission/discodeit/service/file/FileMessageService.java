@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service.file;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 
 import java.io.*;
@@ -17,48 +18,56 @@ public class FileMessageService implements MessageService {
 
     // 직렬화(Save -> Create를 저장, Update를 저장, Delete를 저장), 역직렬화(Load -> 불러오기)
 
-    private final Map<UUID, Message> messages = new HashMap<>();
+//    private final Map<UUID, Message> messages = new HashMap<>();
+//
+//    // 저장 메서드 save(직렬화)
+//    public void save() {
+//        try (FileOutputStream fos = new FileOutputStream("messages.ser");
+//             ObjectOutputStream oos = new ObjectOutputStream(fos);
+//        ) {
+//            oos.writeObject(messages);
+//        }
+//        catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    // 불러오기 메서드 load(역직렬화)
+//    public void load() {
+//        try (FileInputStream fis = new FileInputStream("messages.ser");
+//             ObjectInputStream ois = new ObjectInputStream(fis)) {
+//            Map<UUID, Message> loadChannels = (Map<UUID, Message>) ois.readObject();
+//            messages.clear(); // 한 번 비우고
+//            messages.putAll(loadChannels); // 불러온다.(기존에 있던 데이터까지 같이 로드될 수 있기 때문에)
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+//
+//    public UUID findByContent(String content) {
+//        for (Map.Entry<UUID, Message> message : messages.entrySet()) {
+//            if (message.getValue().getContent().equals(content)) {
+//                return message.getKey();
+//            }
+//        }
+//        return null;
+//    }
 
-    // 저장 메서드 save(직렬화)
-    public void save() {
-        try (FileOutputStream fos = new FileOutputStream("messages.ser");
-             ObjectOutputStream oos = new ObjectOutputStream(fos);
-        ) {
-            oos.writeObject(messages);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // 불러오기 메서드 load(역직렬화)
-    public void load() {
-        try (FileInputStream fis = new FileInputStream("messages.ser");
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
-            Map<UUID, Message> loadChannels = (Map<UUID, Message>) ois.readObject();
-            messages.clear(); // 한 번 비우고
-            messages.putAll(loadChannels); // 불러온다.(기존에 있던 데이터까지 같이 로드될 수 있기 때문에)
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public UUID findByContent(String content) {
-        for (Map.Entry<UUID, Message> message : messages.entrySet()) {
-            if (message.getValue().getContent().equals(content)) {
-                return message.getKey();
-            }
-        }
-        return null;
-    }
-
+    private final MessageRepository messageRepository;
+    public FileMessageService(MessageRepository messageRepository) { this.messageRepository = messageRepository; }
 
     // Create
     @Override
     public void createMessage(Message message) {
-        messages.put(message.getId(), message);
-        save();
+        // 저장 로직 분리 전
+//        messages.put(message.getId(), message);
+//        save();
+//        System.out.println("메시지를 생성하였습니다.");
+//        System.out.println();
+
+        // 저장 로직 분리 후
+        messageRepository.insertMessage(message);
         System.out.println("메시지를 생성하였습니다.");
         System.out.println();
     }
@@ -66,12 +75,22 @@ public class FileMessageService implements MessageService {
     // Read
     @Override
     public void readMessageAll(UUID id) {
-        load();
+        // 저장 로직 분리 전
+//        load();
+//
+//        // NPE 방지
+//        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
+//        else {
+//            Message message = messages.get(id);
+//            System.out.println("=====메시지 정보=====\n" + message);
+//        }
+//        System.out.println();
 
+        // 저장 로직 분리 후
         // NPE 방지
-        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
+        if (!messageRepository.isExistsMessage(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
         else {
-            Message message = messages.get(id);
+            Message message = messageRepository.findMessage(id);
             System.out.println("=====메시지 정보=====\n" + message);
         }
         System.out.println();
@@ -80,16 +99,29 @@ public class FileMessageService implements MessageService {
     // Update
     @Override
     public void updateMessageContent(UUID id, String newContent) {
-        load();
+        // 저장 로직 분리 전
+//        load();
+//
+//        // NPE 방지
+//        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
+//        else {
+//            Message message = messages.get(id);
+//            System.out.println("수정 전 메시지 : " + message.getContent());
+//            message.updateContent(newContent);
+//            System.out.println("수정 후 메시지 : " + message.getContent());
+//            save();
+//        }
+//        System.out.println();
 
+        // 저장 로직 분리 후
         // NPE 방지
-        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
+        if (!messageRepository.isExistsMessage(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
         else {
-            Message message = messages.get(id);
+            Message message = messageRepository.findMessage(id);
             System.out.println("수정 전 메시지 : " + message.getContent());
             message.updateContent(newContent);
             System.out.println("수정 후 메시지 : " + message.getContent());
-            save();
+            messageRepository.updateMessage(message);
         }
         System.out.println();
     }
@@ -97,15 +129,26 @@ public class FileMessageService implements MessageService {
     // Delete
     @Override
     public void deleteMessage(UUID id) {
-        load();
+        // 저장 로직 분리 전
+//        load();
+//
+//        // NPE 방지
+//        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
+//        else {
+//            Message message = messages.get(id);
+//            System.out.println("메시지 \"" + message.getContent() + "\"이(가) 삭제되었습니다.");
+//            messages.remove(id);
+//            save();
+//        }
+//        System.out.println();
 
+        // 저장 로직 분리 후
         // NPE 방지
-        if (!messages.containsKey(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
+        if (!messageRepository.isExistsMessage(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
         else {
-            Message message = messages.get(id);
+            Message message = messageRepository.findMessage(id);
             System.out.println("메시지 \"" + message.getContent() + "\"이(가) 삭제되었습니다.");
-            messages.remove(id);
-            save();
+            messageRepository.deleteMessage(id);
         }
         System.out.println();
     }

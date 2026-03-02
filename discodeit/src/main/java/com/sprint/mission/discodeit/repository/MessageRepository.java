@@ -8,6 +8,7 @@ public interface MessageRepository {
     void insertMessage(Message message);
     boolean isExistsMessage(UUID id);
     Message findMessage(UUID id);
+    void updateMessage(Message message);
     void deleteMessage(UUID id);
 
 }

@@ -1,0 +1,78 @@
+package com.sprint.mission.discodeit.repository.file;
+
+import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.repository.MessageRepository;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class FileMessageRepository implements MessageRepository {
+    private final Map<UUID, Message> messages = new HashMap<>();
+    public FileMessageRepository() {
+        load();
+    }
+
+    // 저장 메서드 save(직렬화)
+    public void save() {
+        try (FileOutputStream fos = new FileOutputStream("messages.ser");
+             ObjectOutputStream oos = new ObjectOutputStream(fos);
+        ) {
+            oos.writeObject(messages);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 불러오기 메서드 load(역직렬화)
+    public void load() {
+        try (FileInputStream fis = new FileInputStream("messages.ser");
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            Map<UUID, Message> loadChannels = (Map<UUID, Message>) ois.readObject();
+            messages.clear(); // 한 번 비우고
+            messages.putAll(loadChannels); // 불러온다.(기존에 있던 데이터까지 같이 로드될 수 있기 때문에)
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public UUID findByContent(String content) {
+        for (Map.Entry<UUID, Message> message : messages.entrySet()) {
+            if (message.getValue().getContent().equals(content)) {
+                return message.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void insertMessage(Message message) {
+        messages.put(message.getId(), message);
+        save();
+    }
+
+    @Override
+    public boolean isExistsMessage(UUID id) {
+        return messages.containsKey(id);
+    }
+
+    @Override
+    public Message findMessage(UUID id) {
+        return messages.get(id);
+    }
+
+    @Override
+    public void updateMessage(Message message) {
+        messages.put(message.getId(), message);
+        save();
+    }
+
+    @Override
+    public void deleteMessage(UUID id) {
+        messages.remove(id);
+        save();
+    }
+}
