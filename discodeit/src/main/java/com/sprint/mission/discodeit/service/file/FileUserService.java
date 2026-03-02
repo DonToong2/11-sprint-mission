@@ -58,10 +58,10 @@ public class FileUserService implements UserService {
 //        return null;
 //    }
 
-    private final FileUserRepository userRepository;
+    private final UserRepository userRepository;
 
     public FileUserService(UserRepository userRepository) {
-        this.userRepository = (FileUserRepository) userRepository;
+        this.userRepository = userRepository;
     }
 
     // Create
@@ -75,7 +75,6 @@ public class FileUserService implements UserService {
 
         // 저장 로직 분리 후
         userRepository.insertUser(user);
-        userRepository.save();
         System.out.println("유저를 추가하였습니다.");
         System.out.println();
     }
@@ -96,8 +95,6 @@ public class FileUserService implements UserService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        userRepository.load();
-
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -127,8 +124,6 @@ public class FileUserService implements UserService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        userRepository.load();
-
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -136,7 +131,7 @@ public class FileUserService implements UserService {
             System.out.println("수정 전 유저 이름 : " + user.getName());
             user.updateName(newName);
             System.out.println("수정 후 유저 이름 : " + user.getName());
-            userRepository.save();
+            userRepository.updateUser(user);
         }
         System.out.println();
     }
@@ -158,8 +153,6 @@ public class FileUserService implements UserService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        userRepository.load();
-
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -167,7 +160,7 @@ public class FileUserService implements UserService {
             System.out.println("수정 전 유저 별명 : " + user.getNickname());
             user.updateNickname(newNickname);
             System.out.println("수정 후 유저 별명 : " + user.getNickname());
-            userRepository.save();
+            userRepository.updateUser(user);
         }
         System.out.println();
     }
@@ -187,8 +180,6 @@ public class FileUserService implements UserService {
 //            save();
 
         // 저장 로직 분리 후
-        userRepository.load();
-
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -196,7 +187,7 @@ public class FileUserService implements UserService {
             System.out.println("수정 전 유저 이메일 : " + user.getEmail());
             user.updateEmail(newEmail);
             System.out.println("수정 후 유저 이메일 : " + user.getEmail());
-            userRepository.save();
+            userRepository.updateUser(user);
         }
         System.out.println();
     }
@@ -218,8 +209,6 @@ public class FileUserService implements UserService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        userRepository.load();
-
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -227,7 +216,7 @@ public class FileUserService implements UserService {
             System.out.println("수정 전 유저 전화번호 : " + user.getPhoneNumber());
             user.updatePhoneNumber(newPhoneNumber);
             System.out.println("수정 후 유저 전화번호 : " + user.getPhoneNumber());
-            userRepository.save();
+            userRepository.updateUser(user);
         }
         System.out.println();
     }
@@ -249,8 +238,6 @@ public class FileUserService implements UserService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        userRepository.load();
-
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -258,7 +245,7 @@ public class FileUserService implements UserService {
             System.out.println("수정 전 유저 프로필 이미지 : " + user.getProfileImageURL());
             user.updateProfileImageURL(newProfileImageURL);
             System.out.println("수정 후 유저 프로필 이미지 : " + user.getProfileImageURL());
-            userRepository.save();
+            userRepository.updateUser(user);
         }
         System.out.println();
     }
@@ -280,8 +267,6 @@ public class FileUserService implements UserService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        userRepository.load();
-
         // NPE 방지
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }
         else {
@@ -289,7 +274,7 @@ public class FileUserService implements UserService {
             System.out.println("수정 전 유저 상태 : " + user.getUserStatus());
             user.updateStatus(newStatus);
             System.out.println("수정 후 유저 상태 : " + user.getUserStatus());
-            userRepository.save();
+            userRepository.updateUser(user);
         }
         System.out.println();
     }
@@ -310,13 +295,12 @@ public class FileUserService implements UserService {
 //    }
 
         // 저장 로직 분리 후
-        userRepository.load();
         if (!userRepository.isExistsUser(id)) { System.out.println("해당 유저는 존재하지 않습니다."); }
         else {
             User user = userRepository.findUser(id);
             userRepository.deleteUser(id);
             System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
-            userRepository.save();
+            userRepository.updateUser(user);
         }
         System.out.println();
     }

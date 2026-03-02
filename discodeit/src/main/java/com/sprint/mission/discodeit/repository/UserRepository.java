@@ -9,5 +9,6 @@ public interface UserRepository {
     void insertUser(User user);
     boolean isExistsUser(UUID id);
     User findUser(UUID id);
+    void updateUser(User user);
     void deleteUser(UUID id);
 }

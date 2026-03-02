@@ -12,9 +12,12 @@ public class FileUserRepository implements UserRepository {
 
     // User들을 담을 Map 생성
     private final Map<UUID, User> users = new HashMap<>(); // 저장소
+    public FileUserRepository() {
+        load();
+    }
 
     // 저장 메서드 save(직렬화)
-    public void save() {
+    private void save() {
         try (FileOutputStream fos = new FileOutputStream("users.ser");
              ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
@@ -27,7 +30,7 @@ public class FileUserRepository implements UserRepository {
     }
 
     // 불러오기 메서드 load(역직렬화)
-    public void load() {
+    private void load() {
         try (FileInputStream fis = new FileInputStream("users.ser");
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Map<UUID, User> loadUsers = (Map<UUID, User>) ois.readObject();
@@ -41,7 +44,6 @@ public class FileUserRepository implements UserRepository {
 
     // 닉네임으로 UUID 호출
     public UUID findIdByNickname(String nickname) {
-        load();
         for (Map.Entry<UUID, User> user : users.entrySet()) {
             if (user.getValue().getNickname().equals(nickname)) {
                 return user.getKey();
@@ -53,6 +55,12 @@ public class FileUserRepository implements UserRepository {
     @Override
     public void insertUser(User user) {
         users.put(user.getId(), user);
+        save();
+    }
+
+    public void updateUser(User user) {
+        users.put(user.getId(), user);
+        save();
     }
 
     @Override
@@ -68,5 +76,6 @@ public class FileUserRepository implements UserRepository {
     @Override
     public void deleteUser(UUID id) {
         users.remove(id);
+        save();
     }
 }
