@@ -300,7 +300,6 @@ public class FileUserService implements UserService {
             User user = userRepository.findUser(id);
             userRepository.deleteUser(id);
             System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
-            userRepository.updateUser(user);
         }
         System.out.println();
     }
