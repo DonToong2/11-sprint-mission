@@ -20,6 +20,14 @@ public class Channel implements Serializable {
     private String name; // 채널 이름
     private List<String> members; // 채널 멤버
 
+    // 코드 탬플릿에 맞게 필드 추가
+    private ChannelType channelType;
+    private String description;
+
+    public enum ChannelType {
+        PUBLIC, PRIVATE;
+    }
+
     // 생성자
     public Channel(String group, String name, List<String> members) {
         this.id = UUID.randomUUID();
@@ -28,6 +36,16 @@ public class Channel implements Serializable {
         this.group = group;
         this.name = name;
         this.members = members;
+    }
+
+    // 코드 탬플릿에 적합한 생성자 오버로딩
+    public Channel(ChannelType channelType, String name, String description) {
+        this.id = UUID.randomUUID();
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = this.createdAt;
+        this.channelType = channelType;
+        this.name = name;
+        this.description = description;
     }
 
     // getter

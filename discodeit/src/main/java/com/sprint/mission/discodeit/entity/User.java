@@ -22,6 +22,9 @@ public class User implements Serializable {
     //private boolean isOneLine;
     private Status status; // 디스코드 접속 상태(온라인, 자리비움, 방해 금지, 오프라인)
 
+    // 코드 탬플릿에 맞게 필드 추가
+    private String password;
+
 
     public enum Status {
         ONLINE("온라인"), AWAY("자리비움"), DO_NOT_DISTURB("방해 금지"), OFFLINE("오프라인");
@@ -50,6 +53,16 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         this.profileImageURL = profileImageURL;
         this.status = status;
+    }
+
+    // 생성자 오버로딩하여 코드 탬플릿에 적합한 생성자 생성
+    public User(String name, String email, String password) {
+        this.id = UUID.randomUUID();
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = this.createdAt;
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
     // get메서드
