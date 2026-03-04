@@ -5,8 +5,9 @@ import com.sprint.mission.discodeit.entity.User;
 import java.util.UUID;
 
 public interface UserService {
-
-    void createUser(User user);
+    // 코드 탬플릿에 맞게 create 메서드 수정
+    User create(String name, String email, String password);
+//    void createUser(User user);
 
     void readUserAll(UUID id);
 

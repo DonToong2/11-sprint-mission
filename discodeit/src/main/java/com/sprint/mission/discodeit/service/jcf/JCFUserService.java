@@ -25,16 +25,19 @@ public class JCFUserService implements UserService {
 
     // Create
     @Override
-    public void createUser(User user) {
+    public User create(String name, String email, String password) {
         // 저장 로직 분리 전
 //        users.put(user.getId(), user);
 //        System.out.println("유저를 추가하였습니다.");
 //        System.out.println();
 
         // 저장 로직 분리 후
+        User user = new User(name, email, password);
         userRepository.insertUser(user);
         System.out.println("유저를 추가하였습니다.");
         System.out.println();
+
+        return user;
     }
 
 

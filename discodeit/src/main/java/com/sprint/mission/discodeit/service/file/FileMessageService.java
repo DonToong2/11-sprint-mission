@@ -2,7 +2,10 @@ package com.sprint.mission.discodeit.service.file;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 
 import java.io.*;
@@ -55,11 +58,19 @@ public class FileMessageService implements MessageService {
 //    }
 
     private final MessageRepository messageRepository;
-    public FileMessageService(MessageRepository messageRepository) { this.messageRepository = messageRepository; }
+    private final ChannelRepository channelRepository;
+    private final UserRepository userRepository;
+    public FileMessageService(MessageRepository messageRepository,
+                              ChannelRepository channelRepository,
+                              UserRepository userRepository) {
+        this.messageRepository = messageRepository;
+        this.channelRepository = channelRepository;
+        this.userRepository = userRepository;
+    }
 
     // Create
     @Override
-    public void createMessage(Message message) {
+    public Message create(String content, UUID channelId, UUID userId) {
         // 저장 로직 분리 전
 //        messages.put(message.getId(), message);
 //        save();
@@ -67,9 +78,14 @@ public class FileMessageService implements MessageService {
 //        System.out.println();
 
         // 저장 로직 분리 후
+        Channel channel = channelRepository.findChannel(channelId);
+        User author = userRepository.findUser(userId);
+        Message message = new Message(content, channel, author);
         messageRepository.insertMessage(message);
         System.out.println("메시지를 생성하였습니다.");
         System.out.println();
+
+        return message;
     }
 
     // Read

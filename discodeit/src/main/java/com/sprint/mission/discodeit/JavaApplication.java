@@ -15,6 +15,9 @@ import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.service.basic.BasicChannelService;
+import com.sprint.mission.discodeit.service.basic.BasicMessageService;
+import com.sprint.mission.discodeit.service.basic.BasicUserService;
 import com.sprint.mission.discodeit.service.file.FileChannelService;
 import com.sprint.mission.discodeit.service.file.FileMessageService;
 import com.sprint.mission.discodeit.service.file.FileUserService;
@@ -33,7 +36,7 @@ public class JavaApplication {
     }
 
     static Channel setupChannel(ChannelService channelService) {
-        Channel channel = channelService.create(ChannelType.PUBLIC, "공지", "공지 채널입니다."); // 채널 공개여부, 채널 이름, 채널 설명
+        Channel channel = channelService.create(Channel.ChannelType.PUBLIC, "공지", "공지 채널입니다."); // 채널 공개여부, 채널 이름, 채널 설명
         return channel;
     }
 
@@ -41,17 +44,24 @@ public class JavaApplication {
         Message message = messageService.create("안녕하세요.", channel.getId(), author.getId()); // 메시지 내용, 채널 id, 작성자(유저) id
         System.out.println("메시지 생성: " + message.getId());
     }
+
     public static void main(String[] args) {
         // =============== 심화 단계 이후(코드 탬플릿 적용) =============== //
 
         // JCF Repository
+        UserRepository userRepository = new JCFUserRepository();
+        ChannelRepository channelRepository = new JCFChannelRepository();
+        MessageRepository messageRepository = new JCFMessageRepository();
 
         // File Repository
+//        UserRepository userRepository = new FileUserRepository();
+//        ChannelRepository channelRepository = new FileChannelRepository();
+//        MessageRepository messageRepository = new FileMessageRepository();
 
         // Basie Service
-        UserService userService;
-        ChannelService channelService;
-        MessageService messageService;
+        UserService userService = new BasicUserService(userRepository);
+        ChannelService channelService = new BasicChannelService(channelRepository);
+        MessageService messageService = new BasicMessageService(messageRepository, channelRepository, userRepository);
 
         // 셋업
         User user = setupUser(userService);

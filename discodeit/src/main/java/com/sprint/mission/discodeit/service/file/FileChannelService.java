@@ -60,7 +60,7 @@ public class FileChannelService implements ChannelService {
 
     // Create
     @Override
-    public void createChannel(Channel channel) {
+    public Channel create(Channel.ChannelType channelType, String name, String description) {
         // 저장 로직 분리 전
 //        channels.put(channel.getId(), channel);
 //        save();
@@ -68,9 +68,11 @@ public class FileChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        channelRepository.insertChannel(channel);
+        Channel channel = new Channel(channelType, name, description);
         System.out.println("채널을 생성하였습니다.");
         System.out.println();
+
+        return channel;
     }
 
     // Read
