@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.UserStatus;
 
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public interface UserService {
     void updateUserEmail(UUID id, String newEmail);
     void updatePhoneNumber(UUID id, String newPhoneNumber);
     void updateUserProfileImageURL(UUID id, String newProfileImageURL);
-    void updateUserStatus(UUID id, User.Status newStatus);
+    void updateUserStatus(UUID id, UserStatus newStatus);
 
     void deleteUser(UUID id);
 }

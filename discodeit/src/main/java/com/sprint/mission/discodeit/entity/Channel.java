@@ -24,10 +24,6 @@ public class Channel implements Serializable {
     private ChannelType channelType;
     private String description;
 
-    public enum ChannelType {
-        PUBLIC, PRIVATE;
-    }
-
     // 생성자
     public Channel(String group, String name, List<String> members) {
         this.id = UUID.randomUUID();

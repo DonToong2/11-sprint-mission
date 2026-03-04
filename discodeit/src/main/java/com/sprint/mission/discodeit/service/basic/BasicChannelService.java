@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 
@@ -15,7 +16,7 @@ public class BasicChannelService implements ChannelService {
 
     // Create
     @Override
-    public Channel create(Channel.ChannelType channelType, String name, String description) {
+    public Channel create(ChannelType channelType, String name, String description) {
         Channel channel = new Channel(channelType, name, description);
         channelRepository.insertChannel(channel);
         System.out.println("채널을 생성하였습니다.");

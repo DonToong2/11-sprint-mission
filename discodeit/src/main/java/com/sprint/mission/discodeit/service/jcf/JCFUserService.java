@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
 
@@ -194,7 +195,7 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public void updateUserStatus(UUID id, User.Status newStatus) {
+    public void updateUserStatus(UUID id, UserStatus newStatus) {
         // 저장 로직 분리 전
 //        // NPE 방지
 //        if (!users.containsKey(id)) { System.out.println("해당 유저가 존재하지 않습니다."); }

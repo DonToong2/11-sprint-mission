@@ -20,30 +20,16 @@ public class User implements Serializable {
     private String phoneNumber; // 사용자 전화번호, 중복 불가
     private String profileImageURL; // 프로필 사진 주소
     //private boolean isOneLine;
-    private Status status; // 디스코드 접속 상태(온라인, 자리비움, 방해 금지, 오프라인)
+    private UserStatus status; // 디스코드 접속 상태(온라인, 자리비움, 방해 금지, 오프라인)
 
     // 코드 탬플릿에 맞게 필드 추가
     private String password;
 
 
-    public enum Status {
-        ONLINE("온라인"), AWAY("자리비움"), DO_NOT_DISTURB("방해 금지"), OFFLINE("오프라인");
-
-        private final String description;
-
-        Status(String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-    }
-
     // 'id', 'createdAt'는 생성자에서 초기화하세요.
     public User(String name, String nickname,
                 String email, String phoneNumber,
-                String profileImageURL, Status status) {
+                String profileImageURL, UserStatus status) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
@@ -102,7 +88,7 @@ public class User implements Serializable {
         this.profileImageURL = profileImageURL;
         update();
     }
-    public void updateStatus(Status status) {
+    public void updateStatus(UserStatus status) {
         this.status = status;
         update();
     }

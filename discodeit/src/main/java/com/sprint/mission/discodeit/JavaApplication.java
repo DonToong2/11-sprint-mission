@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit;
 
 import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
@@ -36,7 +37,7 @@ public class JavaApplication {
     }
 
     static Channel setupChannel(ChannelService channelService) {
-        Channel channel = channelService.create(Channel.ChannelType.PUBLIC, "공지", "공지 채널입니다."); // 채널 공개여부, 채널 이름, 채널 설명
+        Channel channel = channelService.create(ChannelType.PUBLIC, "공지", "공지 채널입니다."); // 채널 공개여부, 채널 이름, 채널 설명
         return channel;
     }
 
@@ -49,14 +50,14 @@ public class JavaApplication {
         // =============== 심화 단계 이후(코드 탬플릿 적용) =============== //
 
         // JCF Repository
-//        UserRepository userRepository = new JCFUserRepository();
-//        ChannelRepository channelRepository = new JCFChannelRepository();
-//        MessageRepository messageRepository = new JCFMessageRepository();
+        UserRepository userRepository = new JCFUserRepository();
+        ChannelRepository channelRepository = new JCFChannelRepository();
+        MessageRepository messageRepository = new JCFMessageRepository();
 
         // File Repository
-        UserRepository userRepository = new FileUserRepository();
-        ChannelRepository channelRepository = new FileChannelRepository();
-        MessageRepository messageRepository = new FileMessageRepository();
+//        UserRepository userRepository = new FileUserRepository();
+//        ChannelRepository channelRepository = new FileChannelRepository();
+//        MessageRepository messageRepository = new FileMessageRepository();
 
         // Basie Service
         UserService userService = new BasicUserService(userRepository);

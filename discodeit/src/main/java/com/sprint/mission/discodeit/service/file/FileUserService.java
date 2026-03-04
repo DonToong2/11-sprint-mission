@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.file;
 
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.service.UserService;
@@ -254,7 +255,7 @@ public class FileUserService implements UserService {
     }
 
     @Override
-    public void updateUserStatus(UUID id, User.Status newStatus) {
+    public void updateUserStatus(UUID id, UserStatus newStatus) {
         // 저장 로직 분리 전
 //        load();
 //
