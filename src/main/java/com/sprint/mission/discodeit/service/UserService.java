@@ -1,7 +1,6 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.entity.UserStatus;
 
 import java.util.UUID;
 
@@ -10,14 +9,19 @@ public interface UserService {
     User create(String name, String email, String password);
 //    void createUser(User user);
 
-    void readUserAll(UUID id);
+    User readAll(UUID id);
 
-    void updateUserName(UUID id, String newName);
-    void updateUserNickname(UUID id, String newNickname);
-    void updateUserEmail(UUID id, String newEmail);
-    void updatePhoneNumber(UUID id, String newPhoneNumber);
-    void updateUserProfileImageURL(UUID id, String newProfileImageURL);
-    void updateUserStatus(UUID id, UserStatus newStatus);
+    User updateName(UUID id, String newName);
 
-    void deleteUser(UUID id);
+    User updateNickname(UUID id, String newNickname);
+
+    User updateEmail(UUID id, String newEmail);
+
+    User updatePhoneNumber(UUID id, String newPhoneNumber);
+
+    User updateProfileImageURL(UUID id, String newProfileImageURL);
+
+    User updateStatus(UUID id, User.UserStatus newStatus);
+
+    void delete(UUID id);
 }

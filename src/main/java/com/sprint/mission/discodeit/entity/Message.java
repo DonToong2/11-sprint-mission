@@ -22,7 +22,8 @@ public class Message implements Serializable {
     private final Channel channel; // 어떤 채널에 들어가는 메시지인지, Channel과 연결됨
     private final User author; // 어떤 유저가 작성한 메시지인지, User과 연결됨
 
-    public Message(String content, Channel channel, User author) {
+    // 정적 팩토리 메서드
+    private Message(String content, Channel channel, User author) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
@@ -31,6 +32,11 @@ public class Message implements Serializable {
 
         this.channel = channel;
         this.author = author;
+    }
+
+    // 정적 팩토리 메서드
+    public static Message create(String content, Channel channel, User author) {
+        return new Message(content, channel, author);
     }
 
     // getter

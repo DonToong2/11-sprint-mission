@@ -9,9 +9,9 @@ public interface MessageService {
     Message create(String content, UUID channelId, UUID userId);
 //    void createMessage(Message message);
 
-    void readMessageAll(UUID id);
+    Message readAll(UUID id);
 
-    void updateMessageContent(UUID id, String newContent);
+    Message updateContent(UUID id, String newContent);
 
-    void deleteMessage(UUID id);
+    void delete(UUID id);
 }

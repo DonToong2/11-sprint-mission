@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class JCFMessageRepository implements MessageRepository {
@@ -12,13 +13,25 @@ public class JCFMessageRepository implements MessageRepository {
     private final Map<UUID, Message> messages = new HashMap<>();
 
     @Override
-    public void insertMessage(Message message) { messages.put(message.getId(), message); }
+    public void insert(Message message) {
+        messages.put(message.getId(), message);
+    }
+
     @Override
-    public boolean isExistsMessage(UUID id) { return messages.containsKey(id); }
+    public Message findById(UUID id) {
+        Message message = messages.get(id);
+        if (message == null) {
+            throw new NoSuchElementException("해당 메시지가 존재하지 않습니다. id : " + id);
+        }
+        return messages.get(id);
+    }
+
     @Override
-    public Message findMessage(UUID id) { return messages.get(id); }
+    public void update(Message message) {
+    }
+
     @Override
-    public void updateMessage(Message message) { }
-    @Override
-    public void deleteMessage(UUID id) { messages.remove(id); }
+    public void delete(UUID id) {
+        messages.remove(id);
+    }
 }

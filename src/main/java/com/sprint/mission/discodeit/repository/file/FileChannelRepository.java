@@ -6,10 +6,12 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class FileChannelRepository implements ChannelRepository {
     private final Map<UUID, Channel> channels = new HashMap<>();
+
     public FileChannelRepository() {
         load();
     }
@@ -20,8 +22,7 @@ public class FileChannelRepository implements ChannelRepository {
              ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
             oos.writeObject(channels);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -50,27 +51,28 @@ public class FileChannelRepository implements ChannelRepository {
     }
 
     @Override
-    public void insertChannel(Channel channel) {
+    public void insert(Channel channel) {
         channels.put(channel.getId(), channel);
         save();
     }
 
     @Override
-    public boolean isExistsChannel(UUID id) {
-        return channels.containsKey(id);
+    public Channel findById(UUID id) {
+        Channel channel = channels.get(id);
+        if (channel == null) {
+            throw new NoSuchElementException("해당 채널은 존재하지 않습니다. id : " + id);
+        }
+        return channel;
     }
 
     @Override
-    public Channel findChannel(UUID id) { return channels.get(id); }
-
-    @Override
-    public void updateChannel(Channel channel) {
+    public void update(Channel channel) {
         channels.put(channel.getId(), channel);
         save();
     }
 
     @Override
-    public void deleteChannel(UUID id) {
+    public void delete(UUID id) {
         channels.remove(id);
         save();
     }

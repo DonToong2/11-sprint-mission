@@ -27,10 +27,10 @@ public class BasicMessageService implements MessageService {
     // Create
     @Override
     public Message create(String content, UUID channelId, UUID userId) {
-        Channel channel = channelRepository.findChannel(channelId);
+        Channel channel = channelRepository.findById(channelId);
         User author = userRepository.findUser(userId);
-        Message message = new Message(content, channel, author);
-        messageRepository.insertMessage(message);
+        Message message = Message.create(content, channel, author);
+        messageRepository.insert(message);
         System.out.println("메시지를 생성하였습니다.");
         System.out.println();
 
@@ -39,41 +39,33 @@ public class BasicMessageService implements MessageService {
 
     // Read
     @Override
-    public void readMessageAll(UUID id) {
-        // NPE 방지
-        if (!messageRepository.isExistsMessage(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
-        else {
-            Message message = messageRepository.findMessage(id);
-            System.out.println("=====메시지 정보=====\n" + message);
-        }
+    public Message readAll(UUID id) {
+        Message message = messageRepository.findById(id);
+        System.out.println("=====메시지 정보=====\n" + message);
         System.out.println();
+
+        return message;
     }
 
     // Update
     @Override
-    public void updateMessageContent(UUID id, String newContent) {
-        // NPE 방지
-        if (!messageRepository.isExistsMessage(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
-        else {
-            Message message = messageRepository.findMessage(id);
-            System.out.println("수정 전 메시지 : " + message.getContent());
-            message.updateContent(newContent);
-            System.out.println("수정 후 메시지 : " + message.getContent());
-            messageRepository.updateMessage(message);
-        }
+    public Message updateContent(UUID id, String newContent) {
+        Message message = messageRepository.findById(id);
+        System.out.println("수정 전 메시지 : " + message.getContent());
+        message.updateContent(newContent);
+        System.out.println("수정 후 메시지 : " + message.getContent());
+        messageRepository.update(message);
         System.out.println();
+
+        return message;
     }
 
     // Delete
     @Override
-    public void deleteMessage(UUID id) {
-        // NPE 방지
-        if (!messageRepository.isExistsMessage(id)) { System.out.println("해당 메시지가 존재하지 않습니다."); }
-        else {
-            Message message = messageRepository.findMessage(id);
-            System.out.println("메시지 \"" + message.getContent() + "\"이(가) 삭제되었습니다.");
-            messageRepository.deleteMessage(id);
-        }
+    public void delete(UUID id) {
+        Message message = messageRepository.findById(id);
+        System.out.println("메시지 \"" + message.getContent() + "\"이(가) 삭제되었습니다.");
+        messageRepository.delete(id);
         System.out.println();
     }
 }

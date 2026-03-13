@@ -6,10 +6,12 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class FileMessageRepository implements MessageRepository {
     private final Map<UUID, Message> messages = new HashMap<>();
+
     public FileMessageRepository() {
         load();
     }
@@ -20,8 +22,7 @@ public class FileMessageRepository implements MessageRepository {
              ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
             oos.writeObject(messages);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -49,29 +50,28 @@ public class FileMessageRepository implements MessageRepository {
     }
 
     @Override
-    public void insertMessage(Message message) {
+    public void insert(Message message) {
         messages.put(message.getId(), message);
         save();
     }
 
     @Override
-    public boolean isExistsMessage(UUID id) {
-        return messages.containsKey(id);
-    }
-
-    @Override
-    public Message findMessage(UUID id) {
+    public Message findById(UUID id) {
+        Message message = messages.get(id);
+        if (message == null) {
+            throw new NoSuchElementException("해당 메시지가 존재하지 않습니다. id : " + id);
+        }
         return messages.get(id);
     }
 
     @Override
-    public void updateMessage(Message message) {
+    public void update(Message message) {
         messages.put(message.getId(), message);
         save();
     }
 
     @Override
-    public void deleteMessage(UUID id) {
+    public void delete(UUID id) {
         messages.remove(id);
         save();
     }

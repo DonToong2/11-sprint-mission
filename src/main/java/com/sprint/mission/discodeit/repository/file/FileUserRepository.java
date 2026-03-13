@@ -6,12 +6,14 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class FileUserRepository implements UserRepository {
 
     // User들을 담을 Map 생성
     private final Map<UUID, User> users = new HashMap<>(); // 저장소
+
     public FileUserRepository() {
         load();
     }
@@ -22,8 +24,7 @@ public class FileUserRepository implements UserRepository {
              ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
             oos.writeObject(users);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -53,28 +54,36 @@ public class FileUserRepository implements UserRepository {
     }
 
     @Override
-    public void insertUser(User user) {
+    public void insert(User user) {
         users.put(user.getId(), user);
         save();
     }
 
-    public void updateUser(User user) {
+
+    @Override
+    public User findById(UUID id) {
+        // containsKey(해당 키가 있는지 조회)와 get(조회)으로 2번 조회(비효율적)
+//        if (!users.containsKey(id)) {
+//            throw new NoSuchElementException("해당 유저는 존재하지 않습니다. id : " + id);
+//        }
+//        return users.get(id);
+
+        // get으로 한번에 조회
+        User user = users.get(id);
+        if (user == null) {
+            throw new NoSuchElementException("해당 유저는 존재하지 않습니다. id : " + id);
+        }
+        return user;
+    }
+
+    @Override
+    public void update(User user) {
         users.put(user.getId(), user);
         save();
     }
 
     @Override
-    public boolean isExistsUser(UUID id) {
-        return users.containsKey(id);
-    }
-
-    @Override
-    public User findUser(UUID id) {
-        return users.get(id);
-    }
-
-    @Override
-    public void deleteUser(UUID id) {
+    public void delete(UUID id) {
         users.remove(id);
         save();
     }

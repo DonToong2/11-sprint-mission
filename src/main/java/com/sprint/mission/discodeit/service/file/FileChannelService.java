@@ -1,13 +1,12 @@
 package com.sprint.mission.discodeit.service.file;
 
 import com.sprint.mission.discodeit.entity.Channel;
-import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
-import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class FileChannelService implements ChannelService {
     // 기존 JCF Service의 경우 프로그램 종료 시 메모리에서만 존재하기 때문에 프로그램 종료 시 동시에 데이터가 사라진다.
@@ -57,11 +56,13 @@ public class FileChannelService implements ChannelService {
 
     private final ChannelRepository channelRepository;
 
-    public FileChannelService(ChannelRepository channelRepository) { this.channelRepository = channelRepository; }
+    public FileChannelService(ChannelRepository channelRepository) {
+        this.channelRepository = channelRepository;
+    }
 
     // Create
     @Override
-    public Channel create(ChannelType channelType, String name, String description) {
+    public Channel create(Channel.ChannelType channelType, String name, String description) {
         // 저장 로직 분리 전
 //        channels.put(channel.getId(), channel);
 //        save();
@@ -69,7 +70,7 @@ public class FileChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        Channel channel = new Channel(channelType, name, description);
+        Channel channel = Channel.create(channelType, name, description);
         System.out.println("채널을 생성하였습니다.");
         System.out.println();
 
@@ -78,7 +79,7 @@ public class FileChannelService implements ChannelService {
 
     // Read
     @Override
-    public void readChannelAll(UUID id) {
+    public Channel readAll(UUID id) {
         // 저장 로직 분리 전
 //        load();
 //
@@ -91,18 +92,16 @@ public class FileChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        // NPE 방지
-        if (!channelRepository.isExistsChannel(id)) { System.out.println("해당 채널은 존재하지 않습니다."); }
-        else {
-            Channel channel = channelRepository.findChannel(id);
-            System.out.println("=====채널 정보=====\n" + channel);
-        }
+        Channel channel = channelRepository.findById(id);
+        System.out.println("=====채널 정보=====\n" + channel);
         System.out.println();
+
+        return channel;
     }
 
     // Update
     @Override
-    public void updateChannelName(UUID id, String newName) {
+    public Channel updateName(UUID id, String newName) {
         // 저장 로직 분리 전
 //        load();
 //
@@ -118,20 +117,18 @@ public class FileChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        // NPE 방지
-        if (!channelRepository.isExistsChannel(id)) { System.out.println("해당 채널은 존재하지 않습니다."); }
-        else {
-            Channel channel = channelRepository.findChannel(id);
-            System.out.println("수정 전 채널 이름 : " + channel.getName());
-            channel.updateName(newName);
-            System.out.println("수정 후 채널 이름 : " + channel.getName());
-            channelRepository.updateChannel(channel);
-        }
+        Channel channel = channelRepository.findById(id);
+        System.out.println("수정 전 채널 이름 : " + channel.getName());
+        channel.updateName(newName);
+        System.out.println("수정 후 채널 이름 : " + channel.getName());
+        channelRepository.update(channel);
         System.out.println();
+
+        return channel;
     }
 
     @Override
-    public void updateChannelGroup(UUID id, String newGroup) {
+    public Channel updateGroup(UUID id, String newGroup) {
         // 저장 로직 분리 전
 //        load();
 //
@@ -147,20 +144,18 @@ public class FileChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        // NPE 방지
-        if (!channelRepository.isExistsChannel(id)) { System.out.println("해당 채널은 존재하지 않습니다."); }
-        else {
-            Channel channel = channelRepository.findChannel(id);
-            System.out.println("수정 전 속한 채널 그룹 : " + channel.getGroup());
-            channel.updateGroup(newGroup);
-            System.out.println("수정 후 속한 채널 그룹 : " + channel.getGroup());
-            channelRepository.updateChannel(channel);
-        }
+        Channel channel = channelRepository.findById(id);
+        System.out.println("수정 전 속한 채널 그룹 : " + channel.getGroup());
+        channel.updateGroup(newGroup);
+        System.out.println("수정 후 속한 채널 그룹 : " + channel.getGroup());
+        channelRepository.update(channel);
         System.out.println();
+
+        return channel;
     }
 
     @Override
-    public void updateChannelMembersAdd(UUID id, String addMember) {
+    public Channel updateMembersAdd(UUID id, String addMember) {
         // 저장 로직 분리 전
 //        load();
 //
@@ -178,22 +173,20 @@ public class FileChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        // NPE 방지
-        if (!channelRepository.isExistsChannel(id)) { System.out.println("해당 채널은 존재하지 않습니다."); }
-        else {
-            Channel channel = channelRepository.findChannel(id);
-            List<String> members = new ArrayList<>(channel.getMembers());
-            System.out.println("수정 전 채널 멤버 : " + channel.getMembers());
-            members.add(addMember);
-            channel.updateMember(members);
-            System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
-            channelRepository.updateChannel(channel);
-        }
+        Channel channel = channelRepository.findById(id);
+        List<String> members = new ArrayList<>(channel.getMembers());
+        System.out.println("수정 전 채널 멤버 : " + channel.getMembers());
+        members.add(addMember);
+        channel.updateMember(members);
+        System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
+        channelRepository.update(channel);
         System.out.println();
+
+        return channel;
     }
 
     @Override
-    public void updateChannelMembersRemove(UUID id, String removeMember) {
+    public Channel updateMembersRemove(UUID id, String removeMember) {
         // 저장 로직 분리 전
 //        load();
 //
@@ -211,23 +204,22 @@ public class FileChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        // NPE 방지
-        if (!channelRepository.isExistsChannel(id)) { System.out.println("해당 채널은 존재하지 않습니다."); }
-        else {
-            Channel channel = channelRepository.findChannel(id);
-            List<String> members = new ArrayList<>(channel.getMembers());
-            System.out.println("수정 전 채널 멤버 : " + channel.getMembers());
-            members.remove(removeMember);
-            channel.updateMember(members);
-            System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
-            channelRepository.updateChannel(channel);
-        }
+        // 채널이 존재하는지 확인하는 예외처리
+        Channel channel = channelRepository.findById(id);
+        List<String> members = new ArrayList<>(channel.getMembers());
+        System.out.println("수정 전 채널 멤버 : " + channel.getMembers());
+        members.remove(removeMember);
+        channel.updateMember(members);
+        System.out.println("수정 후 채널 멤버 : " + channel.getMembers());
+        channelRepository.update(channel);
         System.out.println();
+
+        return channel;
     }
 
     // Delete
     @Override
-    public void deleteChannel(UUID id) {
+    public void delete(UUID id) {
         // 저장 로직 분리 전
 //        load();
 //
@@ -242,13 +234,9 @@ public class FileChannelService implements ChannelService {
 //        System.out.println();
 
         // 저장 로직 분리 후
-        // NPE 방지
-        if (!channelRepository.isExistsChannel(id)) { System.out.println("해당 채널은 존재하지 않습니다."); }
-        else {
-            Channel channel = channelRepository.findChannel(id);
-            System.out.println("채널" + channel.getName() + "이(가) 삭제되었습니다.");
-            channelRepository.deleteChannel(id);
-        }
+        Channel channel = channelRepository.findById(id);
+        System.out.println("채널" + channel.getName() + "이(가) 삭제되었습니다.");
+        channelRepository.delete(id);
         System.out.println();
     }
 }

@@ -25,6 +25,19 @@ public class User implements Serializable {
     // 코드 탬플릿에 맞게 필드 추가
     private String password;
 
+    public enum UserStatus {
+        ONLINE("온라인"), AWAY("자리비움"), DO_NOT_DISTURB("방해 금지"), OFFLINE("오프라인");
+
+        private final String description;
+
+        UserStatus(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
 
     // 'id', 'createdAt'는 생성자에서 초기화하세요.
     public User(String name, String nickname,
@@ -41,8 +54,9 @@ public class User implements Serializable {
         this.status = status;
     }
 
+    // 정적 팩토리 메서드
     // 생성자 오버로딩하여 코드 탬플릿에 적합한 생성자 생성
-    public User(String name, String email, String password) {
+    private User(String name, String email, String password) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
@@ -51,17 +65,43 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    // get메서드
-    public UUID getId() { return id; }
-    public long getCreatedAt() { return createdAt; } // 만든 시간
-    public long getUpdatedAt() { return updatedAt; } // 수정 시간
+    // 정적 팩토리 메서드
+    public static User create(String name, String email, String password) {
+        return new User(name, email, password);
+    }
 
-    public String getName() { return name; }
-    public String getNickname() { return nickname; }
-    public String getEmail() { return email; }
-    public String getPhoneNumber() { return phoneNumber; }
-    public String getProfileImageURL() { return profileImageURL; }
-    public String getUserStatus() { return status.getDescription(); }
+    // get메서드
+    public UUID getId() {
+        return id;
+    }
+    public long getCreatedAt() {
+        return createdAt;
+    }
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public String getNickname() {
+        return nickname;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+    public String getProfileImageURL() {
+        return profileImageURL;
+    }
+    public String getUserStatus() {
+        return status.getDescription();
+    }
+    public String getPassword() {
+        return password;
+    }
 
     // update메서드
     public void update() {
@@ -92,6 +132,11 @@ public class User implements Serializable {
         this.status = status;
         update();
     }
+    public void updatePassword(String password) {
+        this.password = password;
+        update();
+    }
+
 
 
     @Override

@@ -24,6 +24,10 @@ public class Channel implements Serializable {
     private ChannelType channelType;
     private String description;
 
+    public enum ChannelType {
+        PUBLIC, PRIVATE;
+    }
+
     // 생성자
     public Channel(String group, String name, List<String> members) {
         this.id = UUID.randomUUID();
@@ -34,8 +38,9 @@ public class Channel implements Serializable {
         this.members = members;
     }
 
+    // 정적 팩토리 메서드
     // 코드 탬플릿에 적합한 생성자 오버로딩
-    public Channel(ChannelType channelType, String name, String description) {
+    private Channel(ChannelType channelType, String name, String description) {
         this.id = UUID.randomUUID();
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
@@ -44,13 +49,30 @@ public class Channel implements Serializable {
         this.description = description;
     }
 
+    // 정적 팩토리 메서드
+    public static Channel create(ChannelType channelType, String name, String description) {
+        return new Channel(channelType, name, description);
+    }
+
     // getter
-    public UUID getId() { return id; }
-    public long getCreatedAt() { return createdAt; }
-    public long getUpdatedAt() { return updatedAt; }
-    public String getGroup() { return group; }
-    public String getName() { return name; }
-    public List<String> getMembers() { return members; }
+    public UUID getId() {
+        return id;
+    }
+    public long getCreatedAt() {
+        return createdAt;
+    }
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+    public String getGroup() {
+        return group;
+    }
+    public String getName() {
+        return name;
+    }
+    public List<String> getMembers() {
+        return members;
+    }
 
     // update(set)
     private void update() {
