@@ -22,7 +22,6 @@ public class User implements Serializable {
     private String nickname; // 사용자 닉네임, 중복 불가
     private String email; // 사용자 이메일, 중복 불가
     private String phoneNumber; // 사용자 전화번호, 중복 불가
-    private String profileImageURL; // 프로필 사진 주소
     //private boolean isOneLine;
     private Status status; // 디스코드 접속 상태(온라인, 자리비움, 방해 금지, 오프라인)
 
@@ -54,7 +53,6 @@ public class User implements Serializable {
         this.nickname = nickname;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.profileImageURL = profileImageURL;
         this.status = status;
     }
 
@@ -97,10 +95,6 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         update();
     }
-    public void updateProfileImageURL(String profileImageURL) {
-        this.profileImageURL = profileImageURL;
-        update();
-    }
     public void updateStatus(Status status) {
         this.status = status;
         update();
@@ -118,6 +112,6 @@ public class User implements Serializable {
                 + "\n 생성 시간 : " + createdAt + ", 최근 수정 시간 : " + updatedAt
                 + "\n 유저 이름 : " + name + ", 유저 닉네임 : " + nickname
                 + "\n 유저 이메일 : " + email + ", 유저 전화번호 : " + phoneNumber
-                + "\n 프로필 사진 URL : " + profileImageURL + ", 유저 상태 : " + status.getDescription();
+                + "\n 유저 상태 : " + status.getDescription();
     }
 }

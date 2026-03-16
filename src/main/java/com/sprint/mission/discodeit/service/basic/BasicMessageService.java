@@ -23,9 +23,9 @@ public class BasicMessageService implements MessageService {
     // Create
     @Override
     public Message create(String content, UUID channelId, UUID userId) {
-        Channel channel = channelRepository.findById(channelId);
-        User author = userRepository.findById(userId);
-        Message message = Message.create(content, channel, author);
+        channelRepository.findById(channelId);
+        userRepository.findById(userId);
+        Message message = Message.create(content, channelId, userId);
         messageRepository.insert(message);
         System.out.println("메시지를 생성하였습니다.");
         System.out.println();
