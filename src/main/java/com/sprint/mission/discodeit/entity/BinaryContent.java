@@ -8,7 +8,7 @@ import java.util.UUID;
 @Getter
 public class BinaryContent {
     // 필드
-    private final UUID id;
+    private final UUID id; // User의 profileId이자 message의 attachmentIds
     private final Instant createdAt;
 //    private Instant updatedAt; // 수정 불가능한 모델이기 때문에 updateAt 필드 정의 X
     private final UUID userId; // 유저의 프로필 이미지

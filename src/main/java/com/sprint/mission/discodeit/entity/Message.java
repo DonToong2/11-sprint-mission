@@ -4,6 +4,8 @@ import lombok.Getter;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -19,23 +21,21 @@ public class Message implements Serializable {
 
     // 어떤 채널의 멤버가 메시지를 작성하였는가
     private String content; // 메시지 내용
-//    private final String writer; // 메시지 작성자, 변경 불가
-//    private final String channel; // 메시지가 작성된 채널, 변경 불가
 
-    // 코드 탬플릿에 맞게 필드 수정
-    private final UUID channel; // 어떤 채널에 들어가는 메시지인지, Channel과 연결됨
-    private final UUID author; // 어떤 유저가 작성한 메시지인지, User과 연결됨
+    // 연관 관계 필드
+    private final UUID channel; // 어떤 채널에 들어가는 메시지인지, Channel과 연결됨 / Channel의 UUID id
+    private final UUID author; // 어떤 유저가 작성한 메시지인지, User과 연결됨 / User의 UUID id
+    private List<UUID> attachmentIds; // BinaryContent의 UUID id
 
     // 정적 팩토리 메서드
     private Message(String content, UUID channel, UUID author) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();;
         this.updatedAt = this.createdAt;
-
         this.content = content;
-
         this.channel = channel;
         this.author = author;
+        this.attachmentIds = new ArrayList<>(); // 삽입/삭제보다 조회가 더 많이 일어나기 때문에 LinkedList가 아닌 ArrayList 사용
     }
 
     // 정적 팩토리 메서드

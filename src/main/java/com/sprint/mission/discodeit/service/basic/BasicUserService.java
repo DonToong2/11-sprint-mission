@@ -87,18 +87,6 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public User updateProfileImageURL(UUID id, String newProfileImageURL) {
-        User user = userRepository.findById(id);
-        System.out.println("수정 전 유저 프로필 이미지 : " + user.getProfileImageURL());
-        user.updateProfileImageURL(newProfileImageURL);
-        System.out.println("수정 후 유저 프로필 이미지 : " + user.getProfileImageURL());
-        userRepository.update(user);
-        System.out.println();
-
-        return user;
-    }
-
-    @Override
     public User updateStatus(UUID id, User.Status newStatus) {
         User user = userRepository.findById(id);
         System.out.println("수정 전 유저 상태 : " + user.getStatus());

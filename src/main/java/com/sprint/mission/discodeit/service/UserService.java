@@ -19,8 +19,6 @@ public interface UserService {
 
     User updatePhoneNumber(UUID id, String newPhoneNumber);
 
-    User updateProfileImageURL(UUID id, String newProfileImageURL);
-
     User updateStatus(UUID id, User.Status newStatus);
 
     void delete(UUID id);

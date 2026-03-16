@@ -1,7 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -12,16 +11,18 @@ public class UserStatus {
     private final UUID id;
     private final Instant createdAt;
     private Instant updatedAt;
-    private final UUID userId;
     private Instant lastOnlineAt;
+
+    // 연관관계 필드
+    private final UUID userId; // User의 UUID id
 
 
     public UserStatus(UUID userId, Instant lastOnlineAt) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.updatedAt = this.createdAt;
-        this.userId = userId;
         this.lastOnlineAt = lastOnlineAt;
+        this.userId = userId;
     }
 
     // 온라인인지 아닌지 (5분 이내이면 true, 아니면 false)
