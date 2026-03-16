@@ -77,7 +77,7 @@ public class FileMessageService implements MessageService {
 
         // 저장 로직 분리 후
         Channel channel = channelRepository.findById(channelId);
-        User author = userRepository.findUser(userId);
+        User author = userRepository.findById(userId);
         Message message = Message.create(content, channel, author);
         messageRepository.insert(message);
         System.out.println("메시지를 생성하였습니다.");
