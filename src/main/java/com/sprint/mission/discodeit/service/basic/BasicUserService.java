@@ -33,7 +33,7 @@ public class BasicUserService implements UserService {
                     throw new IllegalArgumentException("이미 존재하는 이름입니다.");
                 });
         
-        // 이름 중복체크
+        // 이름 중복체크 // 조건 -> 탐색 -> 이미 있으면 예외를 날림
         userRepository.findAll().stream()
                 .filter(user -> user.getEmail().equals(dto.email()))
                 .findFirst()
