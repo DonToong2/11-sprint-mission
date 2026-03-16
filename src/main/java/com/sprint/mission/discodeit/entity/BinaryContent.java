@@ -17,7 +17,7 @@ public class BinaryContent {
     private final String fileName; // 데이터의 이름
     private final String fileType; // 데이터의 타입(.png 등)
 
-    // 생성자
+    // 생성자(정적 팩토리 메서드)
     private BinaryContent(UUID userId, UUID messageId, byte[] bytes, String fileName, String fileType) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();

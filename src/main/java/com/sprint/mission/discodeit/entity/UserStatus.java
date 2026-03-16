@@ -26,7 +26,7 @@ public class UserStatus {
     }
 
     // 온라인인지 아닌지 (5분 이내이면 true, 아니면 false)
-    public User.Status isOnline() {
+    public User.Status isStatus() {
         // 현재(Instant.now()) -(minusSeconds) 5분(5 * 60) 이 이후이면(isAfter)
         if (lastOnlineAt.isAfter(Instant.now().minusSeconds(5 * 60))) {
             return User.Status.ONLINE;

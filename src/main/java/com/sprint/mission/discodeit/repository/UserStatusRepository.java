@@ -9,5 +9,6 @@ public interface UserStatusRepository {
     UserStatus findById(UUID id);
     UserStatus findByUserId(UUID userId);
     void update(UserStatus userStatus);
-    void delete(UUID id);
+    void delete(UserStatus userStatus);
+    void deleteByUserId(UUID userId);
 }

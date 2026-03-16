@@ -1,108 +1,156 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.UserCreateDto;
+import com.sprint.mission.discodeit.dto.UserReadDto;
+import com.sprint.mission.discodeit.dto.UserUpdateDto;
+import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.repository.*;
 import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class BasicUserService implements UserService {
     private final UserRepository userRepository;
+    private final UserStatusRepository userStatusRepository;
+    private final BinaryContentRepository binaryContentRepository;
 
     // Create
     @Override
-    public User create(String name, String email, String password) {
-        User user = User.create(name, email, password);
-        userRepository.insert(user);
-        System.out.println("유저를 추가하였습니다.");
-        System.out.println();
+    public User create(UserCreateDto dto) {
+        // 이메일 중복체크
+        userRepository.findAll().stream()
+                .filter(user -> user.getName().equals(dto.name()))
+                .findFirst()
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+                });
+        
+        // 이름 중복체크
+        userRepository.findAll().stream()
+                .filter(user -> user.getEmail().equals(dto.email()))
+                .findFirst()
+                .ifPresent(user -> {
+                    throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+                });
 
+
+        // 유저 생성(이름, 이메일 비밀번호)
+        User user = User.create(dto.name(), dto.email(), dto.password());
+
+        // 프로필 이미지 등록(선택)
+        if (dto.bytes() != null) {
+            BinaryContent profileimageURL = BinaryContent.userProfileImage(user.getId(), dto.bytes(), dto.fileName(), dto.fileType());
+            binaryContentRepository.insert(profileimageURL);
+            user.updateProfileId(profileimageURL.getId());
+        }
+
+        // 유저 상태 생성
+        UserStatus userStatus = new UserStatus(user.getId(), Instant.now());
+        userStatusRepository.insert(userStatus);
+
+        userRepository.insert(user);
         return user;
     }
 
-
     // Read
     @Override
-    public User readAll(UUID id) {
+    public UserReadDto find(UUID id) {
+        System.out.println("=====유저 정보=====\n");
+        System.out.println();
         User user = userRepository.findById(id);
-        System.out.println("=====유저 정보=====\n" + user);
+        UserStatus userStatus = userStatusRepository.findByUserId(id);
+
+        return new UserReadDto(
+                user.getId(),
+                user.getCreatedAt(),
+                user.getUpdatedAt(),
+                user.getName(),
+                user.getEmail(),
+                user.getProfileId(),
+                userStatus.isStatus()
+        );
+
+    }
+
+    @Override
+    public List<UserReadDto> findAll() {
+        System.out.println("=====모든 유저 정보=====\n");
         System.out.println();
 
-        return user;
+        return userRepository.findAll().stream()
+                .map(user -> new UserReadDto(
+                        user.getId(),
+                        user.getCreatedAt(),
+                        user.getUpdatedAt(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getProfileId(),
+                        userStatusRepository.findByUserId(user.getId()).isStatus()
+
+                )).toList();
     }
 
 
     // Update
     // 같은 키, 다른 Value를 put 하면 키는 그대로, Value만 갱신된다.
     @Override
-    public User updateName(UUID id, String newName) {
+    public User update(UUID id, UserUpdateDto dto) {
         User user = userRepository.findById(id);
-        System.out.println("수정 전 유저 이름 : " + user.getName());
-        user.updateName(newName);
-        System.out.println("수정 후 유저 이름 : " + user.getName());
+
+        // 프로필 이미지 update
+        if (dto.bytes() != null) {
+            if (user.getProfileId() != null) {
+                binaryContentRepository.delete(user.getProfileId());
+            }
+
+            BinaryContent profileimageURL = BinaryContent.userProfileImage(user.getId(), dto.bytes(), dto.fileName(), dto.fileType());
+
+            binaryContentRepository.insert(profileimageURL);
+            user.updateProfileId(profileimageURL.getId());
+        }
+
+        // 이름, 이메일, 패스워드 update
+        if (dto.newName() != null) {
+            user.updateName(dto.newName());
+        }
+        if (dto.newEmail() != null) {
+            user.updateEmail(dto.newEmail());
+        }
+        if (dto.newPassword() != null) {
+            user.updatePassword(dto.newPassword());
+        }
+
         userRepository.update(user);
-        System.out.println();
-
-        return user;
-    }
-
-    @Override
-    public User updateNickname(UUID id, String newNickname) {
-        User user = userRepository.findById(id);
-        System.out.println("수정 전 유저 별명 : " + user.getNickname());
-        user.updateNickname(newNickname);
-        System.out.println("수정 후 유저 별명 : " + user.getNickname());
-        userRepository.update(user);
-        System.out.println();
-
-        return user;
-    }
-
-    @Override
-    public User updateEmail(UUID id, String newEmail) {
-        User user = userRepository.findById(id);
-        System.out.println("수정 전 유저 이메일 : " + user.getEmail());
-        user.updateEmail(newEmail);
-        System.out.println("수정 후 유저 이메일 : " + user.getEmail());
-        userRepository.update(user);
-        System.out.println();
-
-        return user;
-    }
-
-    @Override
-    public User updatePhoneNumber(UUID id, String newPhoneNumber) {
-        User user = userRepository.findById(id);
-        System.out.println("수정 전 유저 전화번호 : " + user.getPhoneNumber());
-        user.updatePhoneNumber(newPhoneNumber);
-        System.out.println("수정 후 유저 전화번호 : " + user.getPhoneNumber());
-        userRepository.update(user);
-        System.out.println();
-
-        return user;
-    }
-
-    @Override
-    public User updateStatus(UUID id, User.Status newStatus) {
-        User user = userRepository.findById(id);
-        System.out.println("수정 전 유저 상태 : " + user.getStatus());
-        user.updateStatus(newStatus);
-        System.out.println("수정 후 유저 상태 : " + user.getStatus());
-        userRepository.update(user);
-        System.out.println();
 
         return user;
     }
 
     // Delete
     @Override
+    // 기존 User만 삭제
+    // 고도화 이후 : User, UserStatus, 프로필 이미지 삭제
     public void delete(UUID id) {
         User user = userRepository.findById(id);
+
+        // user의 상태 삭제
+        userStatusRepository.deleteByUserId(id);
+
+        // user의 프로필 이미지 삭제
+        if (user.getProfileId() != null) {
+            binaryContentRepository.delete(user.getProfileId());
+        }
+
+        // user 삭제
         userRepository.delete(id);
+
         System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
         System.out.println();
     }
