@@ -30,7 +30,7 @@ public class DiscodeitApplication {
 	}
 
 	static Channel setupChannel(ChannelService channelService) {
-		Channel channel = channelService.create(Channel.ChannelType.PUBLIC, "공지", "공지 채널입니다."); // 채널 공개여부, 채널 이름, 채널 설명
+		Channel channel = channelService.create(Channel.Type.PUBLIC, "공지", "공지 채널입니다."); // 채널 공개여부, 채널 이름, 채널 설명
 		return channel;
 	}
 

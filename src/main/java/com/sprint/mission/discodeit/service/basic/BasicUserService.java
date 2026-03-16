@@ -60,6 +60,7 @@ public class BasicUserService implements UserService {
         return user;
     }
 
+
     // Read
     @Override
     public UserReadDto find(UUID id) {
@@ -150,7 +151,6 @@ public class BasicUserService implements UserService {
 
         // user 삭제
         userRepository.delete(id);
-
         System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
         System.out.println();
     }
