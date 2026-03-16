@@ -142,14 +142,12 @@ public class BasicChannelService implements ChannelService {
             throw new IllegalArgumentException("PRIVATE 채널은 수정할 수 없습니다.");
         }
 
-        System.out.println("수정 전 채널 이름 : " + channel.getName());
         if (dto.newName() != null) {
             channel.updateName(dto.newName());
         }
         if (dto.newDescription() != null) {
             channel.updateDescription(dto.newDescription());
         }
-        System.out.println("수정 후 채널 이름 : " + channel.getName());
         channelRepository.update(channel);
         System.out.println();
 
