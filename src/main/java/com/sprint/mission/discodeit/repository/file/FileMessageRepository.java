@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Repository
 public class FileMessageRepository implements MessageRepository {
     private final Map<UUID, Message> messages = new HashMap<>();
 

@@ -1,10 +1,14 @@
 package com.sprint.mission.discodeit.entity;
 
+import lombok.Getter;
+
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Getter
 public class Channel implements Serializable {
 
     // 객체 직렬화
@@ -12,8 +16,8 @@ public class Channel implements Serializable {
 
     // 필수
     private final UUID id;
-    private final long createdAt;
-    private long updatedAt;
+    private final Instant createdAt;
+    private Instant updatedAt;
 
     // 어디 그룹에 속한 채널인가
     private String group; // 채널 그룹
@@ -31,7 +35,7 @@ public class Channel implements Serializable {
     // 생성자
     public Channel(String group, String name, List<String> members) {
         this.id = UUID.randomUUID();
-        this.createdAt = System.currentTimeMillis();
+        this.createdAt = Instant.now();
         this.updatedAt = this.createdAt;
         this.group = group;
         this.name = name;
@@ -42,7 +46,7 @@ public class Channel implements Serializable {
     // 코드 탬플릿에 적합한 생성자 오버로딩
     private Channel(ChannelType channelType, String name, String description) {
         this.id = UUID.randomUUID();
-        this.createdAt = System.currentTimeMillis();
+        this.createdAt = Instant.now();
         this.updatedAt = this.createdAt;
         this.channelType = channelType;
         this.name = name;
@@ -54,29 +58,11 @@ public class Channel implements Serializable {
         return new Channel(channelType, name, description);
     }
 
-    // getter
-    public UUID getId() {
-        return id;
-    }
-    public long getCreatedAt() {
-        return createdAt;
-    }
-    public long getUpdatedAt() {
-        return updatedAt;
-    }
-    public String getGroup() {
-        return group;
-    }
-    public String getName() {
-        return name;
-    }
-    public List<String> getMembers() {
-        return members;
-    }
+    // getter(Lombok의 @Getter로 대체)
 
     // update(set)
     private void update() {
-        this.updatedAt = System.currentTimeMillis();
+        this.updatedAt = Instant.now();;
     }
     public void updateGroup(String group) {
         this.group = group;

@@ -1,8 +1,12 @@
 package com.sprint.mission.discodeit.entity;
 
+import lombok.Getter;
+
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
+@Getter
 public class Message implements Serializable {
 
     // 객체 직렬화
@@ -10,8 +14,8 @@ public class Message implements Serializable {
 
     // 필수
     private final UUID id;
-    private final long createdAt;
-    private long updatedAt;
+    private final Instant createdAt;
+    private Instant updatedAt;
 
     // 어떤 채널의 멤버가 메시지를 작성하였는가
     private String content; // 메시지 내용
@@ -25,7 +29,7 @@ public class Message implements Serializable {
     // 정적 팩토리 메서드
     private Message(String content, Channel channel, User author) {
         this.id = UUID.randomUUID();
-        this.createdAt = System.currentTimeMillis();
+        this.createdAt = Instant.now();;
         this.updatedAt = this.createdAt;
 
         this.content = content;
@@ -39,17 +43,11 @@ public class Message implements Serializable {
         return new Message(content, channel, author);
     }
 
-    // getter
-    public UUID getId() { return id; }
-    public long getCreatedAt() { return createdAt; }
-    public long getUpdatedAt() { return updatedAt; }
-    public String getContent() { return content; }
-    public User getAuthor() { return author; }
-    public Channel getChannel() { return channel; }
+    // getter(Lombok의 @Getter로 대체)
 
     // update
     private void update() {
-        this.updatedAt = System.currentTimeMillis();
+        this.updatedAt = Instant.now();;
     }
     public void updateContent(String content) {
         this.content = content;

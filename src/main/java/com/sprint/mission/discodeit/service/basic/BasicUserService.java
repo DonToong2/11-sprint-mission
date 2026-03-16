@@ -3,15 +3,15 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
+@RequiredArgsConstructor
 public class BasicUserService implements UserService {
     private final UserRepository userRepository;
-
-    public BasicUserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     // Create
     @Override
@@ -99,11 +99,11 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public User updateStatus(UUID id, User.UserStatus newStatus) {
+    public User updateStatus(UUID id, User.Status newStatus) {
         User user = userRepository.findById(id);
-        System.out.println("수정 전 유저 상태 : " + user.getUserStatus());
+        System.out.println("수정 전 유저 상태 : " + user.getStatus());
         user.updateStatus(newStatus);
-        System.out.println("수정 후 유저 상태 : " + user.getUserStatus());
+        System.out.println("수정 후 유저 상태 : " + user.getStatus());
         userRepository.update(user);
         System.out.println();
 
