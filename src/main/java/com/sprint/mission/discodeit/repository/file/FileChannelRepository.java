@@ -5,10 +5,7 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class FileChannelRepository implements ChannelRepository {
@@ -65,6 +62,11 @@ public class FileChannelRepository implements ChannelRepository {
             throw new NoSuchElementException("해당 채널은 존재하지 않습니다. id : " + id);
         }
         return channel;
+    }
+
+    @Override
+    public List<Channel> findAll() {
+        return this.channels.values().stream().toList();
     }
 
     @Override

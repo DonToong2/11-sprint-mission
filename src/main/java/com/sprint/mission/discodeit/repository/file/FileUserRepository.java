@@ -5,10 +5,7 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class FileUserRepository implements UserRepository {
@@ -76,6 +73,11 @@ public class FileUserRepository implements UserRepository {
             throw new NoSuchElementException("해당 유저는 존재하지 않습니다. id : " + id);
         }
         return user;
+    }
+
+    @Override
+    public List<User> findAll() {
+        return this.users.values().stream().toList();
     }
 
     @Override

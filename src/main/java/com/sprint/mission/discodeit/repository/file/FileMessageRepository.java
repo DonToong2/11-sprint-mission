@@ -5,10 +5,7 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class FileMessageRepository implements MessageRepository {
@@ -67,6 +64,13 @@ public class FileMessageRepository implements MessageRepository {
     }
 
     @Override
+    public List<Message> findAllByChannelId(UUID channelId) {
+        return this.messages.values().stream()
+                .filter(message -> message.getChannel().equals(channelId))
+                .toList();
+    }
+
+    @Override
     public void update(Message message) {
         messages.put(message.getId(), message);
         save();
@@ -75,6 +79,12 @@ public class FileMessageRepository implements MessageRepository {
     @Override
     public void delete(UUID id) {
         messages.remove(id);
+        save();
+    }
+
+    @Override
+    public void deleteAllByChannelId(UUID channelId) {
+        messages.values().removeIf(message -> message.getChannel().equals(channelId));
         save();
     }
 }
