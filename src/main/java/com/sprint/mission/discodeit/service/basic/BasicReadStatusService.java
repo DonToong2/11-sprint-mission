@@ -23,7 +23,7 @@ public class BasicReadStatusService implements ReadStatusService {
     private final ChannelRepository channelRepository;
 
     @Override
-    ReadStatus create(ReadStatusCreateDto dto) {
+    public ReadStatus create(ReadStatusCreateDto dto) {
         // 관련된 Channel, User가 존재하지 않으면 예외를 발생.
         userRepository.findById(dto.userId());
         channelRepository.findById(dto.channelId());
