@@ -95,10 +95,11 @@ public class BasicChannelService implements ChannelService {
     @Override
     public List<ChannelReadDto> findAllByUserId(UUID userId) {
         return channelRepository.findAll().stream()
-                .filter(channel -> { // PUBLIC이면 전체 채널 조회, PRIVATE는 USER가 참여한 채널만 조회
+                .filter(channel -> { // PUBLIC이면 전체 채널 조회, PRIVATE는 해당 USER가 참여한 채널만 조회
                     if (channel.getType() == Channel.Type.PUBLIC) {
-                        return true;
+                        return true; // PUBLIC
                     }
+                    // PRIVATE
                     return readStatusRepository.findByChannelId(channel.getId()).stream()
                             .anyMatch(readStatus -> readStatus.getUserId().equals(userId));
                 })
@@ -111,7 +112,7 @@ public class BasicChannelService implements ChannelService {
                     // PRIVATE 채널일 경우 참여자 포함
                     List<UUID> participants = List.of();
                     if (channel.getType() == Channel.Type.PRIVATE) {
-                        participants = readStatusRepository.findByChannelId(id).stream()
+                        participants = readStatusRepository.findByChannelId(channel.getId()).stream()
                                 .map(ReadStatus::getUserId)
                                 .toList();
                     }

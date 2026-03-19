@@ -1,17 +1,50 @@
-package com.sprint.mission.discodeit.repository.jcf;
+package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import org.springframework.stereotype.Repository;
 
+import java.io.*;
 import java.util.*;
 
-public class JCFReadStatusRepository implements ReadStatusRepository {
-    private final Map<UUID, ReadStatus> readStatuses = new HashMap<>();
+@Repository
+public class FileReadStatusRepository implements ReadStatusRepository {
+    // ReadStatus들을 담을 Map 생성
+    private final Map<UUID, ReadStatus> readStatuses = new HashMap<>(); // 저장소
+
+    public FileReadStatusRepository() {
+        load();
+    }
+
+    // 저장 메서드 save(직렬화)
+    private void save() {
+        try (FileOutputStream fos = new FileOutputStream("readStatus.ser");
+             ObjectOutputStream oos = new ObjectOutputStream(fos);
+        ) {
+            oos.writeObject(readStatuses);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // 불러오기 메서드 load(역직렬화)
+    private void load() {
+        try (FileInputStream fis = new FileInputStream("readStatus.ser");
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            Map<UUID, ReadStatus> loadReadStatuses = (Map<UUID, ReadStatus>) ois.readObject();
+            readStatuses.clear(); // 한 번 비우고
+            readStatuses.putAll(loadReadStatuses); // 불러온다.(기존에 있던 데이터까지 같이 로드될 수 있기 때문에)
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     public void insert(ReadStatus readStatus) {
         readStatuses.put(readStatus.getId(), readStatus);
+        save();
     }
 
     @Override
@@ -41,15 +74,18 @@ public class JCFReadStatusRepository implements ReadStatusRepository {
     @Override
     public void update(ReadStatus readStatus) {
         readStatuses.put(readStatus.getId(), readStatus);
+        save();
     }
 
     @Override
     public void delete(UUID id) {
         readStatuses.remove(id);
+        save();
     }
 
     @Override
     public void deleteAllByChannelId(UUID channelId) {
         readStatuses.values().removeIf(readStatus -> readStatus.getChannelId().equals(channelId));
+        save();
     }
 }
