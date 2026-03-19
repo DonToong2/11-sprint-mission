@@ -16,7 +16,7 @@ public class JCFUserStatusRepository implements UserStatusRepository {
     @Override
     public UserStatus findById(UUID id) {
         UserStatus userStatus = userStatuses.get(id);
-        if(userStatus == null) {
+        if (userStatus == null) {
             throw new NoSuchElementException("해당 UserStatus가 존재하지 않습니다 id : " + id);
         }
 
