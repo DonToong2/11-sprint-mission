@@ -1,0 +1,5 @@
+#spring.application.name=discodeit
+
+discodeit:
+  repository:
+    type: jcf
