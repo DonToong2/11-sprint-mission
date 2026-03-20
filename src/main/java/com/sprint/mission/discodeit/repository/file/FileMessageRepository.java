@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -15,13 +16,19 @@ import java.util.stream.Collectors;
 public class FileMessageRepository implements MessageRepository {
     private final Map<UUID, Message> messages = new HashMap<>();
 
-    public FileMessageRepository() {
+    private final String fileDirectory;
+    private final String fileName = "/messages.ser";
+    private final File file;
+
+    public FileMessageRepository(@Value("${discodeit.repository.file-directory}") String fileDirectory) {
+        this.fileDirectory = fileDirectory;
+        this.file = new File(fileDirectory + fileName);
         load();
     }
 
     // 저장 메서드 save(직렬화)
     public void save() {
-        try (FileOutputStream fos = new FileOutputStream("messages.ser");
+        try (FileOutputStream fos = new FileOutputStream(file);
              ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
             oos.writeObject(messages);
@@ -32,7 +39,6 @@ public class FileMessageRepository implements MessageRepository {
 
     // 불러오기 메서드 load(역직렬화)
     public void load() {
-        File file = new File("messages.ser");
         if (!file.exists()) return;
         try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {

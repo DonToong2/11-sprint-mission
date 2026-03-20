@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -16,13 +17,20 @@ import java.util.UUID;
 public class FileBinaryContentRepository implements BinaryContentRepository {
     private final Map<UUID, BinaryContent> binaryContents = new HashMap<>();
 
-    public FileBinaryContentRepository() {
+    private final String fileDirectory;
+    private final String fileName = "/binaryContents.ser";
+    private final File file;
+
+
+    public FileBinaryContentRepository(@Value("${discodeit.repository.file-directory}") String fileDirectory) {
+        this.fileDirectory = fileDirectory;
+        this.file = new File(fileDirectory + fileName);
         load();
     }
 
     // 저장 메서드 save(직렬화)
     public void save() {
-        try (FileOutputStream fos = new FileOutputStream("binaryContents.ser");
+        try (FileOutputStream fos = new FileOutputStream(file);
              ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
             oos.writeObject(binaryContents);
@@ -33,7 +41,6 @@ public class FileBinaryContentRepository implements BinaryContentRepository {
 
     // 불러오기 메서드 load(역직렬화)
     public void load() {
-        File file = new File("binaryContents.ser");
         if (!file.exists()) return;
         try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {

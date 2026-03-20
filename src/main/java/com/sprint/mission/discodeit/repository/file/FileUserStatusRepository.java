@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -14,13 +15,19 @@ import java.util.*;
 public class FileUserStatusRepository implements UserStatusRepository {
     private final Map<UUID, UserStatus> userStatuses = new HashMap<>();
 
-    public FileUserStatusRepository() {
+    private final String fileDirectory;
+    private final String fileName = "/userStatuses.ser";
+    private final File file;
+
+    public FileUserStatusRepository(@Value("${discodeit.repository.file-directory}") String fileDirectory) {
+        this.fileDirectory = fileDirectory;
+        this.file = new File(fileDirectory + fileName);
         load();
     }
 
     // 저장 메서드 save(직렬화)
     private void save() {
-        try (FileOutputStream fos = new FileOutputStream("userStatuses.ser");
+        try (FileOutputStream fos = new FileOutputStream(file);
              ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
             oos.writeObject(userStatuses);
@@ -32,7 +39,6 @@ public class FileUserStatusRepository implements UserStatusRepository {
 
     // 불러오기 메서드 load(역직렬화)
     private void load() {
-        File file = new File("userStatus.ser");
         if (!file.exists()) return;
         try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
