@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.BinaryContent;
-import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @Repository
+// application.yaml의 설정값에 따라 Bean을 설정 / name : 설정값의 이름, havingValue : type 지정
+@ConditionalOnProperty(name = "discodeit.repository.type", havingValue = "file")
 public class FileBinaryContentRepository implements BinaryContentRepository {
     private final Map<UUID, BinaryContent> binaryContents = new HashMap<>();
 
@@ -43,6 +45,7 @@ public class FileBinaryContentRepository implements BinaryContentRepository {
         }
 
     }
+
     @Override
     public void insert(BinaryContent binaryContent) {
         binaryContents.put(binaryContent.getId(), binaryContent);

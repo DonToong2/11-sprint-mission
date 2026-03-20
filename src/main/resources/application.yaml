@@ -2,4 +2,4 @@
 
 discodeit:
   repository:
-    type: jcf
+    type: file
