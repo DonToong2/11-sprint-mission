@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class JCFMessageRepository implements MessageRepository {
 
@@ -27,8 +28,8 @@ public class JCFMessageRepository implements MessageRepository {
     @Override
     public List<Message> findAllByChannelId(UUID channelId) {
         return messages.values().stream()
-                .filter(message -> message.getChannel().equals(channelId))
-                .toList();
+                .filter(message -> message.getChannelId().equals(channelId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -43,6 +44,6 @@ public class JCFMessageRepository implements MessageRepository {
 
     @Override
     public void deleteAllByChannelId(UUID channelId) {
-        messages.values().removeIf(message -> message.getChannel().equals(channelId));
+        messages.values().removeIf(message -> message.getChannelId().equals(channelId));
     }
 }

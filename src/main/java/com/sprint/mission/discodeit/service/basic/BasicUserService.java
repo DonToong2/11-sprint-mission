@@ -53,6 +53,7 @@ public class BasicUserService implements UserService {
         }
 
         // 유저 상태 생성
+        // UserStatusService를 사용하면 같은 레이어(여기서는 Service)간에 순환 참조가 생기므로 UserStatusService.create 사용 X
         UserStatus userStatus = new UserStatus(user.getId(), Instant.now());
         userStatusRepository.insert(userStatus);
 
@@ -64,8 +65,6 @@ public class BasicUserService implements UserService {
     // Read
     @Override
     public UserReadDto find(UUID id) {
-        System.out.println("=====유저 정보=====\n");
-        System.out.println();
         User user = userRepository.findById(id);
         UserStatus userStatus = userStatusRepository.findByUserId(id);
 
@@ -83,8 +82,7 @@ public class BasicUserService implements UserService {
 
     @Override
     public List<UserReadDto> findAll() {
-        System.out.println("=====모든 유저 정보=====\n");
-        System.out.println();
+        System.out.println("=====모든 유저 정보=====");
 
         return userRepository.findAll().stream()
                 .map(user -> new UserReadDto(
@@ -151,7 +149,7 @@ public class BasicUserService implements UserService {
 
         // user 삭제
         userRepository.delete(id);
-        System.out.println("유저 " + user.getNickname() + "이(가) 삭제되었습니다.");
+        System.out.println("유저 " + user.getName() + "이(가) 삭제되었습니다.");
         System.out.println();
     }
 }

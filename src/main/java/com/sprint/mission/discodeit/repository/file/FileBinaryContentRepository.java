@@ -31,7 +31,9 @@ public class FileBinaryContentRepository implements BinaryContentRepository {
 
     // 불러오기 메서드 load(역직렬화)
     public void load() {
-        try (FileInputStream fis = new FileInputStream("binaryContents.ser");
+        File file = new File("binaryContents.ser");
+        if (!file.exists()) return;
+        try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Map<UUID, BinaryContent> loadBinaryContents = (Map<UUID, BinaryContent>) ois.readObject();
             binaryContents.clear(); // 한 번 비우고

@@ -22,7 +22,6 @@ public class Channel implements Serializable {
     // 어디 그룹에 속한 채널인가
     private String group; // 채널 그룹
     private String name; // 채널 이름
-    private List<String> members; // 채널 멤버
 
     // 코드 탬플릿에 맞게 필드 추가
     private Type type;
@@ -33,13 +32,13 @@ public class Channel implements Serializable {
     }
 
     // 생성자
-    public Channel(String group, String name, List<String> members) {
+    public Channel(String group, String name, String description) {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.updatedAt = this.createdAt;
         this.group = group;
         this.name = name;
-        this.members = members;
+        this.description = description;
     }
 
     // 정적 팩토리 메서드
@@ -76,19 +75,11 @@ public class Channel implements Serializable {
         this.description = description;
         update();
     }
-    public void updateMember(List<String> members) {
-        this.members = members;
-        update();
-    }
 
     @Override
     public String toString() {
-        String memberNames = members.stream()
-                .collect(Collectors.joining(",", "[", "]"));
-
-        return "유저 UUID : " + id
+        return "채널 UUID : " + id
                 + "\n 생성 시간 : " + createdAt + ", 수정한 시간 : " + updatedAt
-                + "\n 채널 이름 : " + name + ", 채널이 속해있는 그룹 : " + group
-                + "\n 채널 멤버 : " + memberNames;
+                + "\n 채널 이름 : " + name + ", 채널이 속해있는 그룹 : " + group;
     }
 }

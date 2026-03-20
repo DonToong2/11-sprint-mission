@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class JCFReadStatusRepository implements ReadStatusRepository {
     private final Map<UUID, ReadStatus> readStatuses = new HashMap<>();
@@ -28,14 +29,14 @@ public class JCFReadStatusRepository implements ReadStatusRepository {
     public List<ReadStatus> findByUserId(UUID userId) {
         return readStatuses.values().stream()
                 .filter(readStatus -> readStatus.getUserId().equals(userId))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ReadStatus> findByChannelId(UUID channelId) {
         return readStatuses.values().stream()
                 .filter(readStatus -> readStatus.getChannelId().equals(channelId))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

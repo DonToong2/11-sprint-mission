@@ -58,8 +58,6 @@ public class BasicMessageService implements MessageService {
     @Override
     public List<Message> findAllByChannelId(UUID channelId) {
         List<Message> message = messageRepository.findAllByChannelId(channelId);
-        System.out.println("=====메시지 정보=====\n" + message);
-        System.out.println();
 
         return message;
     }

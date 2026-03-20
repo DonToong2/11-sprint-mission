@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class FileReadStatusRepository implements ReadStatusRepository {
@@ -30,7 +31,9 @@ public class FileReadStatusRepository implements ReadStatusRepository {
 
     // 불러오기 메서드 load(역직렬화)
     private void load() {
-        try (FileInputStream fis = new FileInputStream("readStatus.ser");
+        File file = new File("readStatus.ser");
+        if (!file.exists()) return;
+        try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Map<UUID, ReadStatus> loadReadStatuses = (Map<UUID, ReadStatus>) ois.readObject();
             readStatuses.clear(); // 한 번 비우고
@@ -61,14 +64,14 @@ public class FileReadStatusRepository implements ReadStatusRepository {
     public List<ReadStatus> findByUserId(UUID userId) {
         return readStatuses.values().stream()
                 .filter(readStatus -> readStatus.getUserId().equals(userId))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ReadStatus> findByChannelId(UUID channelId) {
         return readStatuses.values().stream()
                 .filter(readStatus -> readStatus.getChannelId().equals(channelId))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

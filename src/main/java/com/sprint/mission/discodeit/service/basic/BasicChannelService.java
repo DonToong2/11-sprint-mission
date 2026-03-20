@@ -51,6 +51,7 @@ public class BasicChannelService implements ChannelService {
         channelRepository.insert(channel);
 
         // private 채널 참여자들의 ReadStatus 생성
+        // readStatusService를 사용하면 같은 레이어(여기서는 Service)간에 순환 참조가 생기므로 readStatusService.create 사용 X
         dto.participantIds().stream()
                 .map(userId -> new ReadStatus(userId, channel.getId(), Instant.now()))
                 .forEach(readStatusRepository::insert);
@@ -63,7 +64,6 @@ public class BasicChannelService implements ChannelService {
     @Override
     public ChannelReadDto find(UUID id) {
         Channel channel = channelRepository.findById(id);
-        System.out.println("=====채널 정보=====\n" + channel);
         System.out.println();
 
         // 가장 최근 메시지 시간을 조회
@@ -95,9 +95,10 @@ public class BasicChannelService implements ChannelService {
     @Override
     public List<ChannelReadDto> findAllByUserId(UUID userId) {
         return channelRepository.findAll().stream()
-                .filter(channel -> { // PUBLIC이면 전체 채널 조회, PRIVATE는 해당 USER가 참여한 채널만 조회
+                .filter(channel -> { // PUBLIC이면 전체 유저가 채널 조회 가능, PRIVATE는 해당 USER가 참여한 채널만 조회 가능
+                    // PUBLIC
                     if (channel.getType() == Channel.Type.PUBLIC) {
-                        return true; // PUBLIC
+                        return true;
                     }
                     // PRIVATE
                     return readStatusRepository.findByChannelId(channel.getId()).stream()

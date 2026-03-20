@@ -2,11 +2,16 @@ package com.sprint.mission.discodeit.entity;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-public class BinaryContent {
+public class BinaryContent implements Serializable {
+
+    // 객체 직렬화
+    private static final long serialVersionUID = 1L;
+
     // 필드
     private final UUID id; // User의 profileId이자 message의 attachmentIds
     private final Instant createdAt;

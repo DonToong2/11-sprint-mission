@@ -31,7 +31,9 @@ public class FileUserRepository implements UserRepository {
 
     // 불러오기 메서드 load(역직렬화)
     private void load() {
-        try (FileInputStream fis = new FileInputStream("users.ser");
+        File file = new File("users.ser");
+        if (!file.exists()) return;
+        try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Map<UUID, User> loadUsers = (Map<UUID, User>) ois.readObject();
             users.clear(); // 한 번 비우고

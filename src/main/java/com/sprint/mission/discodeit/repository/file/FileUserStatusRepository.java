@@ -29,7 +29,9 @@ public class FileUserStatusRepository implements UserStatusRepository {
 
     // 불러오기 메서드 load(역직렬화)
     private void load() {
-        try (FileInputStream fis = new FileInputStream("userStatuses.ser");
+        File file = new File("userStatus.ser");
+        if (!file.exists()) return;
+        try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Map<UUID, UserStatus> loadUserStatuses = (Map<UUID, UserStatus>) ois.readObject();
             userStatuses.clear(); // 한 번 비우고

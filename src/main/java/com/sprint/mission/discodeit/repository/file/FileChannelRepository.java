@@ -28,7 +28,9 @@ public class FileChannelRepository implements ChannelRepository {
 
     // 불러오기 메서드 load(역직렬화)
     public void load() {
-        try (FileInputStream fis = new FileInputStream("channels.ser");
+        File file = new File("channels.ser");
+        if (!file.exists()) return;
+        try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Map<UUID, Channel> loadChannels = (Map<UUID, Channel>) ois.readObject();
             channels.clear(); // 한 번 비우고

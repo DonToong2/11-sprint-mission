@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class FileMessageRepository implements MessageRepository {
@@ -28,7 +29,9 @@ public class FileMessageRepository implements MessageRepository {
 
     // 불러오기 메서드 load(역직렬화)
     public void load() {
-        try (FileInputStream fis = new FileInputStream("messages.ser");
+        File file = new File("messages.ser");
+        if (!file.exists()) return;
+        try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             Map<UUID, Message> loadChannels = (Map<UUID, Message>) ois.readObject();
             messages.clear(); // 한 번 비우고
@@ -66,8 +69,8 @@ public class FileMessageRepository implements MessageRepository {
     @Override
     public List<Message> findAllByChannelId(UUID channelId) {
         return this.messages.values().stream()
-                .filter(message -> message.getChannel().equals(channelId))
-                .toList();
+                .filter(message -> message.getChannelId().equals(channelId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -84,7 +87,7 @@ public class FileMessageRepository implements MessageRepository {
 
     @Override
     public void deleteAllByChannelId(UUID channelId) {
-        messages.values().removeIf(message -> message.getChannel().equals(channelId));
+        messages.values().removeIf(message -> message.getChannelId().equals(channelId));
         save();
     }
 }
