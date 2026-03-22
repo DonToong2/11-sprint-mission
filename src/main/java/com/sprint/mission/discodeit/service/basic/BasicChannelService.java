@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -165,7 +164,5 @@ public class BasicChannelService implements ChannelService {
         messageRepository.deleteAllByChannelId(id);
         readStatusRepository.deleteAllByChannelId(id);
         channelRepository.delete(id);
-        System.out.println("채널" + channel.getName() + "이(가) 삭제되었습니다.");
-        System.out.println();
     }
 }

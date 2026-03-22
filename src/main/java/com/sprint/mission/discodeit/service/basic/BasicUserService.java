@@ -6,7 +6,9 @@ import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
-import com.sprint.mission.discodeit.repository.*;
+import com.sprint.mission.discodeit.repository.BinaryContentRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ public class BasicUserService implements UserService {
                 .ifPresent(user -> {
                     throw new IllegalArgumentException("이미 존재하는 이름입니다.");
                 });
-        
+
         // 이름 중복체크 // 조건 -> 탐색 -> 이미 있으면 예외를 날림
         userRepository.findAll().stream()
                 .filter(user -> user.getEmail().equals(dto.email()))
@@ -82,8 +84,6 @@ public class BasicUserService implements UserService {
 
     @Override
     public List<UserReadDto> findAll() {
-        System.out.println("=====모든 유저 정보=====");
-
         return userRepository.findAll().stream()
                 .map(user -> new UserReadDto(
                         user.getId(),
@@ -149,7 +149,5 @@ public class BasicUserService implements UserService {
 
         // user 삭제
         userRepository.delete(id);
-        System.out.println("유저 " + user.getName() + "이(가) 삭제되었습니다.");
-        System.out.println();
     }
 }

@@ -3,9 +3,7 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.dto.MessageCreateDto;
 import com.sprint.mission.discodeit.dto.MessageUpdateDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
-import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
@@ -48,8 +46,6 @@ public class BasicMessageService implements MessageService {
         }
 
         messageRepository.insert(message);
-        System.out.println("메시지를 생성하였습니다.");
-        System.out.println();
 
         return message;
     }
@@ -81,10 +77,8 @@ public class BasicMessageService implements MessageService {
         Message message = messageRepository.findById(id);
         // 첨부파일 삭제
         message.getAttachmentIds().forEach(binaryContentRepository::delete);
-        
+
         // 메시지 삭제
         messageRepository.delete(id);
-        System.out.println("메시지 \"" + message.getContent() + "\"이(가) 삭제되었습니다.");
-        System.out.println();
     }
 }
