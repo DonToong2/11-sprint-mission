@@ -27,7 +27,7 @@ public class BasicUserService implements UserService {
     // Create
     @Override
     public User create(UserCreateDto dto) {
-        // 이메일 중복체크
+        // 이름 중복체크
         userRepository.findAll().stream()
                 .filter(user -> user.getName().equals(dto.name()))
                 .findFirst()
@@ -35,7 +35,7 @@ public class BasicUserService implements UserService {
                     throw new IllegalArgumentException("이미 존재하는 이름입니다.");
                 });
 
-        // 이름 중복체크 // 조건 -> 탐색 -> 이미 있으면 예외를 날림
+        // 이메일 중복체크 // 조건 -> 탐색 -> 이미 있으면 예외를 날림
         userRepository.findAll().stream()
                 .filter(user -> user.getEmail().equals(dto.email()))
                 .findFirst()
@@ -46,6 +46,9 @@ public class BasicUserService implements UserService {
 
         // 유저 생성(이름, 이메일 비밀번호)
         User user = User.create(dto.name(), dto.email(), dto.password());
+
+        // user -> binaryContent(profileImg) -> userStatus 순으로 레포지토리에 저장
+        userRepository.insert(user);
 
         // 프로필 이미지 등록(선택)
         if (dto.bytes() != null) {
@@ -58,8 +61,6 @@ public class BasicUserService implements UserService {
         // UserStatusService를 사용하면 같은 레이어(여기서는 Service)간에 순환 참조가 생기므로 UserStatusService.create 사용 X
         UserStatus userStatus = new UserStatus(user.getId(), Instant.now());
         userStatusRepository.insert(userStatus);
-
-        userRepository.insert(user);
         return user;
     }
 
@@ -82,6 +83,8 @@ public class BasicUserService implements UserService {
 
     }
 
+
+    // 모든 사용자를 조회
     @Override
     public List<UserReadDto> findAll() {
         return userRepository.findAll().stream()

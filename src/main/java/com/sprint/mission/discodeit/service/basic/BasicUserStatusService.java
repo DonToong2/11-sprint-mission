@@ -25,7 +25,7 @@ public class BasicUserStatusService implements UserStatusService {
         userRepository.findById(dto.userId());
 
         // 같은 User와 관련된 객체가 이미 존재하면 예외를 발생
-        if (userRepository.findById(dto.userId()) == null) {
+        if (userStatusRepository.findByUserId(dto.userId()) == null) {
             throw new IllegalArgumentException("이미 존재하는 UserStatus입니다. userId: " + dto.userId());
         }
 
