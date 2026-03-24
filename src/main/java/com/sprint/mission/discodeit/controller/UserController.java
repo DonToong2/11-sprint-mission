@@ -17,7 +17,7 @@ import java.util.UUID;
 
 // 사용자 관리 컨트롤러
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
-@RequestMapping("/user")
+@RequestMapping("api/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService; // 특정 유저 생성, 모든 유저 조회, 특정 유저 업데이트, 특정 유저 삭제
@@ -42,11 +42,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    // 모든 사용자 조회
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<UserReadDto>> readAll() {
+    // 모든 사용자 조회, 심화 요구사항 추가
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    public ResponseEntity<List<UserReadDto>> findAll() {
         return ResponseEntity.ok(userService.findAll());
     }
+//    @RequestMapping(method = RequestMethod.GET)
+//    public ResponseEntity<List<UserReadDto>> readAll() {
+//        return ResponseEntity.ok(userService.findAll());
+//    }
 
     // 특정 사용자의 상태(온/오프라인) 업데이트
     @RequestMapping(value = "/{user-id}/status", method = RequestMethod.PUT)
