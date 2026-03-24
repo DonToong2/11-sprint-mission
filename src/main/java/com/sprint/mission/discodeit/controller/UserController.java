@@ -2,7 +2,6 @@ package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.UserCreateDto;
 import com.sprint.mission.discodeit.dto.UserReadDto;
-import com.sprint.mission.discodeit.dto.UserStatusUpdateDto;
 import com.sprint.mission.discodeit.dto.UserUpdateDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -51,8 +50,8 @@ public class UserController {
 
     // 특정 사용자의 상태(온/오프라인) 업데이트
     @RequestMapping(value = "/{user-id}/status", method = RequestMethod.PUT)
-    public ResponseEntity<UserStatus> updateStatus(@PathVariable("user-id") UUID id, @RequestBody UserStatusUpdateDto dto) {
-        return ResponseEntity.ok(userStatusService.update(id, dto));
+    public ResponseEntity<UserStatus> updateStatus(@PathVariable("user-id") UUID id) {
+        return ResponseEntity.ok(userStatusService.updateByUserId(id));
     }
 
 
