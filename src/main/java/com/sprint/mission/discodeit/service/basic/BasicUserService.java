@@ -29,7 +29,7 @@ public class BasicUserService implements UserService {
     public User create(UserCreateDto dto) {
         // 이름 중복체크
         userRepository.findAll().stream()
-                .filter(user -> user.getName().equals(dto.name()))
+                .filter(user -> user.getUsername().equals(dto.username()))
                 .findFirst()
                 .ifPresent(user -> {
                     throw new IllegalArgumentException("이미 존재하는 이름입니다.");
@@ -45,7 +45,7 @@ public class BasicUserService implements UserService {
 
 
         // 유저 생성(이름, 이메일 비밀번호)
-        User user = User.create(dto.name(), dto.email(), dto.password());
+        User user = User.create(dto.username(), dto.email(), dto.password());
 
         // user -> binaryContent(profileImg) -> userStatus 순으로 레포지토리에 저장
         userRepository.insert(user);
@@ -75,10 +75,10 @@ public class BasicUserService implements UserService {
                 user.getId(),
                 user.getCreatedAt(),
                 user.getUpdatedAt(),
-                user.getName(),
+                user.getUsername(),
                 user.getEmail(),
                 user.getProfileId(),
-                userStatus.isStatus()
+                userStatusRepository.findByUserId(user.getId()).isStatus() == User.Status.ONLINE
         );
 
     }
@@ -92,10 +92,10 @@ public class BasicUserService implements UserService {
                         user.getId(),
                         user.getCreatedAt(),
                         user.getUpdatedAt(),
-                        user.getName(),
+                        user.getUsername(),
                         user.getEmail(),
                         user.getProfileId(),
-                        userStatusRepository.findByUserId(user.getId()).isStatus()
+                        userStatusRepository.findByUserId(user.getId()).isStatus() == User.Status.ONLINE
 
                 )).toList();
     }
