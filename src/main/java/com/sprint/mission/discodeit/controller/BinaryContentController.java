@@ -18,9 +18,15 @@ import java.util.UUID;
 public class BinaryContentController {
     private final BinaryContentService binaryContentService;
 
-    // 바이너리 파일을 1개 또는 여러 개 조회(api/binaryContent/find?ids=...&ids=...), 심화 요구사항 추가
+    // 바이너리 파일을 1개만 조회(api/binaryContent/find?binaryContentId=...), 심화 요구사항 추가
     @RequestMapping(value = "/find", method = RequestMethod.GET)
-    public ResponseEntity<List<BinaryContent>> find(@RequestParam List<UUID> ids) {
-        return ResponseEntity.ok(binaryContentService.findAllByIdIn(ids));
+    public ResponseEntity<BinaryContent> find(@RequestParam UUID binaryContentId) {
+        return ResponseEntity.ok(binaryContentService.find(binaryContentId));
+    }
+
+    // 바이너리 파일을 1개 또는 여러 개 조회(api/binaryContent/find?binaryContentId=...&binaryContentId=...), 심화 요구사항 추가
+    @RequestMapping(value = "/findMany", method = RequestMethod.GET)
+    public ResponseEntity<List<BinaryContent>> findMany(@RequestParam List<UUID> binaryContentId) {
+        return ResponseEntity.ok(binaryContentService.findAllByIdIn(binaryContentId));
     }
 }
