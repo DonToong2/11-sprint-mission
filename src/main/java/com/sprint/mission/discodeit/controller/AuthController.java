@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.Controller;
+package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.dto.LoginDto;
 import com.sprint.mission.discodeit.entity.User;
