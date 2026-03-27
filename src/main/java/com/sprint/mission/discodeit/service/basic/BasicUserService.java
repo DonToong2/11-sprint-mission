@@ -78,11 +78,12 @@ public class BasicUserService implements UserService {
                 user.getUsername(),
                 user.getEmail(),
                 user.getProfileId(),
+                // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
+                // ONLINE(Enum)일 경우 true를 그렇지 않으면 false를 반환
                 userStatusRepository.findByUserId(user.getId()).isStatus() == User.Status.ONLINE
         );
 
     }
-
 
     // 모든 사용자를 조회
     @Override
@@ -95,6 +96,8 @@ public class BasicUserService implements UserService {
                         user.getUsername(),
                         user.getEmail(),
                         user.getProfileId(),
+                        // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
+                        // ONLINE(Enum)일 경우 true를 그렇지 않으면 false를 반환
                         userStatusRepository.findByUserId(user.getId()).isStatus() == User.Status.ONLINE
 
                 )).toList();

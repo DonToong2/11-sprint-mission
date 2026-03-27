@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
-@RequestMapping("/auth")
+@RequestMapping("api/auths")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;

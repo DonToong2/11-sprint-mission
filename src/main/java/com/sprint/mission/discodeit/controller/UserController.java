@@ -17,7 +17,7 @@ import java.util.UUID;
 
 // 사용자 관리 컨트롤러
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
-@RequestMapping("api/user")
+@RequestMapping("api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService; // 특정 유저 생성, 모든 유저 조회, 특정 유저 업데이트, 특정 유저 삭제

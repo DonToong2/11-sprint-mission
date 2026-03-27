@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/channel")
+@RequestMapping("api/channels")
 @RequiredArgsConstructor
 public class ChannelController {
     private final ChannelService channelService;
@@ -32,20 +32,20 @@ public class ChannelController {
         return ResponseEntity.status(HttpStatus.CREATED).body(channelService.createPrivate(dto));
     }
 
-    // 특정 공개 채널의 정보 수정(channel/{channel-id}?)
+    // 특정 공개 채널의 정보 수정(channels/{channel-id}?)
     @RequestMapping(value = "/{channel-id}", method = RequestMethod.PUT)
     public ResponseEntity<Channel> updatePublic(@PathVariable("channel-id") UUID id, @RequestBody ChannelUpdateDto dto) {
         return ResponseEntity.ok(channelService.update(id, dto));
     }
 
-    // 특정 채널 삭제(channel/{channel-id})
+    // 특정 채널 삭제(channels/{channel-id})
     @RequestMapping(value = "/{channel-id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@PathVariable("channel-id") UUID id) {
         channelService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    // 특정 사용자가 속한 모든 채널 목록 조회(channel?user-id=...)
+    // 특정 사용자가 속한 모든 채널 목록 조회(channels?user-id=...)
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<ChannelReadDto>> readAllByUser(@RequestParam("user-id") UUID userId) {
         return ResponseEntity.ok(channelService.findAllByUserId(userId));
