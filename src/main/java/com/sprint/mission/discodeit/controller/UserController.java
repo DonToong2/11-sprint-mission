@@ -1,8 +1,9 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.UserCreateDto;
+import com.sprint.mission.discodeit.constant.EndPoints;
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.UserReadDto;
-import com.sprint.mission.discodeit.dto.UserUpdateDto;
+import com.sprint.mission.discodeit.dto.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.service.UserService;
@@ -17,7 +18,7 @@ import java.util.UUID;
 
 // 사용자 관리 컨트롤러
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
-@RequestMapping("api/users")
+@RequestMapping(EndPoints.USER)
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService; // 특정 유저 생성, 모든 유저 조회, 특정 유저 업데이트, 특정 유저 삭제
@@ -25,13 +26,13 @@ public class UserController {
 
     // 특정 사용자 등록
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<User> create(@RequestBody UserCreateDto dto) {
+    public ResponseEntity<User> create(@RequestBody UserCreateRequest dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(dto));
     }
 
     // 특정 사용자 정보 수정
     @RequestMapping(value = "/{user-id}", method = RequestMethod.PUT)
-    public ResponseEntity<User> update(@PathVariable("user-id") UUID id, @RequestBody UserUpdateDto dto) {
+    public ResponseEntity<User> update(@PathVariable("user-id") UUID id, @RequestBody UserUpdateRequest dto) {
         return ResponseEntity.ok(userService.update(id, dto));
     }
 

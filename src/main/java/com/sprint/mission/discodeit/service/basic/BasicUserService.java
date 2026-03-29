@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.UserCreateDto;
+import com.sprint.mission.discodeit.dto.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.UserReadDto;
-import com.sprint.mission.discodeit.dto.UserUpdateDto;
+import com.sprint.mission.discodeit.dto.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -26,7 +26,7 @@ public class BasicUserService implements UserService {
 
     // Create
     @Override
-    public User create(UserCreateDto dto) {
+    public User create(UserCreateRequest dto) {
         // 이름 중복체크
         userRepository.findAll().stream()
                 .filter(user -> user.getUsername().equals(dto.username()))
@@ -80,7 +80,7 @@ public class BasicUserService implements UserService {
                 user.getProfileId(),
                 // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
                 // ONLINE(Enum)일 경우 true를 그렇지 않으면 false를 반환
-                userStatusRepository.findByUserId(user.getId()).isStatus() == User.Status.ONLINE
+                userStatusRepository.findByUserId(user.getId()).status() == User.Status.ONLINE
         );
 
     }
@@ -98,7 +98,7 @@ public class BasicUserService implements UserService {
                         user.getProfileId(),
                         // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
                         // ONLINE(Enum)일 경우 true를 그렇지 않으면 false를 반환
-                        userStatusRepository.findByUserId(user.getId()).isStatus() == User.Status.ONLINE
+                        userStatusRepository.findByUserId(user.getId()).status() == User.Status.ONLINE
 
                 )).toList();
     }
@@ -107,7 +107,7 @@ public class BasicUserService implements UserService {
     // Update
     // 같은 키, 다른 Value를 put 하면 키는 그대로, Value만 갱신된다.
     @Override
-    public User update(UUID id, UserUpdateDto dto) {
+    public User update(UUID id, UserUpdateRequest dto) {
         User user = userRepository.findById(id);
 
         // 프로필 이미지 update

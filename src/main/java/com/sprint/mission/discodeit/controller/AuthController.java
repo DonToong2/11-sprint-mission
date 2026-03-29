@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.constant.EndPoints;
 import com.sprint.mission.discodeit.dto.LoginDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.AuthService;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
-@RequestMapping("api/auths")
+@RequestMapping(EndPoints.AUTH)
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;

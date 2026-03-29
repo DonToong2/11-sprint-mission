@@ -1,7 +1,8 @@
 package com.sprint.mission.discodeit.controller;
 
-import com.sprint.mission.discodeit.dto.MessageCreateDto;
-import com.sprint.mission.discodeit.dto.MessageUpdateDto;
+import com.sprint.mission.discodeit.constant.EndPoints;
+import com.sprint.mission.discodeit.dto.MessageCreateRequest;
+import com.sprint.mission.discodeit.dto.MessageUpdateRequest;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -13,20 +14,20 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/messages")
+@RequestMapping(EndPoints.MESSAGE)
 @RequiredArgsConstructor
 public class MessageController {
     private final MessageService messageService;
 
     // 메시지 보내기(생성)
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Message> create(@RequestBody MessageCreateDto dto) {
+    public ResponseEntity<Message> create(@RequestBody MessageCreateRequest dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(messageService.create(dto));
     }
 
     // 메시지 수정
     @RequestMapping(value = "/{message-id}", method = RequestMethod.PUT)
-    public ResponseEntity<Message> update(@PathVariable("message-id") UUID id, @RequestBody MessageUpdateDto dto) {
+    public ResponseEntity<Message> update(@PathVariable("message-id") UUID id, @RequestBody MessageUpdateRequest dto) {
         return ResponseEntity.ok(messageService.update(id, dto));
     }
 

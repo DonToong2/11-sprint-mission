@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
 
-@RestControllerAdvice // 모든 컨트롤러에서 발생하는 예외를 가로채는 ㅇ녁할
+@RestControllerAdvice // 모든 컨트롤러에서 발생하는 예외를 가로채는 역할
 public class GlobalExceptionHandler {
     // 기존 IllegalArgumentException, NoSuchElementException 예외
 
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    // 추가 : 개발자마저 인지하지 못하는 예외가 있을 수 있기 때문에 예외 최상위 클래스 Exception 예외를 추가, 500번(예외 발생, 서버 코드 문제)
+    // 추가 : 개발자마저 인지하지 못하는 예외가 있을 수 있기 때문에 예외 최상위 클래스 Exception 예외를 추가, 500번(예외 발생, 서버 코드 문제, 개발자 실수)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleOtherException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

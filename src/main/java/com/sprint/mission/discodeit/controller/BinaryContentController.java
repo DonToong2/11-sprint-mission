@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.constant.EndPoints;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
-@RequestMapping("api/binaryContents")
+@RequestMapping(EndPoints.BINARY_CONTENT)
 @RequiredArgsConstructor
 public class BinaryContentController {
     private final BinaryContentService binaryContentService;

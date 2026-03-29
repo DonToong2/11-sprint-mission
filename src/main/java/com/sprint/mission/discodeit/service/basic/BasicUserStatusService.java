@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.UserStatusCreateDto;
-import com.sprint.mission.discodeit.dto.UserStatusUpdateDto;
+import com.sprint.mission.discodeit.dto.UserStatusCreateRequest;
+import com.sprint.mission.discodeit.dto.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
@@ -20,7 +20,7 @@ public class BasicUserStatusService implements UserStatusService {
     private final UserRepository userRepository;
 
     @Override
-    public UserStatus create(UserStatusCreateDto dto) {
+    public UserStatus create(UserStatusCreateRequest dto) {
         // 관련된 User가 존재하지 않으면 예외를 발생
         userRepository.findById(dto.userId());
 
@@ -46,7 +46,7 @@ public class BasicUserStatusService implements UserStatusService {
     }
 
     @Override
-    public UserStatus update(UUID id, UserStatusUpdateDto dto) {
+    public UserStatus update(UUID id, UserStatusUpdateRequest dto) {
         UserStatus userStatus = userStatusRepository.findById(id);
         userStatus.updateLastOnline();
         userStatusRepository.update(userStatus);
