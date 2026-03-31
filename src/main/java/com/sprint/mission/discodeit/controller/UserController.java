@@ -8,7 +8,6 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 // 사용자 관리 컨트롤러
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
 @RequestMapping(EndPoints.USER)
-@Tag(name = "User", description = "User API")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -36,16 +35,18 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @RequestMapping(method = RequestMethod.POST)
   public ResponseEntity<User> create(
-      @RequestPart("userCreateRequest") UserCreateRequest dto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(dto));
+      @RequestPart("userCreateRequest") UserCreateRequest dto,
+      @RequestPart(value = "profile", required = false) MultipartFile profile) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(dto, profile));
   }
 
   // 특정 사용자 정보 수정
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping(value = "/{userId}", method = RequestMethod.PATCH)
   public ResponseEntity<User> update(@PathVariable("userId") UUID id,
-      @RequestPart("userUpdateRequest") UserUpdateRequest dto) {
-    return ResponseEntity.ok(userService.update(id, dto));
+      @RequestPart("userUpdateRequest") UserUpdateRequest dto,
+      @RequestPart(value = "profile", required = false) MultipartFile profile) {
+    return ResponseEntity.ok(userService.update(id, dto, profile));
   }
 
   // 특정 사용자 삭제
