@@ -7,48 +7,60 @@ import com.sprint.mission.discodeit.dto.ChannelReadDto;
 import com.sprint.mission.discodeit.dto.ChannelUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.service.ChannelService;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(EndPoints.CHANNEL)
 @RequiredArgsConstructor
 public class ChannelController {
-    private final ChannelService channelService;
 
-    // 공개 채널 생성
-    @RequestMapping(value = "/public", method = RequestMethod.POST)
-    public ResponseEntity<Channel> createPublic(@RequestBody ChannelCreatePublicRequest dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(channelService.createPublic(dto));
-    }
+  private final ChannelService channelService;
 
-    // 비공개 채널 생성
-    @RequestMapping(value = "/private", method = RequestMethod.POST)
-    public ResponseEntity<Channel> createPrivate(@RequestBody ChannelCreatePrivateRequest dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(channelService.createPrivate(dto));
-    }
+  // 공개 채널 생성
+  @ResponseStatus(HttpStatus.CREATED)
+  @RequestMapping(value = "/public", method = RequestMethod.POST)
+  public ResponseEntity<Channel> createPublic(@RequestBody ChannelCreatePublicRequest dto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(channelService.createPublic(dto));
+  }
 
-    // 특정 공개 채널의 정보 수정(channels/{channel-id}?)
-    @RequestMapping(value = "/{channel-id}", method = RequestMethod.PUT)
-    public ResponseEntity<Channel> updatePublic(@PathVariable("channel-id") UUID id, @RequestBody ChannelUpdateRequest dto) {
-        return ResponseEntity.ok(channelService.update(id, dto));
-    }
+  // 비공개 채널 생성
+  @ResponseStatus(HttpStatus.CREATED)
+  @RequestMapping(value = "/private", method = RequestMethod.POST)
+  public ResponseEntity<Channel> createPrivate(@RequestBody ChannelCreatePrivateRequest dto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(channelService.createPrivate(dto));
+  }
 
-    // 특정 채널 삭제(channels/{channel-id})
-    @RequestMapping(value = "/{channel-id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> delete(@PathVariable("channel-id") UUID id) {
-        channelService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+  // 특정 공개 채널의 정보 수정(channels/{channelId}?)
+  @ResponseStatus(HttpStatus.OK)
+  @RequestMapping(value = "/{channelId}", method = RequestMethod.PATCH)
+  public ResponseEntity<Channel> updatePublic(@PathVariable("channelId") UUID id,
+      @RequestBody ChannelUpdateRequest dto) {
+    return ResponseEntity.ok(channelService.update(id, dto));
+  }
 
-    // 특정 사용자가 속한 모든 채널 목록 조회(channels?user-id=...)
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<ChannelReadDto>> readAllByUser(@RequestParam("user-id") UUID userId) {
-        return ResponseEntity.ok(channelService.findAllByUserId(userId));
-    }
+  // 특정 채널 삭제(channels/{channelId})
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @RequestMapping(value = "/{channel-id}", method = RequestMethod.DELETE)
+  public ResponseEntity<Void> delete(@PathVariable("channel-id") UUID id) {
+    channelService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  // 특정 사용자가 속한 모든 채널 목록 조회(channels?user-id=...)
+  @ResponseStatus(HttpStatus.OK)
+  @RequestMapping(method = RequestMethod.GET)
+  public ResponseEntity<List<ChannelReadDto>> readAllByUser(@RequestParam("userId") UUID userId) {
+    return ResponseEntity.ok(channelService.findAllByUserId(userId));
+  }
 }
