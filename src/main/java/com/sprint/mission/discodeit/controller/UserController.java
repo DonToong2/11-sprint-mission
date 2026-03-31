@@ -10,7 +10,6 @@ import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -61,13 +60,13 @@ public class UserController {
       @ApiResponse(responseCode = "400", description = "같은 email 또는 username을 사용하는 User가 이미 존재함"),
       @ApiResponse(responseCode = "404", description = "User를 찾을 수 없음")
   })
-  @RequestMapping(value = "/{userId}", method = RequestMethod.PATCH)
+  @RequestMapping(value = "/{userId}", method = RequestMethod.PATCH, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<User> update(
       @Parameter(description = "수정할 User ID")
       @PathVariable("userId") UUID id,
-      @Parameter(content = @Content(mediaType = "multipart/form-data"), description = "수정할 User 정보")
+      @Parameter(description = "수정할 User 정보")
       @RequestPart("userUpdateRequest") UserUpdateRequest dto,
-      @Parameter(content = @Content(mediaType = "multipart/form-data"), description = "수정할 User 프로필 이미지")
+      @Parameter(description = "수정할 User 프로필 이미지")
       @RequestPart(value = "profile", required = false) MultipartFile profile) {
     return ResponseEntity.ok(userService.update(id, dto, profile));
   }
