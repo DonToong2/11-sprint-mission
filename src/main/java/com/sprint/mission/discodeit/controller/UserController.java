@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,11 +44,11 @@ public class UserController {
       @ApiResponse(responseCode = "201", description = "User가 성공적으로 생성됨"),
       @ApiResponse(responseCode = "400", description = "같은 email 또는 username을 사용하는 User가 이미 존재함")
   })
-  @RequestMapping(method = RequestMethod.POST)
+  @RequestMapping(method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<User> create(
-      @Parameter(content = @Content(mediaType = "multipart/form-data"), description = "User 생성 정보")
+      @Parameter(description = "User 생성 정보")
       @RequestPart("userCreateRequest") UserCreateRequest dto,
-      @Parameter(content = @Content(mediaType = "multipart/form-data"), description = "User 프로필 이미지")
+      @Parameter(description = "User 프로필 이미지")
       @RequestPart(value = "profile", required = false) MultipartFile profile) {
     return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(dto, profile));
   }
