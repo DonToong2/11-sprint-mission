@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.constant.EndPoints;
 import com.sprint.mission.discodeit.dto.LoginRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
 @RequestMapping(EndPoints.AUTH)
+@Tag(name = "Auth", description = "인증 API")
 @RequiredArgsConstructor
 public class AuthController {
 
