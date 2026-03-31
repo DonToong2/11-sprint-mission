@@ -120,6 +120,24 @@ public class BasicUserService implements UserService {
   public User update(UUID id, UserUpdateRequest dto, MultipartFile profile) {
     User user = userRepository.findById(id);
 
+    // 이름 중복체크
+    userRepository.findAll().stream()
+        .filter(u -> !u.getId().equals(id))
+        .filter(u -> u.getUsername().equals(dto.newUsername()))
+        .findFirst()
+        .ifPresent(u -> {
+          throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+        });
+
+    // 이메일 중복체크 // 조건 -> 탐색 -> 이미 있으면 예외를 날림
+    userRepository.findAll().stream()
+        .filter(u -> !u.getId().equals(id))
+        .filter(u -> u.getEmail().equals(dto.newEmail()))
+        .findFirst()
+        .ifPresent(u -> {
+          throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        });
+
     // 프로필 이미지 수정(선택)
     if (profile != null && !profile.isEmpty()) {
       try {
