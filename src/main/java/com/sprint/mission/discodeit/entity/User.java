@@ -1,31 +1,51 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
-import java.util.UUID;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Entity
+@Table(name = "users")
+@NoArgsConstructor
 public class User extends BaseUpdatableEntity {
 
   // 사용자에 대한 데이터
+  // username varchar(50) UNIQUE NOT NULL
+  @Column(name = "username", length = 50, unique = true, nullable = false)
   private String username; // 사용자 이름
-  private String nickname; // 사용자 닉네임, 중복 불가
+
+  // email varchar(100) UNIQUE NOT NULL
+  @Column(name = "email", length = 100, unique = true, nullable = false)
   private String email; // 사용자 이메일, 중복 불가
-  private String phoneNumber; // 사용자 전화번호, 중복 불가
-  private Status status; // 디스코드 접속 상태(온라인, 자리비움, 방해 금지, 오프라인)
+
+  // password varchar(60) NOT NULL
+  @Column(name = "password", length = 60, nullable = false)
   private String password;
 
   // 연관관계 필드
-  private UUID profileId; // BinaryContent의 UUID
+  // 1:1 관계 : 1개의 User는 1개의 BinaryContent(profile)을 갖는다.
+  // profile_id UUID UNIQUE references binary_contents (id) on delete set null
+  @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
+  @JoinColumn(name = "profile_id", unique = true)
+  private BinaryContent profile; // BinaryContent의 id
+
+  // 1:1 관계 : 1개의 User는 1개의 UserStatus를 갖는다.
+  @OneToOne(fetch = FetchType.LAZY)
+  private UserStatus status; // 디스코드 접속 상태(온라인, 자리비움, 방해 금지, 오프라인)
 
   // 'id', 'createdAt'는 생성자에서 초기화하세요.
-  public User(String username, String nickname,
-      String email, String phoneNumber, Status status) {
+  public User(String username, String email, UserStatus status, String password) {
     this.username = username;
-    this.nickname = nickname;
     this.email = email;
-    this.phoneNumber = phoneNumber;
     this.status = status;
+    this.password = password;
   }
 
   // 정적 팩토리 메서드
@@ -47,19 +67,11 @@ public class User extends BaseUpdatableEntity {
     this.username = username;
   }
 
-  public void updateNickname(String nickname) {
-    this.nickname = nickname;
-  }
-
   public void updateEmail(String email) {
     this.email = email;
   }
 
-  public void updatePhoneNumber(String phoneNumber) {
-    this.phoneNumber = phoneNumber;
-  }
-
-  public void updateStatus(Status status) {
+  public void updateStatus(UserStatus status) {
     this.status = status;
   }
 
@@ -67,17 +79,14 @@ public class User extends BaseUpdatableEntity {
     this.password = password;
   }
 
-  public void updateProfileId(UUID profileId) {
-    this.profileId = profileId;
+  public void updateProfileId(BinaryContent profile) {
+    this.profile = profile;
   }
 
   @Override
   public String toString() {
-    return "유저 이름 : " + username + ", 유저 닉네임 : " + nickname
-        + "\n 유저 이메일 : " + email + ", 유저 전화번호 : " + phoneNumber
-        + "\n 유저 상태 : " + status.getDescription();
+    return "유저 이름 : " + username + "유저 이메일 : " + email;
   }
-
 
   public enum Status {
     ONLINE("온라인"), AWAY("자리비움"), DO_NOT_DISTURB("방해 금지"), OFFLINE("오프라인");
