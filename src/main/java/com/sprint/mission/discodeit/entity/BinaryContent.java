@@ -1,20 +1,13 @@
 package com.sprint.mission.discodeit.entity;
 
-import java.io.Serializable;
-import java.time.Instant;
+import com.sprint.mission.discodeit.entity.base.BaseEntity;
 import java.util.UUID;
 import lombok.Getter;
 
 @Getter
-public class BinaryContent implements Serializable {
-
-  // 객체 직렬화
-  private static final long serialVersionUID = 1L;
+public class BinaryContent extends BaseEntity {
 
   // 필드
-  private final UUID id; // User의 profileId이자 message의 attachmentIds
-  private final Instant createdAt;
-  //    private Instant updatedAt; // 수정 불가능한 모델이기 때문에 updateAt 필드 정의 X
   private final UUID userId; // 유저의 프로필 이미지
   private final UUID messageId; // 메세지에 담긴 첨부파일
   private final byte[] bytes; // 실제 저장할 바이너리 데이터
@@ -24,8 +17,6 @@ public class BinaryContent implements Serializable {
   // 생성자
   private BinaryContent(UUID userId, UUID messageId, byte[] bytes, String originalName,
       String contentType) {
-    this.id = UUID.randomUUID();
-    this.createdAt = Instant.now();
     this.userId = userId;
     this.messageId = messageId;
     this.bytes = bytes;
