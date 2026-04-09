@@ -81,7 +81,7 @@ public class User extends BaseUpdatableEntity {
     this.password = password;
   }
 
-  public void updateProfileId(BinaryContent profile) {
+  public void updateProfile(BinaryContent profile) {
     this.profile = profile;
   }
 
