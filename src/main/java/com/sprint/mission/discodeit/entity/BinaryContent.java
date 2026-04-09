@@ -38,15 +38,8 @@ public class BinaryContent extends BaseEntity {
     this.bytes = bytes;
   }
 
-//  // 프로필 이미지(정적 팩토리 메서드)
-//  public static BinaryContent userProfileImage(UUID userId, byte[] bytes, String originalName,
-//      String contentType) {
-//    return new BinaryContent(userId, null, bytes, originalName, contentType);
-//  }
-//
-//  // 메시지 첨부파일(정적 팩토리 메서드)
-//  public static BinaryContent messageAttachment(UUID messageId, byte[] bytes, String originalName,
-//      String contentType) {
-//    return new BinaryContent(null, messageId, bytes, originalName, contentType);
-//  }
+  //  // 프로필 이미지(정적 팩토리 메서드)
+  public static BinaryContent of(String fileName, Long size, String contentType, byte[] bytes) {
+    return new BinaryContent(fileName, size, contentType, bytes);
+  }
 }
