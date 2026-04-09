@@ -18,12 +18,12 @@ import lombok.NoArgsConstructor;
 public class ReadStatus extends BaseUpdatableEntity {
 
   // 연관관계 필드
-  // user_id      uuid        not null references users (id) on delete cascade
+  // user_id uuid not null references users (id) on delete cascade
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  // channel_id   uuid        not null references channels (id) on delete cascade
+  // channel_id uuid not null references channels (id) on delete cascade
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "channel_id", nullable = false)
   private Channel channel;

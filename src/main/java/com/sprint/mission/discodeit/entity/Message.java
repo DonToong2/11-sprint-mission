@@ -26,6 +26,7 @@ public class Message extends BaseUpdatableEntity {
   private String content; // 메시지 내용
 
   // 연관 관계 필드
+  // 채널이 삭제될 때 메시지도 삭제되어야 한다.
   // channel_id uuid not null references channels (id) on delete cascade
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "channel_id", nullable = false)
@@ -33,29 +34,32 @@ public class Message extends BaseUpdatableEntity {
 
   //author_id uuid references users (id) on delete set null
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "author_id", nullable = false)
+  @JoinColumn(name = "author_id")
   private User author;
 
-  // N:M 관계 message_attachments 테이블을 기준으로
-  // 현재 테이블(messages)에서 참조할 외래키(attachment_id)
-  // 반대쪽 테이블(binary_contents)에서 참조할 외래키(message_id), 관계가 양방향일 경우 반대쪽 엔티티에도 @ManyToMany 필요
+  // N:M 관계(messages:binary_contents)
+  // 중계 테이블 message_attachments / 중계 엔티티 Message
+  // 의 message_id를 현재 엔티티의 외래키
+  // 의 attachment_id는 반대쪽 엔티티(BinaryContent)의 외래키
+  // (관계가 양방향일 경우 반대쪽 엔티티에도 @ManyToMany 필요)
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "message_attachments",
-      joinColumns = @JoinColumn(name = "attachment_id"),
-      inverseJoinColumns = @JoinColumn(name = "message_id"))
-  private List<BinaryContent> attachmentIds; // BinaryContent의 UUID id
+      joinColumns = @JoinColumn(name = "message_id"),
+      inverseJoinColumns = @JoinColumn(name = "attachment_id"))
+  private List<BinaryContent> attachments;
 
   // 정적 팩토리 메서드
-  private Message(String content, Channel channel, User author) {
+  private Message(String content, Channel channel, User author, List<BinaryContent> attachments) {
     this.content = content;
     this.channel = channel;
     this.author = author;
-    this.attachmentIds = new ArrayList<>(); // 삽입/삭제보다 조회가 더 많이 일어나기 때문에 LinkedList가 아닌 ArrayList 사용
+    this.attachments = new ArrayList<>(); // 삽입/삭제보다 조회가 더 많이 일어나기 때문에 LinkedList가 아닌 ArrayList 사용
   }
 
   // 정적 팩토리 메서드
-  public static Message create(String content, Channel channel, User author) {
-    return new Message(content, channel, author);
+  public static Message create(String content, Channel channel, User author,
+      List<BinaryContent> attachments) {
+    return new Message(content, channel, author, attachments);
   }
 
   // getter(Lombok의 @Getter로 대체)

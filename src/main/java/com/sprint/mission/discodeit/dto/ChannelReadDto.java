@@ -9,7 +9,7 @@ public record ChannelReadDto(
     UUID id,
     Instant createdAt,
     Instant updatedAt,
-    Channel.Type type,
+    Channel.ChannelType type,
     String name,
     String description,
     List<UUID> participantIds,

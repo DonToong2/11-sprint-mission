@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,14 +32,15 @@ public class User extends BaseUpdatableEntity {
 
   // 연관관계 필드
   // 1:1 관계 : 1개의 User는 1개의 BinaryContent(profile)을 갖는다.
+  // User가 삭제될 때 프로필이미지도 삭제되어야한다.(부모 : User / 자식 : BinaryContent)
   // profile_id UUID UNIQUE references binary_contents (id) on delete set null
-  @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "profile_id", unique = true)
   private BinaryContent profile; // BinaryContent의 id
 
-  // 1:1 관계 : 1개의 User는 1개의 UserStatus를 갖는다.
-  @OneToOne(fetch = FetchType.LAZY)
-  private UserStatus status; // 디스코드 접속 상태(온라인, 자리비움, 방해 금지, 오프라인)
+  // 1:1 관계(양방향) : 1개의 User는 1개의 UserStatus를 갖는다 / User가 삭제될 시 UserStatus도 삭제된다.(ON DELETE CASCADE)
+  @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  private UserStatus status; // 디스코드 접속 상태(온라인, 오프라인)
 
   // 'id', 'createdAt'는 생성자에서 초기화하세요.
   public User(String username, String email, UserStatus status, String password) {
