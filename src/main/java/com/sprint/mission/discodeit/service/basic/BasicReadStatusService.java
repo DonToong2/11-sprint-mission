@@ -2,7 +2,9 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.ReadStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.ReadStatusUpdateRequest;
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ReadStatus;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -28,20 +30,22 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional
   public ReadStatus create(ReadStatusCreateRequest dto) {
     // 관련된 Channel, User가 존재하지 않으면 예외를 발생.
-    if (dto.user() == null || dto.channel() == null) {
-      throw new NoSuchElementException("해당 채널 또는 User가 존재하지 않습니다.");
-    }
+    User user = userRepository.findById(dto.userId()).orElseThrow(
+        () -> new NoSuchElementException("해당 User가 존재하지 않습니다. UserId :" + dto.userId()));
+
+    Channel channel = channelRepository.findById(dto.channelId()).orElseThrow(
+        () -> new NoSuchElementException("해당 Channel이 존재하지 않습니다. ChannelId : " + dto.channelId()));
 
     // 같은 Channel, User와 관련된 객체가 이미 존재하면 예외를 발생
-    readStatusRepository.findByUserAndChannel(dto.user(), dto.channel())
+    readStatusRepository.findByUserAndChannel(user, channel)
         .ifPresent(readStatus -> {
               throw new IllegalArgumentException(
-                  "이미 해당 채널의 읽음 상태가 존재합니다. user: " + dto.user() +
-                      ", channelId: " + dto.channel());
+                  "이미 해당 채널의 읽음 상태가 존재합니다. user: " + dto.userId() +
+                      ", channelId: " + dto.channelId());
             }
         );
 
-    ReadStatus readStatus = new ReadStatus(dto.user(), dto.channel(), Instant.now());
+    ReadStatus readStatus = new ReadStatus(user, channel, Instant.now());
     readStatusRepository.save(readStatus);
 
     return readStatus;
@@ -63,7 +67,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional
   public ReadStatus update(UUID id, ReadStatusUpdateRequest dto) {
     ReadStatus readStatus = readStatusRepository.findById(id).orElseThrow();
-    readStatus.updateLastReadAt();
+    readStatus.updateLastReadAt(dto.updatelastReadAt());
     readStatusRepository.save(readStatus);
 
     return readStatus;

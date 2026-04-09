@@ -42,7 +42,7 @@ public class ReadStatus extends BaseUpdatableEntity {
   }
 
   // update
-  public void updateLastReadAt() {
+  public void updateLastReadAt(Instant lastReadAt) {
     this.lastReadAt = Instant.now();
   }
 }
