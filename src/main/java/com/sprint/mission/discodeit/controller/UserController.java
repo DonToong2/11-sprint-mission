@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.controller;
 import com.sprint.mission.discodeit.constant.EndPoints;
 import com.sprint.mission.discodeit.dto.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.UserReadDto;
+import com.sprint.mission.discodeit.dto.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.dto.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -109,8 +111,9 @@ public class UserController {
   @RequestMapping(value = "/{userId}/userStatus", method = RequestMethod.PATCH)
   public ResponseEntity<UserStatus> updateStatus(
       @Parameter(description = "상태를 변경할 User ID")
-      @PathVariable("userId") UUID id) {
-    return ResponseEntity.ok(userStatusService.updateByUserId(id));
+      @PathVariable("userId") UUID id,
+      @RequestBody UserStatusUpdateRequest dto) {
+    return ResponseEntity.ok(userStatusService.updateByUserId(id, dto));
   }
 
 

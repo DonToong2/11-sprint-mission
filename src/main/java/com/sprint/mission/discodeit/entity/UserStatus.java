@@ -42,7 +42,7 @@ public class UserStatus extends BaseUpdatableEntity {
     return User.Status.OFFLINE;
   }
 
-  public void updateLastOnline() {
+  public void updateLastOnline(Instant lastActiveAt) {
     this.lastActiveAt = Instant.now();
   }
 }
