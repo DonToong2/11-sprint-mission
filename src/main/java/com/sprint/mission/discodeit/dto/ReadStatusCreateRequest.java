@@ -1,9 +1,11 @@
 package com.sprint.mission.discodeit.dto;
 
-import java.util.UUID;
+import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.User;
 
 public record ReadStatusCreateRequest(
-        UUID userId,
-        UUID channelId
+    User user,
+    Channel channel
 ) {
+
 }
