@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,9 @@ public class BasicBinaryContentService implements BinaryContentService {
   @Override
   @Transactional
   public void delete(UUID id) {
+    if (!binaryContentRepository.existsById(id)) {
+      throw new NoSuchElementException("해당 BinaryContent는 존재하지 않습니다. BinaryContent Id : " + id);
+    }
     binaryContentRepository.deleteById(id);
   }
 }

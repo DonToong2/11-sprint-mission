@@ -66,7 +66,8 @@ public class BasicReadStatusService implements ReadStatusService {
   @Override
   @Transactional
   public ReadStatus update(UUID id, ReadStatusUpdateRequest dto) {
-    ReadStatus readStatus = readStatusRepository.findById(id).orElseThrow();
+    ReadStatus readStatus = readStatusRepository.findById(id).orElseThrow(
+        () -> new NoSuchElementException("해당 ReadStatus가 존재하지 않습니다. ReadStatus Id : " + id));
     readStatus.updateLastReadAt(dto.updatelastReadAt());
     readStatusRepository.save(readStatus);
 
@@ -76,6 +77,9 @@ public class BasicReadStatusService implements ReadStatusService {
   @Override
   @Transactional
   public void delete(UUID id) {
+    if (!readStatusRepository.existsById(id)) {
+      throw new NoSuchElementException("해당 ReadStatus는 존재하지 않습니다. ReadStatus Id : " + id);
+    }
     readStatusRepository.deleteById(id);
   }
 }
