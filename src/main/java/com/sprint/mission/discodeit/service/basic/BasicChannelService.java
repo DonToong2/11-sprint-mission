@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.ChannelReadDto;
+import com.sprint.mission.discodeit.dto.read.ChannelReadDto;
 import com.sprint.mission.discodeit.dto.request.ChannelCreatePrivateRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelCreatePublicRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelUpdateRequest;

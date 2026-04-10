@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.constant.EndPoints;
-import com.sprint.mission.discodeit.dto.ChannelReadDto;
+import com.sprint.mission.discodeit.dto.read.ChannelReadDto;
 import com.sprint.mission.discodeit.dto.request.ChannelCreatePrivateRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelCreatePublicRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelUpdateRequest;

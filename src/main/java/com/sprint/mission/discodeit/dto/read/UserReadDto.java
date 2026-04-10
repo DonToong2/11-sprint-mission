@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.dto;
+package com.sprint.mission.discodeit.dto.read;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
