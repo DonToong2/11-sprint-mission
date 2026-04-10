@@ -1,12 +1,13 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.read.BinaryContentDto;
 import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BasicBinaryContentService implements BinaryContentService {
 
   private final BinaryContentRepository binaryContentRepository;
+  private final BinaryContentMapper binaryContentMapper;
 
   @Override
   @Transactional
@@ -29,14 +31,18 @@ public class BasicBinaryContentService implements BinaryContentService {
 
   @Override
   @Transactional(readOnly = true)
-  public Optional<BinaryContent> find(UUID id) {
-    return binaryContentRepository.findById(id);
+  public BinaryContentDto find(UUID id) {
+    BinaryContent binaryContent = binaryContentRepository.findById(id).orElseThrow(
+        () -> new NoSuchElementException("해당 BinaryContent는 존재하지 않습니다. BinaryContent Id : " + id)
+    );
+    return binaryContentMapper.toDto(binaryContent);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<BinaryContent> findAllByIdIn(List<UUID> ids) {
-    return binaryContentRepository.findAllById(ids);
+  public List<BinaryContentDto> findAllByIdIn(List<UUID> ids) {
+    return binaryContentRepository.findAllById(ids).stream()
+        .map(binaryContentMapper::toDto).toList();
   }
 
   @Override

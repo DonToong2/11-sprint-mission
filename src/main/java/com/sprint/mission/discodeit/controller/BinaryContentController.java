@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.constant.EndPoints;
-import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.dto.read.BinaryContentDto;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +33,7 @@ public class BinaryContentController {
   @Operation(summary = "여러 첨부 파일 조회")
   @ApiResponse(responseCode = "200", description = "첨부 파일 목록 조회 성공")
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<List<BinaryContent>> findAllByIdIn(
+  public ResponseEntity<List<BinaryContentDto>> findAllByIdIn(
       @Parameter(description = "조회할 첨부 파일 ID 목록")
       @RequestParam List<UUID> binaryContentIds) {
     return ResponseEntity.ok(binaryContentService.findAllByIdIn(binaryContentIds));
@@ -47,7 +47,7 @@ public class BinaryContentController {
       @ApiResponse(responseCode = "400", description = "첨부 파일을 찾을 수 없음")
   })
   @RequestMapping(value = "/{binaryContentId}", method = RequestMethod.GET)
-  public ResponseEntity<BinaryContent> find(
+  public ResponseEntity<BinaryContentDto> find(
       @Parameter(description = "조회할 첨부 파일 ID")
       @PathVariable(value = "binaryContentId") UUID id) {
     return ResponseEntity.ok(binaryContentService.find(id));

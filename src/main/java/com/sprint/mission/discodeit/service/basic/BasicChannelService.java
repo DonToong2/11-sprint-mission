@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
@@ -30,6 +31,7 @@ public class BasicChannelService implements ChannelService {
   private final ReadStatusRepository readStatusRepository;
   private final MessageRepository messageRepository;
   private final UserRepository userRepository;
+  private final ChannelMapper channelMapper;
 
   // Create
 //    @Override
@@ -95,15 +97,7 @@ public class BasicChannelService implements ChannelService {
           .map(ReadStatus::getUser)
           .toList();
     }
-
-    return new ChannelDto(
-        channel.getId(),
-        channel.getType(),
-        channel.getName(),
-        channel.getDescription(),
-        participants,
-        lastMessageAt
-    );
+    return channelMapper.toDto(channel, participants, lastMessageAt);
   }
 
   @Override
@@ -135,15 +129,7 @@ public class BasicChannelService implements ChannelService {
                 .toList();
           }
 
-          return new ChannelDto(
-              channel.getId(),
-              channel.getType(),
-              channel.getName(),
-              channel.getDescription(),
-              participants,
-              lastMessageAt
-          );
-          // 최근 메시지 시간 조회
+          return channelMapper.toDto(channel, participants, lastMessageAt);
         })
         .toList();
   }

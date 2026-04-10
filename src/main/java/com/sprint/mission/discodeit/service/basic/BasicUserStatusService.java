@@ -1,15 +1,16 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.read.UserStatusDto;
 import com.sprint.mission.discodeit.dto.request.UserStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.mapper.UserStatusMapper;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class BasicUserStatusService implements UserStatusService {
 
   private final UserStatusRepository userStatusRepository;
   private final UserRepository userRepository;
+  private final UserStatusMapper userStatusMapper;
 
   @Override
   @Transactional
@@ -43,14 +45,18 @@ public class BasicUserStatusService implements UserStatusService {
 
   @Override
   @Transactional(readOnly = true)
-  public Optional<UserStatus> find(UUID id) {
-    return userStatusRepository.findById(id);
+  public UserStatusDto find(UUID id) {
+    UserStatus userStatus = userStatusRepository.findById(id).orElseThrow(
+        () -> new NoSuchElementException("존재하지 않는 UserStatus입니다. id : " + id)
+    );
+    return userStatusMapper.toDto(userStatus);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<UserStatus> findAll() {
-    return userStatusRepository.findAll();
+  public List<UserStatusDto> findAll() {
+    return userStatusRepository.findAll().stream()
+        .map(userStatusMapper::toDto).toList();
   }
 
   // UserStatusId로 UserStatus를 update

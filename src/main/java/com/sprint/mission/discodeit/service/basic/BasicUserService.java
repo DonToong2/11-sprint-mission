@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
@@ -27,6 +28,7 @@ public class BasicUserService implements UserService {
   private final UserRepository userRepository;
   private final UserStatusRepository userStatusRepository;
   private final BinaryContentRepository binaryContentRepository;
+  private final UserMapper userMapper;
 
   // Create
   @Override
@@ -79,17 +81,8 @@ public class BasicUserService implements UserService {
     User user = userRepository.findById(id).orElseThrow(
         () -> new NoSuchElementException("존재하지 않는 User입니다. id : " + id)
     );
-    UserStatus userStatus = userStatusRepository.findByUserId(id).orElseThrow(
-        () -> new NoSuchElementException("존재하지 않는 UserStatus입니다. id : " + id)
-    );
 
-    return new UserDto(
-        user.getId(), user.getUsername(),
-        user.getEmail(), user.getProfile().getId(),
-        // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
-        // ONLINE(Enum)일 경우 true를 그렇지 않으면 false를 반환
-        userStatus.status() == User.Status.ONLINE
-    );
+    return userMapper.toDto(user);
   }
 
   // 모든 사용자를 조회
@@ -97,18 +90,7 @@ public class BasicUserService implements UserService {
   @Transactional(readOnly = true)
   public List<UserDto> findAll() {
     return userRepository.findAll().stream()
-        .map(user -> {
-          UserStatus userStatus = userStatusRepository.findByUserId(user.getId()).orElseThrow(
-              () -> new NoSuchElementException("존재하지 않는 User입니다. id : " + user.getId())
-          );
-          return new UserDto(
-              user.getId(), user.getUsername(),
-              user.getEmail(), user.getProfile().getId(),
-              // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
-              // ONLINE(Enum)일 경우 true를 그렇지 않으면 false를 반환
-              userStatus.status() == User.Status.ONLINE);
-
-        }).toList();
+        .map(userMapper::toDto).toList();
   }
 
 
