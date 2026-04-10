@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.read.UserReadDto;
+import com.sprint.mission.discodeit.dto.read.UserDto;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
@@ -75,7 +75,7 @@ public class BasicUserService implements UserService {
   // Read
   @Override
   @Transactional(readOnly = true)
-  public UserReadDto find(UUID id) {
+  public UserDto find(UUID id) {
     User user = userRepository.findById(id).orElseThrow(
         () -> new NoSuchElementException("존재하지 않는 User입니다. id : " + id)
     );
@@ -83,7 +83,7 @@ public class BasicUserService implements UserService {
         () -> new NoSuchElementException("존재하지 않는 UserStatus입니다. id : " + id)
     );
 
-    return new UserReadDto(
+    return new UserDto(
         user.getId(), user.getUsername(),
         user.getEmail(), user.getProfile().getId(),
         // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
@@ -95,13 +95,13 @@ public class BasicUserService implements UserService {
   // 모든 사용자를 조회
   @Override
   @Transactional(readOnly = true)
-  public List<UserReadDto> findAll() {
+  public List<UserDto> findAll() {
     return userRepository.findAll().stream()
         .map(user -> {
           UserStatus userStatus = userStatusRepository.findByUserId(user.getId()).orElseThrow(
               () -> new NoSuchElementException("존재하지 않는 User입니다. id : " + user.getId())
           );
-          return new UserReadDto(
+          return new UserDto(
               user.getId(), user.getUsername(),
               user.getEmail(), user.getProfile().getId(),
               // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환

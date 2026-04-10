@@ -3,7 +3,7 @@ package com.sprint.mission.discodeit.dto.read;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
-public record UserReadDto(
+public record UserDto(
     UUID id,
     String username,
     String email,

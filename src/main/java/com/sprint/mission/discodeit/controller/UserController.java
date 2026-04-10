@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.constant.EndPoints;
-import com.sprint.mission.discodeit.dto.read.UserReadDto;
+import com.sprint.mission.discodeit.dto.read.UserDto;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequest;
 import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequest;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
@@ -93,7 +93,7 @@ public class UserController {
   @Operation(summary = "전체 User 목록 조회")
   @ApiResponse(responseCode = "200", description = "User 목록 조회 성공")
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<List<UserReadDto>> findAll() {
+  public ResponseEntity<List<UserDto>> findAll() {
     return ResponseEntity.ok(userService.findAll());
   }
 //    @RequestMapping(method = RequestMethod.GET)

@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.read.ChannelReadDto;
+import com.sprint.mission.discodeit.dto.read.ChannelDto;
 import com.sprint.mission.discodeit.dto.request.ChannelCreatePrivateRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelCreatePublicRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelUpdateRequest;
@@ -75,7 +75,7 @@ public class BasicChannelService implements ChannelService {
   // Read
   @Override
   @Transactional(readOnly = true)
-  public ChannelReadDto find(UUID id) {
+  public ChannelDto find(UUID id) {
     Channel channel = channelRepository.findById(id).orElseThrow(
         () -> new NoSuchElementException("존재하지 않는 채널입니다. id : " + id)
     );
@@ -96,7 +96,7 @@ public class BasicChannelService implements ChannelService {
           .toList();
     }
 
-    return new ChannelReadDto(
+    return new ChannelDto(
         channel.getId(),
         channel.getType(),
         channel.getName(),
@@ -108,7 +108,7 @@ public class BasicChannelService implements ChannelService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<ChannelReadDto> findAllByUserId(UUID userId) {
+  public List<ChannelDto> findAllByUserId(UUID userId) {
     return channelRepository.findAll().stream()
         .filter(channel -> { // PUBLIC이면 전체 유저가 채널 조회 가능, PRIVATE는 해당 USER가 참여한 채널만 조회 가능
           // PUBLIC
@@ -135,7 +135,7 @@ public class BasicChannelService implements ChannelService {
                 .toList();
           }
 
-          return new ChannelReadDto(
+          return new ChannelDto(
               channel.getId(),
               channel.getType(),
               channel.getName(),
