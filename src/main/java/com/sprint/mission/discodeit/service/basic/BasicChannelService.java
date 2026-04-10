@@ -98,8 +98,6 @@ public class BasicChannelService implements ChannelService {
 
     return new ChannelReadDto(
         channel.getId(),
-        channel.getCreatedAt(),
-        channel.getUpdatedAt(),
         channel.getType(),
         channel.getName(),
         channel.getDescription(),
@@ -139,8 +137,6 @@ public class BasicChannelService implements ChannelService {
 
           return new ChannelReadDto(
               channel.getId(),
-              channel.getCreatedAt(),
-              channel.getUpdatedAt(),
               channel.getType(),
               channel.getName(),
               channel.getDescription(),

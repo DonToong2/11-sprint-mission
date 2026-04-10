@@ -84,7 +84,7 @@ public class BasicUserService implements UserService {
     );
 
     return new UserReadDto(
-        user.getId(), user.getCreatedAt(), user.getUpdatedAt(), user.getUsername(),
+        user.getId(), user.getUsername(),
         user.getEmail(), user.getProfile().getId(),
         // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
         // ONLINE(Enum)일 경우 true를 그렇지 않으면 false를 반환
@@ -102,7 +102,7 @@ public class BasicUserService implements UserService {
               () -> new NoSuchElementException("존재하지 않는 User입니다. id : " + user.getId())
           );
           return new UserReadDto(
-              user.getId(), user.getCreatedAt(), user.getUpdatedAt(), user.getUsername(),
+              user.getId(), user.getUsername(),
               user.getEmail(), user.getProfile().getId(),
               // 현재 js에서 boolean으로 true면 'online : 온라인' / false면 'offline : 오프라인'을 반환
               // ONLINE(Enum)일 경우 true를 그렇지 않으면 false를 반환

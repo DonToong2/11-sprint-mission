@@ -8,8 +8,6 @@ import java.util.UUID;
 
 public record ChannelReadDto(
     UUID id,
-    Instant createdAt,
-    Instant updatedAt,
     Channel.ChannelType type,
     String name,
     String description,
