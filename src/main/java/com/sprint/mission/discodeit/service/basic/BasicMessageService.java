@@ -3,7 +3,9 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.dto.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.MessageUpdateRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
@@ -11,9 +13,11 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -27,48 +31,55 @@ public class BasicMessageService implements MessageService {
 
   // Create
   @Override
+  @Transactional
   public Message create(MessageCreateRequest dto, List<MultipartFile> attachments) {
-    channelRepository.findById(dto.channelId());
-    userRepository.findById(dto.authorId());
-    Message message = Message.create(dto.content(), dto.channelId(), dto.authorId());
+    Channel channel = channelRepository.findById(dto.channelId()).orElseThrow(
+        () -> new NoSuchElementException("존재하지 않는 채널입니다. Id : " + dto.channelId())
+    );
+
+    User author = userRepository.findById(dto.authorId()).orElseThrow(
+        () -> new NoSuchElementException("존재하지 않는 유저입니다. Id : " + dto.authorId())
+    );
+
+    Message message = Message.create(dto.content(), channel, author);
 
     // 첨부파일 등록(선택)
     if (attachments != null && !attachments.isEmpty()) {
       attachments.forEach(file -> {
         try {
-          BinaryContent binaryContent = BinaryContent.messageAttachment(
-              message.getId(),
-              file.getBytes(),
-              file.getOriginalFilename(),
-              file.getContentType()
+          BinaryContent binaryContent = BinaryContent.of(
+              file.getOriginalFilename(), file.getSize(),
+              file.getContentType(), file.getBytes()
           );
-          binaryContentRepository.insert(binaryContent);
-          message.getAttachmentIds().add(binaryContent.getId());
+          binaryContentRepository.save(binaryContent);
+          message.addAttachment(binaryContent); // message.getAttachments().add(binaryContent) 캡슐화
         } catch (IOException e) {
           throw new RuntimeException("첨부파일 처리 실패 : ", e);
         }
       });
     }
 
-    messageRepository.insert(message);
+    messageRepository.save(message);
 
     return message;
   }
 
   // Read
   @Override
+  @Transactional(readOnly = true)
   public List<Message> findAllByChannelId(UUID channelId) {
-    List<Message> message = messageRepository.findAllByChannelId(channelId);
-
-    return message;
+    return messageRepository.findAllByChannelId(channelId);
   }
 
   // Update
   @Override
+  @Transactional
   public Message update(UUID id, MessageUpdateRequest dto) {
-    Message message = messageRepository.findById(id);
+    Message message = messageRepository.findById(id).orElseThrow(
+        () -> new NoSuchElementException("해당 메시지가 존재하지 않습니다. Id : " + id)
+    );
     message.updateContent(dto.newContent());
-    messageRepository.update(message);
+    messageRepository.save(message);
     System.out.println();
 
     return message;
@@ -78,12 +89,15 @@ public class BasicMessageService implements MessageService {
   // 기존 메시지만 삭제
   // 고도화 후 첨부파일 삭제 추가
   @Override
+  @Transactional
   public void delete(UUID id) {
-    Message message = messageRepository.findById(id);
-    // 첨부파일 삭제
-    message.getAttachmentIds().forEach(binaryContentRepository::delete);
+    Message message = messageRepository.findById(id).orElseThrow(
+        () -> new NoSuchElementException("해당 메시지가 존재하지 않습니다. Id : " + id)
+    );
+    // 특정 메시지에 존재하는 첨부파일 삭제
+    binaryContentRepository.deleteAll(message.getAttachments());
 
     // 메시지 삭제
-    messageRepository.delete(id);
+    messageRepository.deleteById(id);
   }
 }

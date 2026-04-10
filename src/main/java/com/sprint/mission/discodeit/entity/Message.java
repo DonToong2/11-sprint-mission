@@ -48,18 +48,22 @@ public class Message extends BaseUpdatableEntity {
       inverseJoinColumns = @JoinColumn(name = "attachment_id"))
   private List<BinaryContent> attachments;
 
-  // 정적 팩토리 메서드
-  private Message(String content, Channel channel, User author, List<BinaryContent> attachments) {
+  private Message(String content, Channel channel, User author) {
     this.content = content;
     this.channel = channel;
     this.author = author;
     this.attachments = new ArrayList<>(); // 삽입/삭제보다 조회가 더 많이 일어나기 때문에 LinkedList가 아닌 ArrayList 사용
   }
 
+
   // 정적 팩토리 메서드
-  public static Message create(String content, Channel channel, User author,
-      List<BinaryContent> attachments) {
-    return new Message(content, channel, author, attachments);
+  public static Message create(String content, Channel channel, User author) {
+    return new Message(content, channel, author);
+  }
+
+  // add Attachment(캡슐화)
+  public void addAttachment(BinaryContent attachment) {
+    this.attachments.add(attachment);
   }
 
   // getter(Lombok의 @Getter로 대체)
