@@ -1,9 +1,10 @@
-package com.sprint.mission.discodeit.dto;
+package com.sprint.mission.discodeit.dto.request;
 
 import java.util.List;
 import java.util.UUID;
 
 public record ChannelCreatePrivateRequest(
-        List<UUID> participantIds
+    List<UUID> participantIds
 ) {
+
 }
