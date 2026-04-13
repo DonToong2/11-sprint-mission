@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.constant.EndPoints;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequest;
 import com.sprint.mission.discodeit.dto.response.MessageDto;
+import com.sprint.mission.discodeit.dto.response.PageResponse;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,7 +87,7 @@ public class MessageController {
   @Operation(summary = "Channel의 Message 목록 조회")
   @ApiResponse(responseCode = "200", description = "Message 목록 조회 성공")
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<List<MessageDto>> readAllByChannelId(
+  public ResponseEntity<PageResponse<MessageDto>> readAllByChannelId(
       @Parameter(description = "조회할 Channel ID")
       @RequestParam("channelId") UUID channelId) {
     return ResponseEntity.ok(messageService.findAllByChannelId(channelId));
