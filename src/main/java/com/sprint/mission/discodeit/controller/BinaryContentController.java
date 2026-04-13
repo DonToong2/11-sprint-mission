@@ -55,6 +55,7 @@ public class BinaryContentController {
     return ResponseEntity.ok(binaryContentService.find(id));
   }
 
+  // 다운로드 API
   @RequestMapping(value = "{binaryContentId}/download", method = RequestMethod.GET)
   public ResponseEntity<?> download(@PathVariable UUID binaryContentId) {
     BinaryContentDto dto = binaryContentService.find(binaryContentId);
