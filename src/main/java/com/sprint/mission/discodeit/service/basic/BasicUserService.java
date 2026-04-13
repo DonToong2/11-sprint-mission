@@ -11,7 +11,6 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -53,16 +52,12 @@ public class BasicUserService implements UserService {
 
     // 프로필 이미지 등록(선택)
     if (profile != null && !profile.isEmpty()) {
-      try {
-        BinaryContent profileImage = BinaryContent.of(
-            profile.getOriginalFilename(), profile.getSize(),
-            profile.getContentType(), profile.getBytes());
+      BinaryContent profileImage = BinaryContent.of(
+          profile.getOriginalFilename(), profile.getSize(),
+          profile.getContentType());
 
-        binaryContentRepository.save(profileImage);
-        user.updateProfile(profileImage);
-      } catch (IOException e) {
-        throw new RuntimeException("프로필 이미지 처리 실패 : ", e);
-      }
+      binaryContentRepository.save(profileImage);
+      user.updateProfile(profileImage);
     }
 
     // 유저 상태 생성
@@ -116,16 +111,12 @@ public class BasicUserService implements UserService {
 
     // 프로필 이미지 수정(선택)
     if (profile != null && !profile.isEmpty()) {
-      try {
-        BinaryContent profileImage = BinaryContent.of(
-            profile.getOriginalFilename(), profile.getSize(),
-            profile.getContentType(), profile.getBytes());
+      BinaryContent profileImage = BinaryContent.of(
+          profile.getOriginalFilename(), profile.getSize(),
+          profile.getContentType());
 
-        binaryContentRepository.save(profileImage);
-        user.updateProfile(profileImage);
-      } catch (IOException e) {
-        throw new RuntimeException("프로필 이미지 처리 실패 : ", e);
-      }
+      binaryContentRepository.save(profileImage);
+      user.updateProfile(profileImage);
     }
 
     // 이름, 이메일, 패스워드 update

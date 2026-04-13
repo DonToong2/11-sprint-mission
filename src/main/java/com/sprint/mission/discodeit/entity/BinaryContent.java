@@ -26,20 +26,15 @@ public class BinaryContent extends BaseEntity {
   @Column(name = "content_type", length = 100, nullable = false)
   private String contentType; // 데이터 타입(.png 등)
 
-  // bytes bytes not null
-  @Column(name = "bytes", nullable = false)
-  private byte[] bytes;
-
   // 생성자
-  private BinaryContent(String fileName, Long size, String contentType, byte[] bytes) {
+  private BinaryContent(String fileName, Long size, String contentType) {
     this.fileName = fileName;
     this.size = size;
     this.contentType = contentType;
-    this.bytes = bytes;
   }
 
   //  // 프로필 이미지(정적 팩토리 메서드)
-  public static BinaryContent of(String fileName, Long size, String contentType, byte[] bytes) {
-    return new BinaryContent(fileName, size, contentType, bytes);
+  public static BinaryContent of(String fileName, Long size, String contentType) {
+    return new BinaryContent(fileName, size, contentType);
   }
 }

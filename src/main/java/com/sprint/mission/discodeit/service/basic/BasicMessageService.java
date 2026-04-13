@@ -52,7 +52,7 @@ public class BasicMessageService implements MessageService {
         try {
           BinaryContent binaryContent = BinaryContent.of(
               file.getOriginalFilename(), file.getSize(),
-              file.getContentType(), file.getBytes()
+              file.getContentType()
           );
           binaryContentRepository.save(binaryContent);
           message.addAttachment(binaryContent); // message.getAttachments().add(binaryContent) 캡슐화

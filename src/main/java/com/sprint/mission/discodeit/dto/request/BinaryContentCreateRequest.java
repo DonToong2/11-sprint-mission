@@ -11,7 +11,7 @@ public record BinaryContentCreateRequest(
 
   // userId가 없을 경우 첨부파일을, 있을 경우 프로필 이미지를 binaryContent로 설정
   public BinaryContent toBinaryContent() {
-    return BinaryContent.of(fileName, size, contentType, bytes);
+    return BinaryContent.of(fileName, size, contentType);
   }
 }
 // 원래라면 @JsonProperty를 매개변수 앞에 붙이고, @JsonCreator을 사용하여 json에서 자바객체로 역직렬화 시 생성자가 있어야 했으나
