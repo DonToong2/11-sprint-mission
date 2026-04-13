@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.dto.read;
+package com.sprint.mission.discodeit.dto.response;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import java.time.Instant;

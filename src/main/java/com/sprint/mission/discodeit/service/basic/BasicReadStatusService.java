@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.dto.read.ReadStatusDto;
 import com.sprint.mission.discodeit.dto.request.ReadStatusCreateRequest;
 import com.sprint.mission.discodeit.dto.request.ReadStatusUpdateRequest;
+import com.sprint.mission.discodeit.dto.response.ReadStatusDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
@@ -62,7 +62,7 @@ public class BasicReadStatusService implements ReadStatusService {
 
     return readStatusMapper.toDto(readStatus);
   }
-  
+
   @Override
   @Transactional(readOnly = true)
   public List<ReadStatusDto> findAllByUserId(List<UUID> userIds) {
