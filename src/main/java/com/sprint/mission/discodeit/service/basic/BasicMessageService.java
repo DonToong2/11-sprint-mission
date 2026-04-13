@@ -13,7 +13,6 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
-import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -49,16 +48,12 @@ public class BasicMessageService implements MessageService {
     // 첨부파일 등록(선택)
     if (attachments != null && !attachments.isEmpty()) {
       attachments.forEach(file -> {
-        try {
-          BinaryContent binaryContent = BinaryContent.of(
-              file.getOriginalFilename(), file.getSize(),
-              file.getContentType()
-          );
-          binaryContentRepository.save(binaryContent);
-          message.addAttachment(binaryContent); // message.getAttachments().add(binaryContent) 캡슐화
-        } catch (IOException e) {
-          throw new RuntimeException("첨부파일 처리 실패 : ", e);
-        }
+        BinaryContent binaryContent = BinaryContent.of(
+            file.getOriginalFilename(), file.getSize(),
+            file.getContentType()
+        );
+        binaryContentRepository.save(binaryContent);
+        message.addAttachment(binaryContent); // message.getAttachments().add(binaryContent) 캡슐화
       });
     }
 

@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.controller;
 import com.sprint.mission.discodeit.constant.EndPoints;
 import com.sprint.mission.discodeit.dto.read.BinaryContentDto;
 import com.sprint.mission.discodeit.service.BinaryContentService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BinaryContentController {
 
   private final BinaryContentService binaryContentService;
+  private final BinaryContentStorage binaryContentStorage;
 
   // 여러 첨부파일 조회
   @ResponseStatus(HttpStatus.OK)
@@ -51,5 +53,12 @@ public class BinaryContentController {
       @Parameter(description = "조회할 첨부 파일 ID")
       @PathVariable(value = "binaryContentId") UUID id) {
     return ResponseEntity.ok(binaryContentService.find(id));
+  }
+
+  @RequestMapping(value = "{binaryContentId}/download", method = RequestMethod.GET)
+  public ResponseEntity<?> download(@PathVariable UUID binaryContentId) {
+    BinaryContentDto dto = binaryContentService.find(binaryContentId);
+
+    return binaryContentStorage.download(dto);
   }
 }

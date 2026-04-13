@@ -5,6 +5,11 @@ discodeit:
     type: file
     file-directory: .discodeit
 
+  storage:
+    type: local
+    local:
+      root-path: ./attachments/download
+
 #logging:
 #  level:
 #    org.springframework: DEBUG
