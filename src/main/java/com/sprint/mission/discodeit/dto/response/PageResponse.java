@@ -2,11 +2,12 @@ package com.sprint.mission.discodeit.dto.response;
 
 import java.util.List;
 
-public class PageResponse<T> {
+public record PageResponse<T>(
+    List<T> content, // 실제 데이터
+    int number, // 페이지 번호
+    int size, // 페이지 크기
+    boolean hasNext,
+    Long totalElements // nullable
+) {
 
-  List<T> content; // 실제 데이터
-  int number; // 페이지 번호
-  int size; // 페이지 크기
-  boolean hasNext;
-  Long totalElements; // nullable
 }
