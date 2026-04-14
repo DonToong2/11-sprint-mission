@@ -11,6 +11,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReadStatusRepository extends JpaRepository<ReadStatus, UUID> {
 
+  @Override
+  @EntityGraph(attributePaths = {"user", "channel"})
+  Optional<ReadStatus> findById(UUID id);
+
   Optional<ReadStatus> findByUserAndChannel(User user, Channel channel);
 
   @EntityGraph(attributePaths = {"user"})

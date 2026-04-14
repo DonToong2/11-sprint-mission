@@ -14,6 +14,10 @@ public interface UserStatusRepository extends JpaRepository<UserStatus, UUID> {
   @EntityGraph(attributePaths = {"user"})
   List<UserStatus> findAll();
 
+  @Override
+  @EntityGraph(attributePaths = {"user"})
+  Optional<UserStatus> findById(UUID id);
+
   Optional<UserStatus> findByUser(User user);
 
   Optional<UserStatus> findByUserId(UUID userId);

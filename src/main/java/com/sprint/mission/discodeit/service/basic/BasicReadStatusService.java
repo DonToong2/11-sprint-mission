@@ -57,7 +57,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional(readOnly = true)
   public ReadStatusDto find(UUID id) {
     ReadStatus readStatus = readStatusRepository.findById(id).orElseThrow(
-        () -> new NoSuchElementException("존재하지 않는 UserStatus입니다. id : " + id)
+        () -> new NoSuchElementException("존재하지 않는 ReadStatus입니다. id : " + id)
     );
 
     return readStatusMapper.toDto(readStatus);
