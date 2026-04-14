@@ -115,11 +115,9 @@ public class BasicChannelService implements ChannelService {
         })
         .map(channel -> {
           // 최근 메시지의 시간 조회
-          List<Message> messages = messageRepository.findAllByChannelId(channel.getId());
-          messages.sort(
-              Comparator.comparing(Message::getCreatedAt).reversed()); // 내림차순으로 특정 채널 내 메세지들 정렬
-          Instant lastMessageAt =
-              messages.isEmpty() ? null : messages.get(0).getCreatedAt(); // 가장 최근 메시지의 시간
+          Instant lastMessageAt = messageRepository.findTopByChannelIdOrderByCreatedAtDesc(
+                  channel.getId())
+              .map(Message::getCreatedAt).orElse(null);
 
           // PRIVATE 채널일 경우 참여자 포함
           List<User> participants = List.of();
