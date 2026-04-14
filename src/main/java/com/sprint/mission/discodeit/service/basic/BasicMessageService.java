@@ -15,6 +15,7 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -71,12 +72,13 @@ public class BasicMessageService implements MessageService {
   // Read
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<MessageDto> findAllByChannelId(UUID channelId) {
+  public PageResponse<MessageDto> findAllByChannelId(UUID channelId, Instant cursor) {
     Pageable pageable = PageRequest.of(0, 50); // 50개씩
-    Slice<Message> slice = messageRepository
-        .findByChannelIdOrderByCreatedAtDesc(channelId, pageable);
+    Slice<Message> slice = messageRepository.findMessages(channelId, cursor, pageable);
+    Instant nextCursor = slice.hasNext() && slice.hasContent() ?
+        slice.getContent().get(slice.getNumberOfElements() - 1).getCreatedAt() : null;
 
-    return pageResponseMapper.fromSlice(slice.map(messageMapper::toDto));
+    return pageResponseMapper.fromSlice(slice.map(messageMapper::toDto), nextCursor);
 //    return slice.getContent().stream()
 //        .map(messageMapper::toDto).toList();
   }

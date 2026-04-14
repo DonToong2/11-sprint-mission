@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -89,7 +90,8 @@ public class MessageController {
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<PageResponse<MessageDto>> readAllByChannelId(
       @Parameter(description = "조회할 Channel ID")
-      @RequestParam("channelId") UUID channelId) {
-    return ResponseEntity.ok(messageService.findAllByChannelId(channelId));
+      @RequestParam("channelId") UUID channelId,
+      @RequestParam(value = "cursor", required = false) Instant cursor) {
+    return ResponseEntity.ok(messageService.findAllByChannelId(channelId, cursor));
   }
 }
