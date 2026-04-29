@@ -1,0 +1,25 @@
+spring:
+  # To Connect H2
+  datasource:
+    url: jdbc:h2:mem:discodeit;DB_CLOSE_DELAY=-1;
+    username: sa
+    password:
+
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # 운영때는 none으로 교체, 개발중에는 update, 스키마 구조 변경 방어 validate
+
+    show-sql: true # 실행쿼리를 확인
+    properties:
+      hibernate:
+        format_sql: true # SQL문 가독성
+        use_sql_comments: true # SQL 주석 제공
+
+server:
+  port: 8081
+
+logging:
+  level:
+    root: info
+    com.discodeit: debug
