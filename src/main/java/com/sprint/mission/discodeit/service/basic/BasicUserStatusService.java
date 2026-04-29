@@ -65,7 +65,7 @@ public class BasicUserStatusService implements UserStatusService {
   public UserStatus update(UUID id, UserStatusUpdateRequest dto) {
     UserStatus userStatus = userStatusRepository.findById(id).orElseThrow(
         () -> new NoSuchElementException("해당 UserStatus가 존재하지 않습니다. Id : " + id));
-    userStatus.updateLastOnline(dto.lastActiveAt());
+    userStatus.updateLastOnline(dto.newLastActiveAt());
     userStatusRepository.save(userStatus);
 
     return userStatus;
@@ -77,7 +77,7 @@ public class BasicUserStatusService implements UserStatusService {
   public UserStatus updateByUserId(UUID userId, UserStatusUpdateRequest dto) {
     UserStatus userStatus = userStatusRepository.findByUserId(userId).orElseThrow(
         () -> new NoSuchElementException("해당 User에 대한 UserStatus가 존재하지 않습니다. userId : " + userId));
-    userStatus.updateLastOnline(dto.lastActiveAt());
+    userStatus.updateLastOnline(dto.newLastActiveAt());
     userStatusRepository.save(userStatus);
 
     return userStatus;
