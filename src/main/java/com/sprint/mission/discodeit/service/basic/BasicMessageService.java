@@ -15,6 +15,8 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,6 +39,7 @@ public class BasicMessageService implements MessageService {
   private final BinaryContentRepository binaryContentRepository;
   private final MessageMapper messageMapper;
   private final PageResponseMapper pageResponseMapper;
+  private final BinaryContentStorage binaryContentStorage;
 
   // Create
   @Override
@@ -59,6 +62,13 @@ public class BasicMessageService implements MessageService {
             file.getOriginalFilename(), file.getSize(),
             file.getContentType()
         );
+
+        try {
+          binaryContentStorage.put(binaryContent.getId(), file.getBytes());
+        } catch (IOException e) {
+          throw new RuntimeException("파일 저장 실패", e);
+        }
+        
         binaryContentRepository.save(binaryContent);
         message.addAttachment(binaryContent); // message.getAttachments().add(binaryContent) 캡슐화
       });
