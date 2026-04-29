@@ -107,7 +107,7 @@ public class BasicChannelService implements ChannelService {
           }
           // PRIVATE
           return readStatusRepository.findByChannelId(channel.getId()).stream()
-              .anyMatch(readStatus -> readStatus.getUser().equals(userId));
+              .anyMatch(readStatus -> readStatus.getUser().getId().equals(userId));
         })
         .map(channel -> {
           // 최근 메시지의 시간 조회
