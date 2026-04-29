@@ -25,7 +25,7 @@ spring:
   # To Debug
   jpa:
     hibernate:
-      ddl-auto: update # 운영때는 none으로 교체, 개발중에는 update
+      ddl-auto: validate # 운영때는 none으로 교체, 개발중에는 update, 스키마 구조 변경 방어 validate
     show-sql: true # 실행쿼리를 확인
     properties:
       hibernate:
