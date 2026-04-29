@@ -16,8 +16,10 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,26 +101,41 @@ public class BasicChannelService implements ChannelService {
   @Override
   @Transactional(readOnly = true)
   public List<ChannelDto> findAllByUserId(UUID userId) {
-    return channelRepository.findAll().stream()
+
+    List<Channel> channels = channelRepository.findAll();
+    List<UUID> channelIds = channels.stream().map(Channel::getId).toList();
+
+    List<ReadStatus> readStatuses = readStatusRepository.findByChannelIdIn(channelIds);
+
+    Map<UUID, List<ReadStatus>> readStatusMap = readStatuses.stream().collect(
+        Collectors.groupingBy(rs -> rs.getChannel().getId()));
+
+    List<Message> latestMessages = messageRepository.findLastMessagesByChannelIds(channelIds);
+
+    Map<UUID, Instant> lastMessageMap = latestMessages.stream()
+        .collect(Collectors.toMap(
+            message -> message.getChannel().getId(),
+            Message::getCreatedAt,
+            (a, b) -> a.isAfter(b) ? a : b));
+
+    return channels.stream()
         .filter(channel -> { // PUBLIC이면 전체 유저가 채널 조회 가능, PRIVATE는 해당 USER가 참여한 채널만 조회 가능
           // PUBLIC
           if (channel.getType() == Channel.ChannelType.PUBLIC) {
             return true;
           }
           // PRIVATE
-          return readStatusRepository.findByChannelId(channel.getId()).stream()
+          return readStatusMap.getOrDefault(channel.getId(), List.of()).stream()
               .anyMatch(readStatus -> readStatus.getUser().getId().equals(userId));
         })
         .map(channel -> {
           // 최근 메시지의 시간 조회
-          Instant lastMessageAt = messageRepository.findTopByChannelIdOrderByCreatedAtDesc(
-                  channel.getId())
-              .map(Message::getCreatedAt).orElse(null);
+          Instant lastMessageAt = lastMessageMap.get(channel.getId());
 
           // PRIVATE 채널일 경우 참여자 포함
           List<User> participants = List.of();
           if (channel.getType() == Channel.ChannelType.PRIVATE) {
-            participants = readStatusRepository.findByChannelId(channel.getId()).stream()
+            participants = readStatusMap.getOrDefault(channel.getId(), List.of()).stream()
                 .map(ReadStatus::getUser)
                 .toList();
           }
