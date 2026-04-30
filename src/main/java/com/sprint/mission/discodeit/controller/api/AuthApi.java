@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.controller.api;
 
 import com.sprint.mission.discodeit.dto.request.LoginRequest;
-import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.dto.response.UserDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,5 +19,5 @@ public interface AuthApi {
       @ApiResponse(responseCode = "400", description = "비밀번호가 일치하지 않음")
   })
   @PostMapping("/login")
-  ResponseEntity<User> login(@RequestBody LoginRequest dto);
+  ResponseEntity<UserDto> login(@RequestBody LoginRequest dto);
 }
