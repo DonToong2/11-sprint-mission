@@ -13,6 +13,7 @@ import com.sprint.mission.discodeit.service.UserStatusService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController // Json 반환을 위해 @Controller 대신 @ResponseBody를 포함한 @RestController 사용
 @RequestMapping(EndPoints.USER)
 @RequiredArgsConstructor
@@ -43,7 +45,10 @@ public class UserController implements UserApi {
   public ResponseEntity<User> create(
       @RequestPart("userCreateRequest") UserCreateRequest dto,
       @RequestPart(value = "profile", required = false) MultipartFile profile) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(dto, profile));
+    log.info("[USER_CREATE_REQUEST] 유저 생성 요청 - 유저 이름={}, 유저 이메일={}", dto.username(), dto.email());
+    User user = userService.create(dto, profile);
+    log.info("[USER_CREATE_RESPONSE] 유저 생성 응답 - 유저 ID={}", user.getId());
+    return ResponseEntity.status(HttpStatus.CREATED).body(user);
   }
 
   // 특정 사용자 정보 수정
@@ -54,7 +59,10 @@ public class UserController implements UserApi {
       @PathVariable("userId") UUID id,
       @RequestPart("userUpdateRequest") UserUpdateRequest dto,
       @RequestPart(value = "profile", required = false) MultipartFile profile) {
-    return ResponseEntity.ok(userService.update(id, dto, profile));
+    log.info("[USER_UPDATE_REQUEST] 유저 수정 요청 - 유저 ID={}", id);
+    User user = userService.update(id, dto, profile);
+    log.info("[USER_UPDATE_RESPONSE] 유저 수정 응답 - 유저 ID={}", id);
+    return ResponseEntity.ok(user);
   }
 
   // 특정 사용자 삭제
@@ -63,7 +71,9 @@ public class UserController implements UserApi {
   @DeleteMapping("/{userId}")
   public ResponseEntity<Void> delete(
       @PathVariable("userId") UUID id) {
+    log.info("[USER_DELETE_REQUEST] 유저 삭제 요청 - 유저 ID={}", id);
     userService.delete(id);
+    log.info("[USER_DELETE_RESPONSE] 유저 삭제 응답 - 유저 ID={}", id);
     return ResponseEntity.noContent().build();
   }
 
