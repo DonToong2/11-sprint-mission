@@ -19,16 +19,4 @@ public class DiscodeitException extends RuntimeException {
   public DiscodeitException(ErrorCode errorCode) {
     this(errorCode, Map.of());
   }
-
-  public Instant getTimestamp() {
-    return timestamp;
-  }
-
-  public ErrorCode getErrorCode() {
-    return errorCode;
-  }
-
-  public Map<String, Object> getDetails() {
-    return details;
-  }
 }

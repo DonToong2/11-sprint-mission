@@ -4,7 +4,7 @@ public enum ErrorCode {
 
   // USER
   USER_NOT_FOUND("해당 유저가 존재하지 않습니다."),
-  DUPLICATE_USER("이미 존재하는 이름입니다."),
+  DUPLICATE_USERNAME("이미 존재하는 이름입니다."),
   DUPLICATE_EMAIL("이미 존재하는 이메일입니다."),
 
   // CHANNEL
