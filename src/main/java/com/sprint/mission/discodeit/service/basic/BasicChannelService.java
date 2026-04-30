@@ -36,16 +36,6 @@ public class BasicChannelService implements ChannelService {
   private final UserRepository userRepository;
   private final ChannelMapper channelMapper;
 
-  // Create
-//    @Override
-//    public Channel create(Channel.ChannelType channelType, String name, String description) {
-//        Channel channel = Channel.create(channelType, name, description);
-//        channelRepository.insert(channel);
-//        System.out.println("채널을 생성하였습니다.");
-//        System.out.println();
-//
-//        return channel;
-//    }
   @Override
   @Transactional
   public Channel createPublic(ChannelCreatePublicRequest dto) {
@@ -54,7 +44,8 @@ public class BasicChannelService implements ChannelService {
 
     Channel channel = Channel.createPublic(dto.name(), dto.description());
     channelRepository.save(channel);
-    log.info("[CHANNEL_CREATE_PUBLIC_SUCCESS] PUBLIC 채널 생성 완료 - 생성된 채널 ID={}", channel.getId());
+    log.info("[CHANNEL_CREATE_PUBLIC_SUCCESS] PUBLIC 채널 생성 완료 - 채널 ID={}, 채널 이름={}",
+        channel.getId(), channel.getName());
 
     return channel;
   }
@@ -179,7 +170,7 @@ public class BasicChannelService implements ChannelService {
 
     // PRIVATE 채널은 수정 불가
     if (channel.getType() == Channel.ChannelType.PRIVATE) {
-      log.warn("[CHANNEL_UPDATE_FAILED] 채널 수정 실패 - PRIVATE 채널 수정 불가 - 수정할 채널 ID={}, 수정할  채널 타입={}",
+      log.warn("[CHANNEL_UPDATE_FAILED] 채널 수정 실패 - PRIVATE 채널 수정 불가 - 수정할 채널 ID={}, 수정할 채널 타입={}",
           id, channel.getType());
       throw new IllegalArgumentException("PRIVATE 채널은 수정할 수 없습니다.");
     }
