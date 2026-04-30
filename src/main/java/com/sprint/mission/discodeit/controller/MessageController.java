@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequestMapping(EndPoints.MESSAGE)
 @RequiredArgsConstructor
@@ -40,7 +42,11 @@ public class MessageController implements MessageApi {
   public ResponseEntity<Message> create(
       @RequestPart("messageCreateRequest") MessageCreateRequest dto,
       @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(messageService.create(dto, attachments));
+    log.info("[MESSAGE_CREATE_REQUEST] 메시지 생성 요청 - 채널 ID={}, 작성자 ID={}, 첨부파일 수={}",
+        dto.channelId(), dto.authorId(), attachments != null ? attachments.size() : 0);
+    Message message = messageService.create(dto, attachments);
+    log.info("[MESSAGE_CREATE_RESPONSE] 메시지 생성 응답 - 메시지 ID={}", message.getId());
+    return ResponseEntity.status(HttpStatus.CREATED).body(message);
   }
 
   // 메시지 수정
@@ -49,7 +55,10 @@ public class MessageController implements MessageApi {
   public ResponseEntity<Message> update(
       @PathVariable("messageId") UUID id,
       @RequestBody MessageUpdateRequest dto) {
-    return ResponseEntity.ok(messageService.update(id, dto));
+    log.info("[MESSAGE_UPDATE_REQUEST] 메시지 수정 요청 - 메시지 ID={}", id);
+    Message message = messageService.update(id, dto);
+    log.info("[MESSAGE_UPDATE_RESPONSE] 메시지 수정 응답 - 메시지 ID={}", id);
+    return ResponseEntity.ok(message);
   }
 
   // 메시지 삭제
@@ -57,7 +66,9 @@ public class MessageController implements MessageApi {
   @DeleteMapping(value = "/{messageId}")
   public ResponseEntity<Void> delete(
       @PathVariable("messageId") UUID id) {
+    log.info("[MESSAGE_DELETE_REQUEST] 메시지 삭제 요청 - 메시지 ID={}", id);
     messageService.delete(id);
+    log.info("[MESSAGE_DELETE_RESPONSE] 메시지 삭제 응답 - 메시지 ID={}", id);
     return ResponseEntity.noContent().build();
   }
 
