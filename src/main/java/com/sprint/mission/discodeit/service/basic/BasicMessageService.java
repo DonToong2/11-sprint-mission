@@ -156,13 +156,15 @@ public class BasicMessageService implements MessageService {
     );
 
     // 특정 메시지에 존재하는 첨부파일 삭제
-    log.debug("[MESSAGE_DELETE_ATTACHMENTS_START] 메시지의 첨부파일 삭제 시작 - 메시지 ID={}, 첨부파일 수={}",
-        message.getId(), message.getAttachments() == null ? 0 : message.getAttachments().size());
+    if (message.getAttachments() != null && !message.getAttachments().isEmpty()) {
+      log.debug("[MESSAGE_DELETE_ATTACHMENTS_START] 메시지의 첨부파일 삭제 시작 - 메시지 ID={}, 첨부파일 수={}",
+          message.getId(), message.getAttachments() == null ? 0 : message.getAttachments().size());
 
-    binaryContentRepository.deleteAll(message.getAttachments());
+      binaryContentRepository.deleteAll(message.getAttachments());
 
-    log.debug("[MESSAGE_DELETE_ATTACHMENTS_SUCCESS] 첨부파일 삭제 완료 - 메시지 ID={}, 첨부파일 수={}",
-        message.getId(), message.getAttachments() == null ? 0 : message.getAttachments().size());
+      log.debug("[MESSAGE_DELETE_ATTACHMENTS_SUCCESS] 첨부파일 삭제 완료 - 메시지 ID={}, 첨부파일 수={}",
+          message.getId(), message.getAttachments() == null ? 0 : message.getAttachments().size());
+    }
 
     // 메시지 삭제
     messageRepository.deleteById(id);
