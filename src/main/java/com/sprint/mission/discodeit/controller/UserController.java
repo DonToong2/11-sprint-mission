@@ -10,6 +10,7 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class UserController implements UserApi {
   @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<User> create(
-      @RequestPart("userCreateRequest") UserCreateRequest dto,
+      @Valid @RequestPart("userCreateRequest") UserCreateRequest dto,
       @RequestPart(value = "profile", required = false) MultipartFile profile) {
     log.info("[USER_CREATE_REQUEST] 유저 생성 요청 - 유저 이름={}, 유저 이메일={}", dto.username(), dto.email());
     User user = userService.create(dto, profile);
@@ -57,7 +58,7 @@ public class UserController implements UserApi {
   @PatchMapping(value = "/{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<User> update(
       @PathVariable("userId") UUID id,
-      @RequestPart("userUpdateRequest") UserUpdateRequest dto,
+      @Valid @RequestPart("userUpdateRequest") UserUpdateRequest dto,
       @RequestPart(value = "profile", required = false) MultipartFile profile) {
     log.info("[USER_UPDATE_REQUEST] 유저 수정 요청 - 유저 ID={}", id);
     User user = userService.update(id, dto, profile);

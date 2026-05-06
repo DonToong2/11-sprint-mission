@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.dto.request.ChannelUpdateRequest;
 import com.sprint.mission.discodeit.dto.response.ChannelDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.service.ChannelService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class ChannelController implements ChannelApi {
   // 공개 채널 생성
   @Override
   @PostMapping("/public")
-  public ResponseEntity<Channel> createPublic(@RequestBody ChannelCreatePublicRequest dto) {
+  public ResponseEntity<Channel> createPublic(@Valid @RequestBody ChannelCreatePublicRequest dto) {
     log.info("[CHANNEL_CREATE_PUBLIC_REQUEST] PUBLIC 채널 생성 요청 - 채널 이름={}", dto.name());
     Channel channel = channelService.createPublic(dto);
     log.info("[CHANNEL_CREATE_PUBLIC_RESPONSE] PUBLIC 채널 생성 응답 - 채널 ID={}", channel.getId());
@@ -46,7 +47,8 @@ public class ChannelController implements ChannelApi {
   // 비공개 채널 생성
   @Override
   @PostMapping("/private")
-  public ResponseEntity<Channel> createPrivate(@RequestBody ChannelCreatePrivateRequest dto) {
+  public ResponseEntity<Channel> createPrivate(
+      @Valid @RequestBody ChannelCreatePrivateRequest dto) {
     log.info("[CHANNEL_CREATE_PRIVATE_REQUEST] PRIVATE 채널 생성 요청 - 참여자 수={}",
         dto.participantIds().size());
     Channel channel = channelService.createPrivate(dto);
@@ -60,7 +62,7 @@ public class ChannelController implements ChannelApi {
   @PatchMapping("/{channelId}")
   public ResponseEntity<Channel> updatePublic(
       @PathVariable("channelId") UUID id,
-      @RequestBody ChannelUpdateRequest dto) {
+      @Valid @RequestBody ChannelUpdateRequest dto) {
     log.info("[CHANNEL_UPDATE_REQUEST] 채널 수정 요청 - 채널 ID={}", id);
     Channel channel = channelService.update(id, dto);
     log.info("[CHANNEL_UPDATE_RESPONSE] 채널 수정 응답 - 채널 ID={}", id);

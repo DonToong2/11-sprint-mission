@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.dto.request.ReadStatusUpdateRequest;
 import com.sprint.mission.discodeit.dto.response.ReadStatusDto;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.service.ReadStatusService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class ReadStatusController implements ReadStatusApi {
   // 특정 채널의 메시지 수신 정보 생성
   @Override
   @PostMapping
-  public ResponseEntity<ReadStatus> create(@RequestBody ReadStatusCreateRequest dto) {
+  public ResponseEntity<ReadStatus> create(@Valid @RequestBody ReadStatusCreateRequest dto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(readStatusService.create(dto));
   }
 
@@ -40,7 +41,7 @@ public class ReadStatusController implements ReadStatusApi {
   @PatchMapping("/{readStatusId}")
   public ResponseEntity<ReadStatus> update(
       @PathVariable("readStatusId") UUID id,
-      @RequestBody ReadStatusUpdateRequest dto) {
+      @Valid @RequestBody ReadStatusUpdateRequest dto) {
     return ResponseEntity.ok(readStatusService.update(id, dto));
   }
 
