@@ -2,7 +2,7 @@
 <configuration>
 
   <!--콘솔 설정-->
-  <appender class="'ch.qos.logback.core.ConsoleAppender" name="CONSOLE">
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="CONSOLE">
     <!-- 로그 출력 예시 -->
     <!-- # 패턴 {년}-{월}-{일} {시}:{분}:{초}:{밀리초} [{스레드명}] {로그 레벨(5글자로 맞춤)} {로거 이름(최대 36글자)} - {로그 메시지}{줄바꿈}-->
     <!--# 예시 25-01-01 10:33:55.740 [main] DEBUG c.s.m.discodeit.DiscodeitApplication - Running with Spring Boot v3.4.0, Spring v6.2.0-->
@@ -48,5 +48,5 @@
       <appender-ref ref="FILE"/>
     </root>
   </springProfile>
-  
+
 </configuration>
