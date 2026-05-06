@@ -20,6 +20,7 @@ public enum ErrorCode {
 
   // READ_STATUS
   READ_STATUS_NOT_FOUND("해당 ReadStatus가 존재하지 않습니다."),
+  READ_STATUS_ALREADY_EXISTS("이미 존재하는 ReadStatus입니다."),
 
   // BINARY_CONTENT
   BINARY_CONTENT_NOT_FOUND("해당 BinaryContent가 존재하지 않습니다."),

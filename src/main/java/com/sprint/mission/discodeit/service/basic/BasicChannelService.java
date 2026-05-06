@@ -8,6 +8,8 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.exception.DiscodeitException;
+import com.sprint.mission.discodeit.exception.ErrorCode;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
@@ -17,7 +19,6 @@ import com.sprint.mission.discodeit.service.ChannelService;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -64,12 +65,6 @@ public class BasicChannelService implements ChannelService {
     // 선택된 참여자 id를 전부 찾아 user 리스트에 반환
     List<User> users = userRepository.findAllById(dto.participantIds());
 
-    // 데이터 정합성 체크(참여자가 다를 경우)
-    if (dto.participantIds().size() != users.size()) {
-      log.warn("[CHANNEL_CREATE_PRIVATE_FAILED] 참여자 조회 실패 - 요청 참여자 수={}, 조회된 참여자 수={}",
-          dto.participantIds().size(), users.size());
-    }
-
     // private 채널 참여자들의 ReadStatus 생성
     // readStatusService를 사용하면 같은 레이어(여기서는 Service)간에 순환 참조가 생기므로 readStatusService.create 사용 X
     users.stream()
@@ -88,7 +83,7 @@ public class BasicChannelService implements ChannelService {
   @Transactional(readOnly = true)
   public ChannelDto find(UUID id) {
     Channel channel = channelRepository.findById(id).orElseThrow(
-        () -> new NoSuchElementException("존재하지 않는 채널입니다. id : " + id)
+        () -> new DiscodeitException(ErrorCode.CHANNEL_NOT_FOUND)
     );
 
     // 가장 최근 메시지 시간을 조회
@@ -164,7 +159,7 @@ public class BasicChannelService implements ChannelService {
     Channel channel = channelRepository.findById(id).orElseThrow(
         () -> {
           log.warn("[CHANNEL_UPDATE_FAILED] 채널 수정 실패 - 존재하지 않음 - 수정할 채널 ID={}", id);
-          return new NoSuchElementException("존재하지 않는 채널입니다. id " + id);
+          return new DiscodeitException(ErrorCode.CHANNEL_NOT_FOUND);
         }
     );
 
@@ -172,7 +167,7 @@ public class BasicChannelService implements ChannelService {
     if (channel.getType() == Channel.ChannelType.PRIVATE) {
       log.warn("[CHANNEL_UPDATE_FAILED] 채널 수정 실패 - PRIVATE 채널 수정 불가 - 수정할 채널 ID={}, 수정할 채널 타입={}",
           id, channel.getType());
-      throw new IllegalArgumentException("PRIVATE 채널은 수정할 수 없습니다.");
+      throw new DiscodeitException(ErrorCode.PRIVATE_CHANNEL_UPDATE);
     }
 
     if (dto.newName() != null) {
@@ -200,7 +195,7 @@ public class BasicChannelService implements ChannelService {
     channelRepository.findById(id).orElseThrow(
         () -> {
           log.warn("[CHANNEL_DELETE_FAILED] 채널 삭제 실패 - 존재하지 않음 - 채널 ID={}", id);
-          return new NoSuchElementException("존재하지 않는 채널입니다. id" + id);
+          return new DiscodeitException(ErrorCode.CHANNEL_NOT_FOUND);
         }
     );
 

@@ -6,6 +6,8 @@ import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.exception.DiscodeitException;
+import com.sprint.mission.discodeit.exception.ErrorCode;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -13,7 +15,6 @@ import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import java.time.Instant;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,13 +42,13 @@ public class BasicUserService implements UserService {
     // 이름 중복체크 -> UserName이 존재하지만 UserID가 같지 않을 때(다른 사람이 UserName을 가지고 있을 때)
     if (userRepository.existsByUsername(dto.username())) {
       log.warn("[USER_CREATE_FAILED] 유저 생성 실패 - 이름 중복 - 유저 이름={}", dto.username());
-      throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+      throw new DiscodeitException(ErrorCode.DUPLICATE_USERNAME);
     }
 
     // 이메일 중복체크 -> Email이 존재하지만 UserId가 같지 않을 때(다른 사람이 Email을 가지고 있을 때)
     if (userRepository.existsByEmail(dto.email())) {
       log.warn("[USER_CREATE_FAILED] 유저 생성 실패 - 이메일 중복 - 유저 이메일={}", dto.email());
-      throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+      throw new DiscodeitException(ErrorCode.DUPLICATE_EMAIL);
     }
 
     // 유저 생성(이름, 이메일 비밀번호)
@@ -86,7 +87,7 @@ public class BasicUserService implements UserService {
   @Transactional(readOnly = true)
   public UserDto find(UUID id) {
     User user = userRepository.findById(id).orElseThrow(
-        () -> new NoSuchElementException("존재하지 않는 User입니다. id : " + id)
+        () -> new DiscodeitException(ErrorCode.USER_NOT_FOUND)
     );
 
     return userMapper.toDto(user);
@@ -114,7 +115,7 @@ public class BasicUserService implements UserService {
     User user = userRepository.findById(id).orElseThrow(
         () -> {
           log.warn("[USER_UPDATE_FAILED] 유저 수정 실패 - 존재하지 않음 - 유저 ID={}", id);
-          return new NoSuchElementException("존재하지 않는 User입니다. id : " + id);
+          return new DiscodeitException(ErrorCode.USER_NOT_FOUND);
         }
     );
 
@@ -122,13 +123,13 @@ public class BasicUserService implements UserService {
     if (dto.newUsername() != null && userRepository.existsByUsernameAndIdNot(dto.newUsername(),
         id)) {
       log.warn("[USER_UPDATE_FAILED] 유저 수정 실패 - 중복된 이름 - 유저 이름={}", dto.newUsername());
-      throw new IllegalArgumentException("이미 존재하는 이름입니다.");
+      throw new DiscodeitException(ErrorCode.DUPLICATE_USERNAME);
     }
 
     // 이메일 중복체크 -> Email이 존재하지만 UserId가 같지 않을 때(다른 사람이 Email을 가지고 있을 때)
     if (dto.newEmail() != null && userRepository.existsByEmailAndIdNot(dto.newEmail(), id)) {
       log.warn("[USER_UPDATE_FAILED] 유저 수정 실패 - 중복된 이메일 - 유저 이메일={}", dto.newEmail());
-      throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+      throw new DiscodeitException(ErrorCode.DUPLICATE_EMAIL);
     }
 
     // 프로필 이미지 수정(선택)
@@ -174,7 +175,7 @@ public class BasicUserService implements UserService {
     User user = userRepository.findById(id).orElseThrow(
         () -> {
           log.warn("[USER_DELETE_FAILED] 유저 삭제 실패 - 존재하지 않음 - 유저 ID={}", id);
-          return new NoSuchElementException("존재하지 않는 User입니다. id : " + id);
+          return new DiscodeitException(ErrorCode.USER_NOT_FOUND);
         }
     );
 

@@ -8,6 +8,8 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.exception.DiscodeitException;
+import com.sprint.mission.discodeit.exception.ErrorCode;
 import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.mapper.PageResponseMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
@@ -19,7 +21,6 @@ import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,14 +55,14 @@ public class BasicMessageService implements MessageService {
     Channel channel = channelRepository.findById(dto.channelId()).orElseThrow(
         () -> {
           log.warn("[MESSAGE_CREATE_FAILED] 메시지 생성 실패 - 채널이 존재하지 않음 - 채널 ID={}", dto.channelId());
-          return new NoSuchElementException("존재하지 않는 채널입니다. Id : " + dto.channelId());
+          return new DiscodeitException(ErrorCode.CHANNEL_NOT_FOUND);
         }
     );
 
     User author = userRepository.findById(dto.authorId()).orElseThrow(
         () -> {
           log.warn("[MESSAGE_CREATE_FAILED] 메시지 생성 실패 - 유저가 존재하지 않음 - 유저 ID={}", dto.authorId());
-          return new NoSuchElementException("존재하지 않는 유저입니다. Id : " + dto.authorId());
+          return new DiscodeitException(ErrorCode.USER_NOT_FOUND);
         }
     );
 
@@ -84,7 +85,7 @@ public class BasicMessageService implements MessageService {
         } catch (IOException e) {
           log.error("[MESSAGE_CREATE_FAILED] 첨부파일 저장 실패 - 파일명={}, 크기={}",
               file.getOriginalFilename(), file.getSize(), e);
-          throw new RuntimeException("첨부파일 저장 실패", e);
+          throw new DiscodeitException(ErrorCode.ATTACHMENT_SAVE_FAILED);
         }
 
         binaryContentRepository.save(binaryContent);
@@ -127,7 +128,7 @@ public class BasicMessageService implements MessageService {
     Message message = messageRepository.findById(id).orElseThrow(
         () -> {
           log.warn("[MESSAGE_UPDATE_FAILED] 메시지 수정 실패 - 존재하지 않음 - 메시지 ID={}", id);
-          return new NoSuchElementException("해당 메시지가 존재하지 않습니다. Id : " + id);
+          return new DiscodeitException(ErrorCode.MESSAGE_NOT_FOUND);
         }
     );
     message.updateContent(dto.newContent());
@@ -151,7 +152,7 @@ public class BasicMessageService implements MessageService {
     Message message = messageRepository.findById(id).orElseThrow(
         () -> {
           log.warn("[MESSAGE_DELETE_FAILED] 메시지 삭제 실패 - 존재하지 않음 - 메시지 ID={}", id);
-          return new NoSuchElementException("해당 메시지가 존재하지 않습니다. Id : " + id);
+          return new DiscodeitException(ErrorCode.MESSAGE_NOT_FOUND);
         }
     );
 
