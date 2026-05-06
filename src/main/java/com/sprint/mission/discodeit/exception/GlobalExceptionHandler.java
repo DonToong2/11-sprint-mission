@@ -1,16 +1,37 @@
 package com.sprint.mission.discodeit.exception;
 
 import com.sprint.mission.discodeit.dto.response.ErrorResponse;
+import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(basePackages = "com.sprint.mission.discodeit.controller")
 // 모든 컨트롤러에서 발생하는 예외를 가로채는 역할
 public class GlobalExceptionHandler {
-  // 기존 IllegalArgumentException, NoSuchElementException 예외
+
+  // 유효성 검증 예외
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+      MethodArgumentNotValidException e
+  ) {
+
+    Map<String, Object> details = new HashMap<>();
+
+    // 상세 오류 메시지
+    for (FieldError error : e.getBindingResult().getFieldErrors()) {
+      details.put(error.getField(), error.getDefaultMessage());
+    }
+
+    ErrorResponse response = ErrorResponse.of(
+        ErrorCode.INVALID_REQUEST, HttpStatus.BAD_REQUEST.value(), e, details);
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
 
   // 비즈니스 로직 예외
   @ExceptionHandler(DiscodeitException.class)
@@ -43,7 +64,7 @@ public class GlobalExceptionHandler {
 
   private HttpStatus mapToStatus(ErrorCode errorCode) {
     return switch (errorCode) {
-      
+
       // 400
       case INVALID_REQUEST, PRIVATE_CHANNEL_UPDATE -> HttpStatus.BAD_REQUEST;
 
