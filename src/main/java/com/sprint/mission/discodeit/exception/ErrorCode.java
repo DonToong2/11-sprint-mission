@@ -27,7 +27,11 @@ public enum ErrorCode {
   ATTACHMENT_SAVE_FAILED("첨부파일 저장에 실패하였습니다."),
 
   // AUTH
-  INVALID_LOGIN("로그인 정보가 올바르지 않습니다.");
+  INVALID_LOGIN("로그인 정보가 올바르지 않습니다."),
+
+  // 공통
+  INVALID_REQUEST("잘못된 요청입니다."),
+  INTERNAL_SERVER_ERROR("서버 내부 오류가 발생했습니다.");
 
   private final String message;
 
