@@ -98,8 +98,9 @@ public class BasicMessageService implements MessageService {
 
     messageRepository.save(message);
 
-    log.info("[MESSAGE_CREATE_SUCCESS] 메시지 생성 완료 - 메시지 ID={}, 채널 ID={}, 첨부파일 수={}",
-        message.getId(), channel.getId(), attachments != null ? attachments.size() : 0);
+    log.info("[MESSAGE_CREATE_SUCCESS] 메시지 생성 완료 - 메시지 ID={}, 채널 ID={}, 작성자 ID={}, 첨부파일 수={}",
+        message.getId(), channel.getId(), author.getId(),
+        attachments != null ? attachments.size() : 0);
 
     return message;
   }
