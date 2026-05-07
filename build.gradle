@@ -37,6 +37,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     runtimeOnly 'org.postgresql:postgresql'// test
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'com.h2database:h2' // 테스트 환경에서 h2 DB 사용
 }
 
 tasks.named('test') {
