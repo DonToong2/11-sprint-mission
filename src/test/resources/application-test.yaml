@@ -5,6 +5,8 @@ spring:
     username: sa
     password:
 
+  sql.init.mode: never
+
   jpa:
     hibernate:
       ddl-auto: create-drop # 테스트 시작 시 스키마를 새로 생성 (종료 시 제거)
