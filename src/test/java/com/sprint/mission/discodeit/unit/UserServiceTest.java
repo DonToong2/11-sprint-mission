@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -113,7 +114,8 @@ public class UserServiceTest {
     User result = userService.update(user.getId(), request, null);
 
     // then
-    assertThat(result.getUsername()).isEqualTo("새로운 이름");
+    assertEquals("새로운 이름", result.getUsername());
+//    assertThat(result.getUsername()).isEqualTo("새로운 이름");
     assertThat(result.getEmail()).isEqualTo("test@naver.com");
 
     // userRepository를 대상으로 save 메서드가 User의 아무 필드나 받아서 호출됐는지 확인
