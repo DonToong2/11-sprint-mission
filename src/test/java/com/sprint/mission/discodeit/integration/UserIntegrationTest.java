@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.integration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -147,6 +148,30 @@ public class UserIntegrationTest {
     // when & then
     mockMvc.perform(delete("/api/users/{userId}", userId))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("유저 조회 성공")
+  void findAll_success() throws Exception {
+    // given
+    User user1 = userRepository.save(User.create("test1", "test1@naver.com", "12345678"));
+    User user2 = userRepository.save(User.create("test2", "test2@naver.com", "12345678"));
+
+    // when & then
+    mockMvc.perform(get("/api/users"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2));
+  }
+
+  @Test
+  @DisplayName("유저 조회 실패(유저가 존재하지 않음")
+  void findAll_fail() throws Exception {
+    // given : List 크기가 0을 유도하도록 User 생성X
+
+    // when & then
+    mockMvc.perform(get("/api/users"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(0));
   }
 
 }
