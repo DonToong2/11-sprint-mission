@@ -98,7 +98,7 @@ public class MessageControllerTest {
   }
 
   @Test
-  @DisplayName("채널 수정 성공")
+  @DisplayName("메시지 수정 성공")
   void update_success() throws Exception {
     // given
     UUID messageId = UUID.randomUUID();
