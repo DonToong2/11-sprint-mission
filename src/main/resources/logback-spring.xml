@@ -18,7 +18,7 @@
     <!--# 예시 25-01-01 10:33:55.740 [main] DEBUG c.s.m.discodeit.DiscodeitApplication - Running with Spring Boot v3.4.0, Spring v6.2.0-->
     <encoder>
       <pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} [%thread] %-5level %logger{36} [%X{requestId} |
-        %x{method} | %x{url}] - %msg%n
+        %X{method} | %X{url}] - %msg%n
       </pattern>
     </encoder>
 
