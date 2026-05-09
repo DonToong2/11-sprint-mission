@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.sprint.mission.discodeit.controller.MessageController;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
@@ -40,6 +41,9 @@ public class MessageControllerTest {
   @Autowired
   private Gson gson;
 
+  @Autowired
+  private ObjectMapper objectMapper;
+  
   @MockitoBean
   private MessageService messageService;
 
@@ -59,11 +63,11 @@ public class MessageControllerTest {
     User user = mock(User.class);
     Message message = Message.create("메시지", channel, user);
 
-    given(messageService.create(any(), any())).willReturn(message);
+    given(messageService.create(any(MessageCreateRequest.class), any())).willReturn(message);
 
     MockMultipartFile requestPart = new MockMultipartFile(
         "messageCreateRequest", "", "application/json",
-        gson.toJson(request).getBytes()
+        objectMapper.writeValueAsBytes(request)
     );
 
     // when & then
@@ -73,7 +77,7 @@ public class MessageControllerTest {
   }
 
   @Test
-  @DisplayName("메시지 생성 실패(채널이 존재하지 않음")
+  @DisplayName("메시지 생성 실패(채널이 존재하지 않음)")
   void create_fail() throws Exception {
     // given
     UUID channelId = UUID.randomUUID();
@@ -85,11 +89,12 @@ public class MessageControllerTest {
     User user = mock(User.class);
     Message message = Message.create("메시지", channel, user);
 
-    given(messageService.create(any(), any())).willThrow(new ChannelNotFoundException(channelId));
+    given(messageService.create(any(MessageCreateRequest.class), any())).willThrow(
+        new ChannelNotFoundException(channelId));
 
     MockMultipartFile requestPart = new MockMultipartFile(
         "messageCreateRequest", "", "application/json",
-        gson.toJson(request).getBytes()
+        objectMapper.writeValueAsBytes(request)
     );
 
     // when & then

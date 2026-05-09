@@ -35,18 +35,18 @@ public class UserRepositoryTest {
     assertThat(result).hasSize(2);
   }
 
-  @Test
-  @DisplayName("모든 유저 조회 실패")
-  void findAll_fail() {
-    // given : 유저 1명만 생성
-    userRepository.save(User.create("test1", "test1@naver.com", "12345678"));
-
-    // when
-    List<User> result = userRepository.findAll();
-
-    // then : 2명의 유저가 있을거라 추측
-    assertThat(result).hasSize(2);
-  }
+//  @Test
+//  @DisplayName("모든 유저 조회 실패")
+//  void findAll_fail() {
+//    // given : 유저 1명만 생성
+//    userRepository.save(User.create("test1", "test1@naver.com", "12345678"));
+//
+//    // when
+//    List<User> result = userRepository.findAll();
+//
+//    // then : 2명의 유저가 있을거라 추측
+//    assertThat(result).hasSize(2);
+//  }
 
   @Test
   @DisplayName("유저ID로 유저 조회 성공")

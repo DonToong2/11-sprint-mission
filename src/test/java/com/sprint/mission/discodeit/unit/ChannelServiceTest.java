@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,8 +57,8 @@ public class ChannelServiceTest {
   @InjectMocks
   private BasicChannelService channelService;
 
-  // Public Channel Create Success
   @Test
+  @DisplayName("공개 채널 생성 성공")
   void createPublic_success() {
     // given
     ChannelCreatePublicRequest request = new ChannelCreatePublicRequest("새 채널", "새로운 채널입니다.");
@@ -72,8 +73,8 @@ public class ChannelServiceTest {
     then(channelRepository).should().save(any(Channel.class));
   }
 
-  // Private Channel Create Success
   @Test
+  @DisplayName("비공개 채널 생성 성공")
   void createPrivate_success() {
     // given
     UUID userId1 = UUID.randomUUID();
@@ -104,8 +105,8 @@ public class ChannelServiceTest {
     then(readStatusRepository).should(times(2)).save(any()); // 2명의 User에 대한 2번 호출
   }
 
-  // Private Channel Create Fail(참여자가 없을 때)
   @Test
+  @DisplayName("비공개 채널 생성 실패(참여자가 없음)")
   void createPrivate_fail() {
     // given
     UUID userId = UUID.randomUUID();
@@ -120,11 +121,12 @@ public class ChannelServiceTest {
     Channel result = channelService.createPrivate(request);
 
     // then
+    assertThat(result).isNotNull();
     then(readStatusRepository).should(never()).save(any());
   }
 
-  // Channel Update Success
   @Test
+  @DisplayName("채널 수정 성공")
   void update_success() {
     // given
     UUID channelId = UUID.randomUUID();
@@ -147,8 +149,8 @@ public class ChannelServiceTest {
     then(channelRepository).should().save(channel);
   }
 
-  // Channel Update Fail(채널이 없을 때)
   @Test
+  @DisplayName("채널 수정 실패(채널이 존재하지 않음)")
   void update_fail() {
     // given
     UUID channelId = UUID.randomUUID();
@@ -165,8 +167,27 @@ public class ChannelServiceTest {
     then(channelRepository).should(never()).save(any());
   }
 
-  // Channel Delete Success
   @Test
+  @DisplayName("채널 수정 실패(비공개 채널은 수정할 수 없음)")
+  void update_privateChannel_fail() {
+    // given
+    UUID channelId = UUID.randomUUID();
+
+    Channel privateChannel = Channel.createPrivate();
+    ChannelUpdateRequest request = new ChannelUpdateRequest("공개", "공개 채널입니다.");
+
+    given(channelRepository.findById(channelId)).willReturn(Optional.of(privateChannel));
+
+    // when & then
+    assertThatThrownBy(() -> channelService.update(channelId, request))
+        .isInstanceOf(DiscodeitException.class);
+
+    then(channelRepository).should().findById(channelId);
+    then(channelRepository).should(never()).save(any());
+  }
+
+  @Test
+  @DisplayName("채널 삭제 성공")
   void delete_success() {
     // given
     UUID channelId = UUID.randomUUID();
@@ -184,8 +205,8 @@ public class ChannelServiceTest {
     then(channelRepository).should().deleteById(channelId);
   }
 
-  // Channel Delete Fail(채널이 없을 때)
   @Test
+  @DisplayName("채널 삭제 실패(채널이 존재하지 않음)")
   void delete_fail() {
     // given
     UUID channelId = UUID.randomUUID();
@@ -201,8 +222,8 @@ public class ChannelServiceTest {
     then(channelRepository).should(never()).deleteById(channelId);
   }
 
-  // FindAllByUserId Success
   @Test
+  @DisplayName("유저ID로 채널 조회 성공")
   void findAllByUserId_Success() {
     // given
     UUID userId = UUID.randomUUID();
@@ -237,8 +258,8 @@ public class ChannelServiceTest {
     then(messageRepository).should().findLastMessagesByChannelIds(anyList());
   }
 
-  // FindAllByUserId Fail(참여자가 없는 Private 채널 조회)
   @Test
+  @DisplayName("유저ID로 채널 조회 실패(비공개 채널의 참여자가 없음)")
   void findAllByUserId_fail() {
     UUID userId = UUID.randomUUID();
 

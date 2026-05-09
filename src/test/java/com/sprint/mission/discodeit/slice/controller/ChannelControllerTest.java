@@ -11,11 +11,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.google.gson.Gson;
 import com.sprint.mission.discodeit.controller.ChannelController;
+import com.sprint.mission.discodeit.dto.request.ChannelCreatePrivateRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelCreatePublicRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.service.ChannelService;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,6 +58,43 @@ public class ChannelControllerTest {
             .content(gson.toJson(request)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.name").value("공개"));
+  }
+
+  @Test
+  @DisplayName("비공개 채널 생성 성공")
+  void createPrivate_success() throws Exception {
+    // given
+    UUID user1 = UUID.randomUUID();
+    UUID user2 = UUID.randomUUID();
+
+    ChannelCreatePrivateRequest request = new ChannelCreatePrivateRequest(List.of(user1, user2));
+
+    Channel channel = Channel.createPrivate();
+
+    given(channelService.createPrivate(any())).willReturn(channel);
+
+    // when & then
+    mockMvc.perform(post("/api/channels/private")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(gson.toJson(request)))
+        .andExpect(status().isCreated());
+  }
+
+  @Test
+  @DisplayName("비공개 채널 생성 실패")
+  void createPrivate_fail() throws Exception {
+    // given
+    ChannelCreatePrivateRequest request = new ChannelCreatePrivateRequest(List.of());
+
+    Channel channel = Channel.createPrivate();
+
+    given(channelService.createPrivate(any())).willReturn(channel);
+
+    // when & then
+    mockMvc.perform(post("/api/channels/private")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(gson.toJson(request)))
+        .andExpect(status().isBadRequest());
   }
 
   @Test

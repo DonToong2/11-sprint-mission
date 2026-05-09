@@ -57,7 +57,7 @@ public class UserIntegrationTest {
 
   @Test
   @DisplayName("사용자 생성 실패(사용자 이름 중복)")
-  void create_fail() throws Exception {
+  void create_fail_duplicate_Username() throws Exception {
     // given
     UserCreateRequest request1 = new UserCreateRequest("test", "test@naver.com", "12345678");
 
@@ -70,6 +70,32 @@ public class UserIntegrationTest {
         .andExpect(status().isCreated());
 
     UserCreateRequest request2 = new UserCreateRequest("test", "tests@naver.com", "12345678");
+
+    // when & then
+    mockMvc.perform(multipart("/api/users")
+            .file(new MockMultipartFile(
+                "userCreateRequest",
+                "",
+                "application/json",
+                gson.toJson(request2).getBytes())))
+        .andExpect(status().isConflict());
+  }
+
+  @Test
+  @DisplayName("사용자 생성 실패(Email 중복)")
+  void create_fail_duplicate_Email() throws Exception {
+    // given
+    UserCreateRequest request1 = new UserCreateRequest("test1", "test@naver.com", "12345678");
+
+    mockMvc.perform(multipart("/api/users")
+            .file(new MockMultipartFile(
+                "userCreateRequest",
+                "",
+                "application/json",
+                gson.toJson(request1).getBytes())))
+        .andExpect(status().isCreated());
+
+    UserCreateRequest request2 = new UserCreateRequest("test2", "test@naver.com", "12345678");
 
     // when & then
     mockMvc.perform(multipart("/api/users")

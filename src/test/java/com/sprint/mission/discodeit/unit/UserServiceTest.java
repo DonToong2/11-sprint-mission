@@ -19,6 +19,7 @@ import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,9 +42,9 @@ public class UserServiceTest {
   @InjectMocks
   private BasicUserService userService;
 
-  // User Create Success
   @Test
-  void create_success() {
+  @DisplayName("유저 생성 성공(프로필 이미지 있음)")
+  void create_success_with_profile() {
     // given
     // 유저 DTO
     UserCreateRequest request = new UserCreateRequest("테스트", "test@naver.com", "12345678");
@@ -75,15 +76,53 @@ public class UserServiceTest {
     // == verify(userStatusRepository).save(any());
   }
 
-  // User Create Fail(이메일 중복)
-  // 실패 유도해서 테스트 통과(실패 테스트)
   @Test
-  void create_fail() {
+  @DisplayName("유저 생성 성공(프로필 이미지 없음)")
+  void create_success_no_profile() {
+    // given
+    // 유저 DTO
+    UserCreateRequest request = new UserCreateRequest("테스트", "test@naver.com", "12345678");
+
+    given(userRepository.existsByUsername("테스트")).willReturn(false);
+    given(userRepository.existsByEmail("test@naver.com")).willReturn(false);
+
+    given(userRepository.save(any(User.class))).willAnswer(i -> i.getArgument(0));
+    given(userStatusRepository.save(any())).willAnswer(i -> i.getArgument(0));
+
+    // when
+    User result = userService.create(request, null);
+
+    // then
+    assertThat(result).isNotNull();
+    then(userRepository).should().save(any(User.class));
+    then(binaryContentRepository).should((never())).save(any());
+    then(userStatusRepository).should().save(any());
+    // == verify(userStatusRepository).save(any());
+  }
+
+  @Test
+  @DisplayName("유저 생성 실패(이름 중복)")
+  void create_fail_duplicate_username() {
     // given
     UserCreateRequest request = new UserCreateRequest("테스트", "test@naver.com", "12345678");
 
-    // "테스트"라는 이름은 아직 없음
-    given(userRepository.existsByUsername("테스트")).willReturn(false);
+    // 이미 "테스트"라는 이름이 있음 -> 실패 유도
+    given(userRepository.existsByUsername("테스트")).willReturn(true);
+
+    // when & then
+    // 예외 시 비즈니스 예외가 나와야함(UsernameAlreadyExistsException)
+    assertThatThrownBy(
+        () -> userService.create(request, null)).isInstanceOf(DiscodeitException.class);
+
+    // User 저장되지 않음
+    then(userRepository).should(never()).save(any(User.class));
+  }
+
+  @Test
+  @DisplayName("유저 생성 실패(이메일 중복)")
+  void create_fail_duplicate_email() {
+    // given
+    UserCreateRequest request = new UserCreateRequest("테스트", "test@naver.com", "12345678");
 
     // 이미 "test@naver.com"이 있음 -> 실패 유도
     given(userRepository.existsByEmail("test@naver.com")).willReturn(true);
@@ -97,10 +136,9 @@ public class UserServiceTest {
     then(userRepository).should(never()).save(any(User.class));
   }
 
-  // User Update Success
-  // 이름만 수정
   @Test
-  void update_success() {
+  @DisplayName("유저 수정 성공(Username만 수정)")
+  void update_username_success() {
     // given
     // 유저 생성
     User user = User.create("이름", "test@naver.com", "12345678");
@@ -116,15 +154,58 @@ public class UserServiceTest {
     // then
     assertEquals("새로운 이름", result.getUsername());
 //    assertThat(result.getUsername()).isEqualTo("새로운 이름");
-    assertThat(result.getEmail()).isEqualTo("test@naver.com");
 
     // userRepository를 대상으로 save 메서드가 User의 아무 필드나 받아서 호출됐는지 확인
     then(userRepository).should().save(any(User.class));
   }
 
-  // User Update Fail(수정 이름 중복)
   @Test
-  void update_fail() {
+  @DisplayName("유저 수정 성공(Email만 수정)")
+  void update_email_success() {
+    // given
+    // 유저 생성
+    User user = User.create("이름", "test@naver.com", "12345678");
+
+    // 수정 요청
+    UserUpdateRequest request = new UserUpdateRequest(null, "testA@naver.com", null);
+
+    given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+
+    // when
+    User result = userService.update(user.getId(), request, null);
+
+    // then
+    assertThat(result.getEmail()).isEqualTo("testA@naver.com");
+
+    // userRepository를 대상으로 save 메서드가 User의 아무 필드나 받아서 호출됐는지 확인
+    then(userRepository).should().save(any(User.class));
+  }
+
+  @Test
+  @DisplayName("유저 수정 성공(Password만 수정)")
+  void update_password_success() {
+    // given
+    // 유저 생성
+    User user = User.create("이름", "test@naver.com", "12345678");
+
+    // 수정 요청
+    UserUpdateRequest request = new UserUpdateRequest(null, "null", "1234");
+
+    given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+
+    // when
+    User result = userService.update(user.getId(), request, null);
+
+    // then
+    assertThat(result.getPassword()).isEqualTo("1234");
+
+    // userRepository를 대상으로 save 메서드가 User의 아무 필드나 받아서 호출됐는지 확인
+    then(userRepository).should().save(any(User.class));
+  }
+
+  @Test
+  @DisplayName("유저 수정 실패(이름 중복)")
+  void update_fail_duplicate_username() {
     // given
     // 유저 생성
     User user = User.create("이름", "test@naver.com", "12345678");
@@ -143,8 +224,49 @@ public class UserServiceTest {
     then(userRepository).should(never()).save(any(User.class));
   }
 
-  // User Delete Success
   @Test
+  @DisplayName("유저 수정 실패(이메일 중복)")
+  void update_fail_duplicate_email() {
+    // given
+    // 유저 생성
+    User user = User.create("이름", "test@naver.com", "12345678");
+
+    // 수정 요청
+    UserUpdateRequest request = new UserUpdateRequest(null, "test@naver.com", null);
+
+    // 유저 조회 시 가짜 객체 존재함을 알림
+    given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+    given(userRepository.existsByEmailAndIdNot("test@naver.com", user.getId())).willReturn(true);
+
+    // when & then
+    assertThatThrownBy(() ->
+        userService.update(user.getId(), request, null)).isInstanceOf(DiscodeitException.class);
+
+    then(userRepository).should(never()).save(any(User.class));
+  }
+
+  @Test
+  @DisplayName("유저 수정 실패(유저가 존재하지 않음)")
+  void update_fail_notfound_user() {
+    // given
+    User user = User.create("삭제될 유저", "test@naver.com", "12345678");
+    UUID userId = user.getId();
+
+    // userId로 조회했을때 빈 값이 나왔을 때
+    given(userRepository.findById(userId)).willReturn(Optional.empty());
+
+    // 수정 요청
+    UserUpdateRequest request = new UserUpdateRequest("새로운 이름", null, null);
+
+    // when & then
+    assertThatThrownBy(() ->
+        userService.update(user.getId(), request, null)).isInstanceOf(DiscodeitException.class);
+
+    then(userRepository).should(never()).save(any(User.class));
+  }
+
+  @Test
+  @DisplayName("유저 삭제 성공")
   void delete_success() {
     // given
     User user = User.create("삭제될 유저", "test@naver.com", "12345678");
@@ -157,8 +279,8 @@ public class UserServiceTest {
     then(userRepository).should().delete(user);
   }
 
-  // User Delete Fail(삭제할 유저가 존재하지 않음)
   @Test
+  @DisplayName("유저 삭제 실패(유저가 존재하지 않음)")
   void delete_fail() {
     // given
     UUID userId = UUID.randomUUID();

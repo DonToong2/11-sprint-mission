@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequest;
@@ -41,6 +42,9 @@ public class MessageIntegrationTest {
   private Gson gson;
 
   @Autowired
+  private ObjectMapper objectMapper;
+
+  @Autowired
   private UserRepository userRepository;
 
   @Autowired
@@ -63,7 +67,7 @@ public class MessageIntegrationTest {
     mockMvc.perform(multipart("/api/messages")
             .file(new MockMultipartFile(
                 "messageCreateRequest", "", "application/json",
-                gson.toJson(request).getBytes())))
+                objectMapper.writeValueAsBytes(request))))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.content").value("메시지"));
   }
@@ -81,7 +85,7 @@ public class MessageIntegrationTest {
     mockMvc.perform(multipart("/api/messages")
             .file(new MockMultipartFile(
                 "messageCreateRequest", "", "application/json",
-                gson.toJson(request).getBytes())))
+                objectMapper.writeValueAsBytes(request))))
         .andExpect(status().isNotFound());
   }
 

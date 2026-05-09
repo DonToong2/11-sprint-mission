@@ -7,10 +7,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.google.gson.Gson;
+import com.sprint.mission.discodeit.dto.request.ChannelCreatePrivateRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelCreatePublicRequest;
 import com.sprint.mission.discodeit.dto.request.ChannelUpdateRequest;
 import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,19 +41,41 @@ public class ChannelIntegrationTest {
   @Autowired
   private ChannelRepository channelRepository;
 
+  @Autowired
+  private UserRepository userRepository;
+
   @Test
   @DisplayName("공개 채널 생성 성공")
   void createPublic_success() throws Exception {
     // given
-    ChannelCreatePublicRequest request = new ChannelCreatePublicRequest("공개채널", "공개 설명");
+    ChannelCreatePublicRequest request = new ChannelCreatePublicRequest("공개", "공개 채널입니다.");
 
     // when & then
     mockMvc.perform(post("/api/channels/public")
             .contentType(MediaType.APPLICATION_JSON)
             .content(gson.toJson(request)))
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.name").value("공개채널"))
-        .andExpect(jsonPath("$.description").value("공개 설명"));
+        .andExpect(jsonPath("$.type").value("PUBLIC"))
+        .andExpect(jsonPath("$.name").value("공개"))
+        .andExpect(jsonPath("$.description").value("공개 채널입니다."));
+  }
+
+  @Test
+  @DisplayName("비공개 채널 생성 성공")
+  void createPrivate_success() throws Exception {
+    // given
+    User user1 = userRepository.save(User.create("test1", "test1@naver.com", "1234"));
+    User user2 = userRepository.save(User.create("test2", "test2@naver.com", "1234"));
+
+    ChannelCreatePrivateRequest request =
+        new ChannelCreatePrivateRequest(List.of(user1.getId(), user2.getId()));
+
+    // when & then
+    mockMvc.perform(post("/api/channels/private")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(gson.toJson(request)))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.type").value("PRIVATE"));
   }
 
   @Test
