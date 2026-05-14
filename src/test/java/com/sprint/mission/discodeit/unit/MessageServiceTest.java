@@ -176,7 +176,7 @@ public class MessageServiceTest {
 
   @Test
   @DisplayName("메시지 수정 성공")
-  void update_success() {
+  void update_success_message() {
     // given
 //    Message message = mock(Message.class);
     Message message = Message.create("메시지", mock(Channel.class), mock(User.class));
@@ -195,7 +195,7 @@ public class MessageServiceTest {
 
   @Test
   @DisplayName("메시지 수정 실패(메시지가 존재하지 않음)")
-  void update_fail() {
+  void update_fail_notfound_message() {
     // given
     Message message = Message.create("메시지", mock(Channel.class), mock(User.class));
 
@@ -215,7 +215,7 @@ public class MessageServiceTest {
 
   @Test
   @DisplayName("메시지 삭제 성공(첨부파일 없음)")
-  void delete_success() {
+  void delete_success_message() {
     // given
     Message message = mock(Message.class);
     given(messageRepository.findById(message.getId())).willReturn(Optional.of(message));
@@ -229,7 +229,7 @@ public class MessageServiceTest {
 
   @Test
   @DisplayName("메시지 삭제 성공(첨부파일 있음)")
-  void delete_success_withAttachments() {
+  void delete_success_message_withAttachments() {
     // given
     UUID messageId = UUID.randomUUID();
 
@@ -251,19 +251,19 @@ public class MessageServiceTest {
 
   @Test
   @DisplayName("메시지 삭제 실패(메시지가 존재하지 않음)")
-  void delete_fail() {
+  void delete_fail_notfound_message() {
     // given
-    Message message = mock(Message.class);
+    UUID messageId = UUID.randomUUID();
 
     // 메시지ID로 메시지를 조회했지만 없음
-    given(messageRepository.findById(message.getId())).willReturn(Optional.empty());
+    given(messageRepository.findById(messageId)).willReturn(Optional.empty());
 
     // when & then
     assertThatThrownBy(
         () ->
-            messageService.delete(message.getId())).isInstanceOf(DiscodeitException.class);
+            messageService.delete(messageId)).isInstanceOf(DiscodeitException.class);
 
-    then(messageRepository).should(never()).deleteById(message.getId());
+    then(messageRepository).should(never()).deleteById(messageId);
   }
 
   @Test

@@ -81,8 +81,8 @@ public class ChannelControllerTest {
   }
 
   @Test
-  @DisplayName("비공개 채널 생성 실패")
-  void createPrivate_fail() throws Exception {
+  @DisplayName("비공개 채널 생성 실패(채널에 참여자가 없음)")
+  void createPrivate_fail_channel_emptyParticipantIds() throws Exception {
     // given
     ChannelCreatePrivateRequest request = new ChannelCreatePrivateRequest(List.of());
 
@@ -99,7 +99,7 @@ public class ChannelControllerTest {
 
   @Test
   @DisplayName("채널 수정 성공")
-  void update_success() throws Exception {
+  void update_success_channel() throws Exception {
     // given
     UUID channelId = UUID.randomUUID();
 
@@ -118,8 +118,8 @@ public class ChannelControllerTest {
   }
 
   @Test
-  @DisplayName("채널 수정 실패(채널이 존재하지 않음")
-  void update_fail() throws Exception {
+  @DisplayName("채널 수정 실패(채널이 존재하지 않음)")
+  void update_fail_channel_notfound_channel() throws Exception {
     // given
     UUID channelId = UUID.randomUUID();
     ChannelUpdateRequest request = new ChannelUpdateRequest("수정", null);
@@ -134,7 +134,7 @@ public class ChannelControllerTest {
 
   @Test
   @DisplayName("채널 삭제 성공")
-  void delete_success() throws Exception {
+  void delete_success_channel() throws Exception {
     // given
     UUID channelId = UUID.randomUUID();
 
@@ -145,7 +145,7 @@ public class ChannelControllerTest {
 
   @Test
   @DisplayName("채널 삭제 실패(채널이 존재하지 않음)")
-  void delete_fail() throws Exception {
+  void delete_fail_channel_notfound_channel() throws Exception {
     // given
     UUID channelId = UUID.randomUUID();
     willThrow(new ChannelNotFoundException(channelId)).given(channelService).delete(channelId);

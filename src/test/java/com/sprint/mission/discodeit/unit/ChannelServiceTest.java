@@ -107,7 +107,7 @@ public class ChannelServiceTest {
 
   @Test
   @DisplayName("비공개 채널 생성 실패(참여자가 없음)")
-  void createPrivate_fail() {
+  void createPrivate_fail_emptyParticipantIds() {
     // given
     UUID userId = UUID.randomUUID();
     ChannelCreatePrivateRequest request = new ChannelCreatePrivateRequest(List.of(userId));
@@ -127,7 +127,7 @@ public class ChannelServiceTest {
 
   @Test
   @DisplayName("채널 수정 성공")
-  void update_success() {
+  void update_success_channelNameAndDescription() {
     // given
     UUID channelId = UUID.randomUUID();
 
@@ -151,7 +151,7 @@ public class ChannelServiceTest {
 
   @Test
   @DisplayName("채널 수정 실패(채널이 존재하지 않음)")
-  void update_fail() {
+  void update_fail_notfound_channel() {
     // given
     UUID channelId = UUID.randomUUID();
 
@@ -169,7 +169,7 @@ public class ChannelServiceTest {
 
   @Test
   @DisplayName("채널 수정 실패(비공개 채널은 수정할 수 없음)")
-  void update_privateChannel_fail() {
+  void update_privateChannel_fail_notallowed_channel() {
     // given
     UUID channelId = UUID.randomUUID();
 
@@ -188,7 +188,7 @@ public class ChannelServiceTest {
 
   @Test
   @DisplayName("채널 삭제 성공")
-  void delete_success() {
+  void delete_success_channel() {
     // given
     UUID channelId = UUID.randomUUID();
 
@@ -207,7 +207,7 @@ public class ChannelServiceTest {
 
   @Test
   @DisplayName("채널 삭제 실패(채널이 존재하지 않음)")
-  void delete_fail() {
+  void delete_fail_notfound_channel() {
     // given
     UUID channelId = UUID.randomUUID();
 
@@ -260,7 +260,7 @@ public class ChannelServiceTest {
 
   @Test
   @DisplayName("유저ID로 채널 조회 실패(비공개 채널의 참여자가 없음)")
-  void findAllByUserId_fail() {
+  void findAllByUserId_fail_emptyParticipantIds() {
     UUID userId = UUID.randomUUID();
 
     Channel privateChannel = Channel.createPrivate();

@@ -53,8 +53,8 @@ public class MessageRepositoryTest {
   }
 
   @Test
-  @DisplayName("채널 메시지 조회 실패(메시지 생성X)")
-  void findMessages_fail() {
+  @DisplayName("채널 메시지 조회 실패(채널에 메시지가 없음)")
+  void findMessages_fail_emptyMessages() {
     // given
     Channel channel = Channel.createPublic("공개", "공개 채널입니다.");
     Pageable pageable = PageRequest.of(0, 50);
@@ -94,7 +94,7 @@ public class MessageRepositoryTest {
 
   @Test
   @DisplayName("채널들의 마지막 메시지 조회 실패(채널에 메시지가 없음)")
-  void findLastMessages_fail() {
+  void findLastMessages_fail_emptyMessages() {
     // given : 메시지 생성X
     Channel channel = channelRepository.save(Channel.createPublic("공개", "공개 채널입니다."));
 
@@ -126,8 +126,8 @@ public class MessageRepositoryTest {
   }
 
   @Test
-  @DisplayName("채널의 마지막 메시지 조회 실패(채널에 메시지 없음)")
-  void findTopByChannelIdOrderByCreatedAtDesc_fail() {
+  @DisplayName("채널의 마지막 메시지 조회 실패(채널에 메시지가 없음)")
+  void findTopByChannelIdOrderByCreatedAtDesc_fail_emptyMessages() {
     // given
     Channel channel = channelRepository.save(Channel.createPublic("공개", "공개 채널입니다."));
 
@@ -160,7 +160,7 @@ public class MessageRepositoryTest {
 
   @Test
   @DisplayName("채널의 모든 메시지 삭제 실패(채널이 존재하지 않음)")
-  void deleteAllByChannelId_fail() {
+  void deleteAllByChannelId_fail_notfound_channel() {
     // given
     User user = userRepository.save(User.create("test", "test@naver.com", "12345678"));
     Channel channel = channelRepository.save(Channel.createPublic("공개", "공개 채널입니다."));

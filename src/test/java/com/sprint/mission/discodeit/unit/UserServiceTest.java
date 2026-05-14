@@ -271,7 +271,7 @@ public class UserServiceTest {
 
   @Test
   @DisplayName("유저 삭제 성공")
-  void delete_success() {
+  void delete_success_user() {
     // given
     User user = User.create("삭제될 유저", "test@naver.com", "12345678");
     given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
@@ -285,7 +285,7 @@ public class UserServiceTest {
 
   @Test
   @DisplayName("유저 삭제 실패(유저가 존재하지 않음)")
-  void delete_fail() {
+  void delete_fail_notfound_user() {
     // given
     UUID userId = UUID.randomUUID();
     User user = User.create("삭제될 유저", "test@naver.com", "12345678");

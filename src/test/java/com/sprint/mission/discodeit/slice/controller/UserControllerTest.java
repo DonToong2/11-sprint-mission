@@ -44,7 +44,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("유저 생성 성공")
-  void create_success() throws Exception {
+  void create_success_user() throws Exception {
     // given
     User user = User.create("test", "test@naver.com", "12345678");
 
@@ -63,7 +63,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("유저 생성 실패(Username 중복)")
-  void create_fail() throws Exception {
+  void create_fail_user_duplicate_user() throws Exception {
     // given
     given(userService.create(any(), any())).willThrow(new UsernameAlreadyExistException("test"));
 
@@ -77,7 +77,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("유저 수정 성공")
-  void update_success() throws Exception {
+  void update_success_user() throws Exception {
     // given
     UUID userId = UUID.randomUUID();
     User user = User.create("test2", "test@naver.com", "12345678");
@@ -105,7 +105,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("유저 수정 실패(유저가 없음)")
-  void update_fail() throws Exception {
+  void update_fail_user_notfound_user() throws Exception {
     // given
     UUID userId = UUID.randomUUID();
     given(userService.update(any(), any(), any())).willThrow(new UserNotFoundException(userId));
@@ -129,7 +129,7 @@ public class UserControllerTest {
 
   @Test
   @DisplayName("유저 삭제 성공")
-  void delete_success() throws Exception {
+  void delete_success_user() throws Exception {
     // given
     UUID userId = UUID.randomUUID();
 
@@ -139,8 +139,8 @@ public class UserControllerTest {
   }
 
   @Test
-  @DisplayName("유저 삭제 실패")
-  void delete_fail() throws Exception {
+  @DisplayName("유저 삭제 실패(유저가 없음)")
+  void delete_fail_user_notfound_user() throws Exception {
     // given
     UUID userId = UUID.randomUUID();
 
