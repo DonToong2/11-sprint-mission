@@ -1,9 +1,4 @@
 spring:
-  boot:
-    admin:
-      client:
-        url: ${SPRING_BOOT_ADMIN_CLIENT_URL}
-
   # To Connect PostgreSQL
   datasource:
     url: ${DB_URL}
