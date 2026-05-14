@@ -1,0 +1,30 @@
+# Version control
+.git
+.gitignore
+.githooks
+
+# IDE
+.idea
+*.iml
+
+# Build output
+.gradle
+build
+
+# Logs
+.logs
+
+# Application data and attachments
+.discodeit
+attachments
+
+# Documentation
+HELP.md
+deps.txt
+*.md
+
+# GitHub
+.github
+
+# OS files
+.DS_Store
