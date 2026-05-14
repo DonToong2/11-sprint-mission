@@ -6,8 +6,10 @@ import com.sprint.mission.discodeit.dto.response.ReadStatusDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.exception.DiscodeitException;
-import com.sprint.mission.discodeit.exception.ErrorCode;
+import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
+import com.sprint.mission.discodeit.exception.readstatus.ReadStatusAlreadyExistException;
+import com.sprint.mission.discodeit.exception.readstatus.ReadStatusNotFoundException;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.ReadStatusMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
@@ -34,17 +36,17 @@ public class BasicReadStatusService implements ReadStatusService {
   public ReadStatus create(ReadStatusCreateRequest dto) {
     // 관련된 Channel, User가 존재하지 않으면 예외를 발생.
     User user = userRepository.findById(dto.userId()).orElseThrow(
-        () -> new DiscodeitException(ErrorCode.USER_NOT_FOUND)
+        () -> new UserNotFoundException(dto.userId())
     );
 
     Channel channel = channelRepository.findById(dto.channelId()).orElseThrow(
-        () -> new DiscodeitException(ErrorCode.CHANNEL_NOT_FOUND)
+        () -> new ChannelNotFoundException(dto.channelId())
     );
 
     // 같은 Channel, User와 관련된 객체가 이미 존재하면 예외를 발생
     readStatusRepository.findByUserAndChannel(user, channel)
         .ifPresent(readStatus -> {
-              throw new DiscodeitException(ErrorCode.READ_STATUS_ALREADY_EXISTS);
+              throw new ReadStatusAlreadyExistException(readStatus.getId());
             }
         );
 
@@ -58,7 +60,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional(readOnly = true)
   public ReadStatusDto find(UUID id) {
     ReadStatus readStatus = readStatusRepository.findById(id).orElseThrow(
-        () -> new DiscodeitException(ErrorCode.READ_STATUS_NOT_FOUND)
+        () -> new ReadStatusNotFoundException(id)
     );
 
     return readStatusMapper.toDto(readStatus);
@@ -75,7 +77,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional
   public ReadStatus update(UUID id, ReadStatusUpdateRequest dto) {
     ReadStatus readStatus = readStatusRepository.findById(id).orElseThrow(
-        () -> new DiscodeitException(ErrorCode.READ_STATUS_NOT_FOUND)
+        () -> new ReadStatusNotFoundException(id)
     );
     readStatus.updateLastReadAt(dto.updatelastReadAt());
     readStatusRepository.save(readStatus);
@@ -87,7 +89,7 @@ public class BasicReadStatusService implements ReadStatusService {
   @Transactional
   public void delete(UUID id) {
     if (!readStatusRepository.existsById(id)) {
-      throw new DiscodeitException(ErrorCode.READ_STATUS_NOT_FOUND);
+      throw new ReadStatusNotFoundException(id);
     }
     readStatusRepository.deleteById(id);
   }

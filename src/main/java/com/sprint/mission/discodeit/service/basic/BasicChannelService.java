@@ -8,8 +8,8 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.exception.DiscodeitException;
-import com.sprint.mission.discodeit.exception.ErrorCode;
+import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
+import com.sprint.mission.discodeit.exception.channel.PrivateChannelUpdateException;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
@@ -83,7 +83,7 @@ public class BasicChannelService implements ChannelService {
   @Transactional(readOnly = true)
   public ChannelDto find(UUID id) {
     Channel channel = channelRepository.findById(id).orElseThrow(
-        () -> new DiscodeitException(ErrorCode.CHANNEL_NOT_FOUND)
+        () -> new ChannelNotFoundException(id)
     );
 
     // 가장 최근 메시지 시간을 조회
@@ -159,7 +159,7 @@ public class BasicChannelService implements ChannelService {
     Channel channel = channelRepository.findById(id).orElseThrow(
         () -> {
           log.warn("[CHANNEL_UPDATE_FAILED] 채널 수정 실패 - 존재하지 않음 - 수정할 채널 ID={}", id);
-          return new DiscodeitException(ErrorCode.CHANNEL_NOT_FOUND);
+          return new ChannelNotFoundException(id);
         }
     );
 
@@ -167,7 +167,7 @@ public class BasicChannelService implements ChannelService {
     if (channel.getType() == Channel.ChannelType.PRIVATE) {
       log.warn("[CHANNEL_UPDATE_FAILED] 채널 수정 실패 - PRIVATE 채널 수정 불가 - 수정할 채널 ID={}, 수정할 채널 타입={}",
           id, channel.getType());
-      throw new DiscodeitException(ErrorCode.PRIVATE_CHANNEL_UPDATE);
+      throw new PrivateChannelUpdateException(id);
     }
 
     if (dto.newName() != null) {
@@ -195,7 +195,7 @@ public class BasicChannelService implements ChannelService {
     channelRepository.findById(id).orElseThrow(
         () -> {
           log.warn("[CHANNEL_DELETE_FAILED] 채널 삭제 실패 - 존재하지 않음 - 채널 ID={}", id);
-          return new DiscodeitException(ErrorCode.CHANNEL_NOT_FOUND);
+          return new ChannelNotFoundException(id);
         }
     );
 
