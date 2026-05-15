@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.sprint.mission.discodeit.controller.UserController;
+import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.exception.user.UsernameAlreadyExistException;
@@ -47,8 +48,9 @@ public class UserControllerTest {
   void create_success_user() throws Exception {
     // given
     User user = User.create("test", "test@naver.com", "12345678");
+    UserDto dto = new UserDto(user.getId(), user.getUsername(), user.getEmail(), null, true);
 
-    given(userService.create(any(), any())).willReturn(user);
+    given(userService.create(any(), any())).willReturn(dto);
 
     // when & then
     mockMvc.perform(multipart("/api/users")
@@ -81,15 +83,16 @@ public class UserControllerTest {
     // given
     UUID userId = UUID.randomUUID();
     User user = User.create("test2", "test@naver.com", "12345678");
+    UserDto dto = new UserDto(user.getId(), user.getUsername(), user.getEmail(), null, true);
 
-    given(userService.update(any(), any(), any())).willReturn(user);
+    given(userService.update(any(), any(), any())).willReturn(dto);
 
     MockMultipartFile request = new MockMultipartFile(
         "userUpdateRequest", "", "application/json",
         """
-            
             {"username":"test2"}
-            """.getBytes()
+            """
+            .getBytes()
     );
 
     // when & then

@@ -15,12 +15,15 @@ import com.google.gson.Gson;
 import com.sprint.mission.discodeit.controller.MessageController;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequest;
+import com.sprint.mission.discodeit.dto.response.MessageDto;
+import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.service.MessageService;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,9 +64,19 @@ public class MessageControllerTest {
 
     Channel channel = mock(Channel.class);
     User user = mock(User.class);
-    Message message = Message.create("메시지", channel, user);
+    UserDto userDto = new UserDto(user.getId(), "test", "test@naver.com", null, true);
 
-    given(messageService.create(any(MessageCreateRequest.class), any())).willReturn(message);
+    Message message = Message.create("메시지", channel, user);
+    MessageDto dto = new MessageDto(
+        message.getId(),
+        message.getCreatedAt(),
+        message.getUpdatedAt(),
+        message.getContent(),
+        channel.getId(),
+        userDto,
+        List.of());
+
+    given(messageService.create(any(MessageCreateRequest.class), any())).willReturn(dto);
 
     MockMultipartFile requestPart = new MockMultipartFile(
         "messageCreateRequest", "", "application/json",
@@ -107,10 +120,21 @@ public class MessageControllerTest {
   void update_success_message() throws Exception {
     // given
     UUID messageId = UUID.randomUUID();
+    UUID channelId = UUID.randomUUID();
+    UserDto userDto = mock(UserDto.class);
 
     MessageUpdateRequest request = new MessageUpdateRequest("수정 메시지");
     Message message = Message.create(request.newContent(), mock(Channel.class), mock(User.class));
-    given(messageService.update(any(), any())).willReturn(message);
+    MessageDto dto = new MessageDto(
+        message.getId(),
+        message.getCreatedAt(),
+        message.getUpdatedAt(),
+        message.getContent(),
+        channelId,
+        userDto,
+        List.of());
+
+    given(messageService.update(any(), any())).willReturn(dto);
 
     // when & then
     mockMvc.perform(patch("/api/messages/{messageId}", messageId)

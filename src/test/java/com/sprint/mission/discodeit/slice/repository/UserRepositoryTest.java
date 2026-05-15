@@ -65,11 +65,11 @@ public class UserRepositoryTest {
   @Test
   @DisplayName("유저ID로 유저 조회 실패(유저가 존재하지 않음)")
   void findById_fail_emptyUsers() {
-    // given : DB에 저장 없이 유저 생성
-    User user = User.create("test", "test@naver.com", "12345678");
+    // given : userId만 생성하여 가짜 유저 생성
+    UUID userId = UUID.randomUUID();
 
     // when : DB에 유저ID가 존재하는가
-    Optional<User> result = userRepository.findById(user.getId());
+    Optional<User> result = userRepository.findById(userId);
 
     // then : false
     assertThat(result).isEmpty();
