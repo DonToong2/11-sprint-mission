@@ -49,7 +49,7 @@ public class BasicMessageService implements MessageService {
   // Create
   @Override
   @Transactional
-  public Message create(MessageCreateRequest dto, List<MultipartFile> attachments) {
+  public MessageDto create(MessageCreateRequest dto, List<MultipartFile> attachments) {
 
     log.debug("[MESSAGE_CREATE_START] 메시지 생성 시작 - 채널 ID={}, 작성자 ID={}, 첨부파일 수={}",
         dto.channelId(), dto.authorId(), attachments != null ? attachments.size() : 0);
@@ -82,6 +82,7 @@ public class BasicMessageService implements MessageService {
             file.getContentType()
         );
 
+        binaryContentRepository.save(binaryContent);
         try {
           binaryContentStorage.put(binaryContent.getId(), file.getBytes());
         } catch (IOException e) {
@@ -90,7 +91,6 @@ public class BasicMessageService implements MessageService {
           throw new AttachmentSaveFailedException(file.getOriginalFilename());
         }
 
-        binaryContentRepository.save(binaryContent);
         message.addAttachment(binaryContent); // message.getAttachments().add(binaryContent) 캡슐화
       });
 
@@ -100,11 +100,12 @@ public class BasicMessageService implements MessageService {
 
     messageRepository.save(message);
 
-    log.info("[MESSAGE_CREATE_SUCCESS] 메시지 생성 완료 - 메시지 ID={}, 채널 ID={}, 작성자 ID={}, 첨부파일 수={}",
-        message.getId(), channel.getId(), author.getId(),
+    log.info(
+        "[MESSAGE_CREATE_SUCCESS] 메시지 생성 완료 - 메시지 ID={}, 메시지 생성 시각={}, 채널 ID={}, 작성자 ID={}, 첨부파일 수={}",
+        message.getId(), message.getCreatedAt(), channel.getId(), author.getId(),
         attachments != null ? attachments.size() : 0);
 
-    return message;
+    return messageMapper.toDto(message);
   }
 
   // Read
@@ -112,7 +113,10 @@ public class BasicMessageService implements MessageService {
   @Transactional(readOnly = true)
   public PageResponse<MessageDto> findAllByChannelId(UUID channelId, Instant cursor) {
     Pageable pageable = PageRequest.of(0, 50); // 50개씩
-    Slice<Message> slice = messageRepository.findMessages(channelId, cursor, pageable);
+    Slice<Message> slice = cursor == null
+        ? messageRepository.findByChannelIdOrderByCreatedAtDesc(channelId, pageable)
+        : messageRepository.findMessages(channelId, cursor, pageable);
+
     Instant nextCursor = slice.hasNext() && slice.hasContent() ?
         slice.getContent().get(slice.getNumberOfElements() - 1).getCreatedAt() : null;
 
@@ -124,7 +128,7 @@ public class BasicMessageService implements MessageService {
   // Update
   @Override
   @Transactional
-  public Message update(UUID id, MessageUpdateRequest dto) {
+  public MessageDto update(UUID id, MessageUpdateRequest dto) {
     log.debug("[MESSAGE_UPDATE_START] 메시지 수정 시작 - 수정할 메시지 ID={}, 요청할 수정 메시지 내용={}",
         id, dto.newContent());
 
@@ -140,7 +144,7 @@ public class BasicMessageService implements MessageService {
     log.info("[MESSAGE_UPDATE_SUCCESS] 메시지 수정 성공 - 수정한 메시지 ID={}, 수정한 메시지 내용={}", id,
         dto.newContent());
 
-    return message;
+    return messageMapper.toDto(message);
   }
 
   // Delete

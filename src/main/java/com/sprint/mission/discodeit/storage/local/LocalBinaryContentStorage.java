@@ -66,7 +66,7 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
 
   // 다운로드 API
   @Override
-  public ResponseEntity<?> download(BinaryContentDto dto) {
+  public ResponseEntity<Resource> download(BinaryContentDto dto) {
     Resource resource = new InputStreamResource(get(dto.id()));
 
     return ResponseEntity.ok()

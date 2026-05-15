@@ -39,7 +39,7 @@ public class BasicChannelService implements ChannelService {
 
   @Override
   @Transactional
-  public Channel createPublic(ChannelCreatePublicRequest dto) {
+  public ChannelDto createPublic(ChannelCreatePublicRequest dto) {
     log.debug("[CHANNEL_CREATE_PUBLIC_START] PUBLIC 채널 생성 시작 - 생성할 채널 이름={}, 생성할 채널 설명={}",
         dto.name(), dto.description());
 
@@ -48,12 +48,12 @@ public class BasicChannelService implements ChannelService {
     log.info("[CHANNEL_CREATE_PUBLIC_SUCCESS] PUBLIC 채널 생성 완료 - 채널 ID={}, 채널 이름={}",
         channel.getId(), channel.getName());
 
-    return channel;
+    return channelMapper.toDto(channel, List.of(), null);
   }
 
   @Override
   @Transactional
-  public Channel createPrivate(ChannelCreatePrivateRequest dto) {
+  public ChannelDto createPrivate(ChannelCreatePrivateRequest dto) {
     // 기존 - channel Entity의 participantIds(참여자 Id, List<UUID>)를 사용하여 참여자들을 addAll
     // 수정 - userRepository를 사용
     log.debug("[CHANNEL_CREATE_PRIVATE_START] PRIVATE 채널 생성 시작 - 참여자 수={}, 참여자 ID 목록={}",
@@ -74,7 +74,7 @@ public class BasicChannelService implements ChannelService {
     log.info("[CHANNEL_CREATE_PRIVATE_SUCCESS] PRIVATE 채널 생성 완료 - 채널 ID={}, 참여자 수={}",
         channel.getId(), users.size());
 
-    return channel;
+    return channelMapper.toDto(channel, users, null);
   }
 
 
@@ -152,7 +152,7 @@ public class BasicChannelService implements ChannelService {
   // Update
   @Override
   @Transactional
-  public Channel update(UUID id, ChannelUpdateRequest dto) {
+  public ChannelDto update(UUID id, ChannelUpdateRequest dto) {
     log.debug("[CHANNEL_UPDATE_START] 채널 수정 시작 - 수정할 채널 ID={}, 요청한 채널 이름={}, 요청한 채널 설명={}",
         id, dto.newName(), dto.newDescription());
 
@@ -181,7 +181,7 @@ public class BasicChannelService implements ChannelService {
 
     log.info("[CHANNEL_UPDATE_SUCCESS] 채널 수정 완료 - 수정한 채널 ID={}", id);
 
-    return channel;
+    return channelMapper.toDto(channel, List.of(), null);
   }
 
   // Delete

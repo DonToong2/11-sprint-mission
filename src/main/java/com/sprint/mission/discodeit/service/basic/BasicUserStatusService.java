@@ -28,7 +28,7 @@ public class BasicUserStatusService implements UserStatusService {
 
   @Override
   @Transactional
-  public UserStatus create(UserStatusCreateRequest dto) {
+  public UserStatusDto create(UserStatusCreateRequest dto) {
 
     // 관련된 User가 존재하지 않으면 예외를 발생
     User user = userRepository.findById(dto.userId()).orElseThrow(
@@ -43,7 +43,7 @@ public class BasicUserStatusService implements UserStatusService {
     UserStatus userStatus = new UserStatus(user, dto.lastActiveAt());
     userStatusRepository.save(userStatus);
 
-    return userStatus;
+    return userStatusMapper.toDto(userStatus);
   }
 
   @Override
@@ -65,27 +65,27 @@ public class BasicUserStatusService implements UserStatusService {
   // UserStatusId로 UserStatus를 update
   @Override
   @Transactional
-  public UserStatus update(UUID id, UserStatusUpdateRequest dto) {
+  public UserStatusDto update(UUID id, UserStatusUpdateRequest dto) {
     UserStatus userStatus = userStatusRepository.findById(id).orElseThrow(
         () -> UserStatusNotFoundException.withId(id)
     );
     userStatus.updateLastOnline(dto.newLastActiveAt());
     userStatusRepository.save(userStatus);
 
-    return userStatus;
+    return userStatusMapper.toDto(userStatus);
   }
 
   // userId로 UserStatus를 update
   @Override
   @Transactional
-  public UserStatus updateByUserId(UUID userId, UserStatusUpdateRequest dto) {
+  public UserStatusDto updateByUserId(UUID userId, UserStatusUpdateRequest dto) {
     UserStatus userStatus = userStatusRepository.findByUserId(userId).orElseThrow(
         () -> UserStatusNotFoundException.withUserId(userId)
     );
     userStatus.updateLastOnline(dto.newLastActiveAt());
     userStatusRepository.save(userStatus);
 
-    return userStatus;
+    return userStatusMapper.toDto(userStatus);
   }
 
   @Override

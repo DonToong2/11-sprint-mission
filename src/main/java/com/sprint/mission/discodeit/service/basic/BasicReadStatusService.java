@@ -33,7 +33,7 @@ public class BasicReadStatusService implements ReadStatusService {
 
   @Override
   @Transactional
-  public ReadStatus create(ReadStatusCreateRequest dto) {
+  public ReadStatusDto create(ReadStatusCreateRequest dto) {
     // 관련된 Channel, User가 존재하지 않으면 예외를 발생.
     User user = userRepository.findById(dto.userId()).orElseThrow(
         () -> new UserNotFoundException(dto.userId())
@@ -53,7 +53,7 @@ public class BasicReadStatusService implements ReadStatusService {
     ReadStatus readStatus = new ReadStatus(user, channel, Instant.now());
     readStatusRepository.save(readStatus);
 
-    return readStatus;
+    return readStatusMapper.toDto(readStatus);
   }
 
   @Override
@@ -75,14 +75,14 @@ public class BasicReadStatusService implements ReadStatusService {
 
   @Override
   @Transactional
-  public ReadStatus update(UUID id, ReadStatusUpdateRequest dto) {
+  public ReadStatusDto update(UUID id, ReadStatusUpdateRequest dto) {
     ReadStatus readStatus = readStatusRepository.findById(id).orElseThrow(
         () -> new ReadStatusNotFoundException(id)
     );
-    readStatus.updateLastReadAt(dto.updatelastReadAt());
+    readStatus.updateLastReadAt(dto.newLastReadAt());
     readStatusRepository.save(readStatus);
 
-    return readStatus;
+    return readStatusMapper.toDto(readStatus);
   }
 
   @Override

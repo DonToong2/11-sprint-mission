@@ -14,6 +14,8 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -31,12 +33,13 @@ public class BasicUserService implements UserService {
   private final UserRepository userRepository;
   private final UserStatusRepository userStatusRepository;
   private final BinaryContentRepository binaryContentRepository;
+  private final BinaryContentStorage binaryContentStorage;
   private final UserMapper userMapper;
 
   // Create
   @Override
   @Transactional
-  public User create(UserCreateRequest dto, MultipartFile profile) {
+  public UserDto create(UserCreateRequest dto, MultipartFile profile) {
 
     log.debug("[USER_CREATE_START] 유저 생성 시작 - 유저 이름={}, 유저 이메일={}", dto.username(), dto.email());
 
@@ -56,7 +59,7 @@ public class BasicUserService implements UserService {
     User user = User.create(dto.username(), dto.email(), dto.password());
 
     // User -> BinaryContent(ProfileImage) -> UserStatus 순으로 생성
-    userRepository.save(user);
+    User savedUser = userRepository.save(user);
 
     // 프로필 이미지 등록(선택)
     if (profile != null && !profile.isEmpty()) {
@@ -67,19 +70,20 @@ public class BasicUserService implements UserService {
           profile.getOriginalFilename(), profile.getSize(),
           profile.getContentType());
 
-      binaryContentRepository.save(profileImage);
-      user.updateProfile(profileImage);
+      BinaryContent savedProfileImage = binaryContentRepository.save(profileImage);
+      binaryContentStorage.put(savedProfileImage.getId(), getBytes(profile));
+      savedUser.updateProfile(savedProfileImage);
       log.debug("[USER_CREATE_PROFILE_SUCCESS] 유저 프로필 이미지 등록 완료 - 프로필 ID={}", profileImage.getId());
     }
 
     // 유저 상태 생성
     // UserStatusService를 사용하면 같은 레이어(여기서는 Service)간에 순환 참조가 생기므로 UserStatusService.create 사용 X
-    UserStatus userStatus = new UserStatus(user, Instant.now());
+    UserStatus userStatus = new UserStatus(savedUser, Instant.now());
 
     userStatusRepository.save(userStatus); // cascade에 의해 UserStatus도 자동 저장
     log.info("[USER_CREATE_SUCCESS] 유저 생성 완료 - 유저 ID={}, 유저 이름={}", user.getId(),
         user.getUsername());
-    return user;
+    return userMapper.toDto(savedUser);
   }
 
 
@@ -107,7 +111,7 @@ public class BasicUserService implements UserService {
   // 같은 키, 다른 Value를 put 하면 키는 그대로, Value만 갱신된다.
   @Override
   @Transactional
-  public User update(UUID id, UserUpdateRequest dto, MultipartFile profile) {
+  public UserDto update(UUID id, UserUpdateRequest dto, MultipartFile profile) {
 
     // 비밀번호는 X
     log.debug("[USER_UPDATE_START] 유저 수정 시작 - 수정할 유저 ID={}, 요청한 유저 이름={}, 요청한 유저 이메일={}",
@@ -141,8 +145,9 @@ public class BasicUserService implements UserService {
           profile.getOriginalFilename(), profile.getSize(),
           profile.getContentType());
 
-      binaryContentRepository.save(profileImage);
-      user.updateProfile(profileImage);
+      BinaryContent savedProfileImage = binaryContentRepository.save(profileImage);
+      binaryContentStorage.put(savedProfileImage.getId(), getBytes(profile));
+      user.updateProfile(savedProfileImage);
       log.debug("[USER_UPDATE_PROFILE_SUCCESS] 유저 프로필 이미지 수정 완료 - 프로필 이미지 ID={}",
           profileImage.getId());
     }
@@ -162,7 +167,7 @@ public class BasicUserService implements UserService {
 
     log.info("[USER_UPDATE_SUCCESS] 유저 수정 완료 - 수정한 유저 ID={}", id);
 
-    return user;
+    return userMapper.toDto(user);
   }
 
   // Delete
@@ -195,5 +200,14 @@ public class BasicUserService implements UserService {
     userRepository.delete(user);
 
     log.info("[USER_DELETE_SUCCESS] 유저 삭제 완료 - 유저 ID={}", id);
+  }
+
+  private byte[] getBytes(MultipartFile file) {
+    try {
+      return file.getBytes();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
   }
 }

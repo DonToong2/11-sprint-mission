@@ -24,12 +24,12 @@ public class BasicBinaryContentService implements BinaryContentService {
 
   @Override
   @Transactional
-  public BinaryContent create(BinaryContentCreateRequest dto) {
+  public BinaryContentDto create(BinaryContentCreateRequest dto) {
     BinaryContent binaryContent = dto.toBinaryContent();
     binaryContentStorage.put(binaryContent.getId(), dto.bytes());
     binaryContentRepository.save(binaryContent);
 
-    return binaryContent;
+    return binaryContentMapper.toDto(binaryContent);
   }
 
   @Override
