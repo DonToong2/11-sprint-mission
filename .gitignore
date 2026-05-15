@@ -8,6 +8,7 @@ build/
 attachments/
 .logs
 .env
+.discodeit
 
 ### STS ###
 .apt_generated
