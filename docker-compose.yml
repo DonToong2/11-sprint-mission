@@ -6,6 +6,7 @@ services:
     build: .
     container_name: discodeit-app
     environment:
+      STORAGE_TYPE: ${STORAGE_TYPE}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
@@ -16,6 +17,7 @@ services:
       AWS_S3_SECRET_KEY: ${AWS_S3_SECRET_KEY}
       AWS_S3_REGION: ${AWS_S3_REGION}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      AWS_S3_PRESIGNED_URL_EXPIRATION: ${AWS_S3_PRESIGNED_URL_EXPIRATION}
 
     volumes:
       - app-storage:/app/storage
