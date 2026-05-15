@@ -1,3 +1,6 @@
+server:
+  port: 80
+
 spring:
   # To Connect PostgreSQL
   datasource:
@@ -5,9 +8,17 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
 
-server:
-  port: 80
+  jpa:
+    properties:
+      hibernate:
+        format_sql: false
 
 logging:
   level:
     com.sprint.mission.discodeit: info
+    org.hibernate.SQL: info
+
+management:
+  info:
+    env:
+      enabled: false
