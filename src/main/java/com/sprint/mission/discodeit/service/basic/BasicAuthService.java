@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class BasicAuthService implements AuthService {
   private final UserMapper userMapper;
 
   @Override
+  @Transactional(readOnly = true)
   public UserDto login(LoginRequest request) {
     String username = request.username();
     String password = request.password();
