@@ -58,7 +58,7 @@ jobs:
 
       - name: Task Definition 수정 # needs.docker.outputs.image_tag : docker 작업의 image_tag -> 깃 커밋 해시 7자리
         run: |
-          jq --arg IMAGE "${{ vars.ECR_REPOSITORY_URI }}:{{ needs.docker.outputs.image_tag }}" \
+          jq --arg IMAGE "${{ vars.ECR_REPOSITORY_URI }}:${{ needs.docker.outputs.image_tag }}" \
           '.containerDefinitions[0].image = $IMAGE \
           | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' \
           task-definition.json > new-task-definition.json
