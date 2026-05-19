@@ -58,10 +58,10 @@ jobs:
 
       - name: Task Definition 수정 # needs.docker.outputs.image_tag : docker 작업의 image_tag -> 깃 커밋 해시 7자리
         run: |
-          jq --arg IMAGE "${{ vars.ECR_REPOSITORY_URI }}:{{ needs.docker.outputs.image_tag }}" \
-          '.containerDefinitions[0].image = $IMAGE \
-          | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' \
-          task-definition.json > new-task-definition.json
+          jq --arg IMAGE "${{ vars.ECR_REPOSITORY_URI }}:${{ needs.docker.outputs.image_tag }}" '
+          .containerDefinitions[0].image = $IMAGE
+          | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)
+          ' task-definition.json > new-task-definition.json
 
       - name: 새 Task Definition 등록
         id: register-task
@@ -76,15 +76,15 @@ jobs:
       - name: 기존 서비스 중단
         run: |
           aws ecs update-service \
-          --cluster ${{ vars.ECR_CLUSTER }} \
+          --cluster ${{ vars.ECS_CLUSTER }} \
           --service ${{ vars.ECS_SERVICE }} \
-          desired-count 0
+          --desired-count 0
 
       - name: 새 Task Definition으로 ECS 업데이트
         run: |
           aws ecs update-service \
-          --cluster ${{ vars.ECR_CLUSTER }} \
+          --cluster ${{ vars.ECS_CLUSTER }} \
           --service ${{ vars.ECS_SERVICE }} \
-          --task-definition ${{ steps.register-task.outputs.new_task_definition }}
+          --task-definition ${{ steps.register-task.outputs.new_task_definition }} \
           --desired-count 1 \
           --force-new-deployment
