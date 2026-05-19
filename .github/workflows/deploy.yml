@@ -73,13 +73,6 @@ jobs:
           
           echo "new_task_definition=$TASK_DEF_ARN" >> $GITHUB_OUTPUT
 
-      - name: 기존 서비스 중단
-        run: |
-          aws ecs update-service \
-          --cluster ${{ vars.ECS_CLUSTER }} \
-          --service ${{ vars.ECS_SERVICE }} \
-          --desired-count 0
-
       - name: 새 Task Definition으로 ECS 업데이트
         run: |
           aws ecs update-service \
