@@ -60,7 +60,6 @@ jobs:
         run: |
           jq --arg IMAGE "${{ vars.ECR_REPOSITORY_URI }}:${{ needs.docker.outputs.image_tag }}" '
           .containerDefinitions[0].image = $IMAGE
-          | .containerDefinitions[0].portMappings[0].hostPort = 0
           | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)
           ' task-definition.json > new-task-definition.json
 
