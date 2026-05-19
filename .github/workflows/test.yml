@@ -27,11 +27,10 @@ jobs:
       - name: Gradle 권한 설정
         run: chmod +x gradlew
 
-      - name: 테스트 실행
-        run: ./gradlew test
-
-      - name: Jacoco 테스트 커버리지
-        run: ./gradlew jacocoTestReport
+      - name: 테스트 및 Jacoco 테스트 커버리지 생성
+        run: ./gradlew test jacocoTestReport
+        env:
+          SPRING_PROFILES_ACTIVE: test
 
       - name: CodeCov에 테스트 커버리지 업로드
         uses: codecov/codecov-action@v5
