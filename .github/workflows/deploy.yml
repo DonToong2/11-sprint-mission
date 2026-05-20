@@ -80,6 +80,12 @@ jobs:
           --service ${{ vars.ECS_SERVICE }} \
           --desired-count 0
 
+      - name: 안정화 대기
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ vars.ECS_CLUSTER }} \
+            --services ${{ vars.ECS_SERVICE }}
+
       - name: 새 Task Definition으로 ECS 업데이트
         run: |
           aws ecs update-service \
