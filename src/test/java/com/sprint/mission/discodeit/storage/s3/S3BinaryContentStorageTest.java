@@ -32,9 +32,8 @@ public class S3BinaryContentStorageTest {
     String secretKey = properties.getProperty("AWS_S3_SECRET_KEY");
     String region = properties.getProperty("AWS_S3_REGION");
     String bucket = properties.getProperty("AWS_S3_BUCKET");
-    long expiration = Long.parseLong(properties.getProperty("AWS_S3_PRESIGNED_URL_EXPIRATION"));
 
-    storage = new S3BinaryContentStorage(accessKey, secretKey, region, bucket, expiration);
+    storage = new S3BinaryContentStorage(accessKey, secretKey, region, bucket, 600);
 
   }
 
