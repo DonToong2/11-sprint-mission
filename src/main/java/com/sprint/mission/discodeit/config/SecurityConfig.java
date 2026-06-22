@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +21,10 @@ public class SecurityConfig {
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             // CSRF Token 요청 핸들러 구현체를 커스텀 핸들러로 설정(Default는 XORCsrfTokenRequestAttributeHandler)
             .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
-        );
+        )
+        // Spring Security의 기본 로그인 폼 활성화
+        .formLogin(Customizer.withDefaults());
+    
     return http.build();
   }
 
