@@ -14,7 +14,8 @@ public class SecurityConfig {
     http
         .csrf((csrf) -> csrf
             // CSRF Token Repository 구현체를 Cookie Csrf Token Repository로 설정(Default는 Http Session Csrf...)
-            .csrfTokenRepository(new CookieCsrfTokenRepository())
+            // js에 접근 가능하도록 HttpOnly 옵션을 false로 설정
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         );
     return http.build();
   }
