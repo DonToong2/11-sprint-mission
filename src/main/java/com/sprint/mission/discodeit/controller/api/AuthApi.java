@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,4 +22,7 @@ public interface AuthApi {
   })
   @PostMapping("/login")
   ResponseEntity<UserDto> login(@RequestBody LoginRequest dto);
+
+  @GetMapping("/csrf-token")
+  ResponseEntity<Void> getCsrfToken(CsrfToken csrfToken);
 }
