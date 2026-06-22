@@ -27,6 +27,7 @@ public class DiscodeitUserDetailsService implements UserDetailsService {
         () -> new UsernameNotFoundException(username)
     );
 
+    // Dto로 변환
     UserDto userDto = userMapper.toDto(user);
 
     return new DiscodeitUserDetails(userDto, user.getPassword());

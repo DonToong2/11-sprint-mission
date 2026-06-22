@@ -24,14 +24,16 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
       Authentication authentication
   ) throws ServletException, IOException {
 
+    // UserDetails 객체에서 UserDto를 꺼냄
     DiscodeitUserDetails userDetails = (DiscodeitUserDetails) authentication.getPrincipal();
-
     UserDto userDto = userDetails.getUserDto();
 
+    // 응답 설정 (SC : Status Code, 200 응답, json 응답, utf-8 인코딩)
     response.setStatus(HttpServletResponse.SC_OK);
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
 
+    // JSON 형태로 변환
     objectMapper.writeValue(response.getWriter(), userDto);
   }
 
