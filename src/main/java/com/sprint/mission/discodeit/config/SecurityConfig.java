@@ -30,7 +30,7 @@ public class SecurityConfig {
         )
         .formLogin(login -> login
             // 기본 로그인 페이지 설정
-            .loginProcessingUrl("api/auth/login")
+            .loginProcessingUrl("/api/auth/login")
             // 로그인 성공 시 loginSuccessHandler 호출
             .successHandler(loginSuccessHandler)
             // 로그인 실패 시 loginFailureHandler 호출
