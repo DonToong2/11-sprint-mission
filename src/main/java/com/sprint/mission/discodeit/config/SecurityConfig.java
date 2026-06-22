@@ -28,11 +28,14 @@ public class SecurityConfig {
             // CSRF Token 요청 핸들러 구현체를 커스텀 핸들러로 설정(Default는 XORCsrfTokenRequestAttributeHandler)
             .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
         )
-        // 기본 로그인 페이지 설정
         .formLogin(login -> login
+            // 기본 로그인 페이지 설정
             .loginProcessingUrl("api/auth/login")
+            // 로그인 성공 시 loginSuccessHandler 호출
             .successHandler(loginSuccessHandler)
-            .failureHandler(loginFailureHandler));
+            // 로그인 실패 시 loginFailureHandler 호출
+            .failureHandler(loginFailureHandler)
+        );
 
     return http.build();
   }
