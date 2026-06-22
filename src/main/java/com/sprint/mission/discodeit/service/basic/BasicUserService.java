@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,7 @@ public class BasicUserService implements UserService {
   private final BinaryContentRepository binaryContentRepository;
   private final BinaryContentStorage binaryContentStorage;
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
 
   // Create
   @Override
@@ -55,8 +57,11 @@ public class BasicUserService implements UserService {
       throw new UserEmailAlreadyExistsException(dto.email());
     }
 
+    // 유저 생성 전 요청받은 비밀번호를 암호화
+    String encodePassword = passwordEncoder.encode(dto.password());
+
     // 유저 생성(이름, 이메일 비밀번호)
-    User user = User.create(dto.username(), dto.email(), dto.password());
+    User user = User.create(dto.username(), dto.email(), encodePassword);
 
     // User -> BinaryContent(ProfileImage) -> UserStatus 순으로 생성
     User savedUser = userRepository.save(user);
