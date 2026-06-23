@@ -15,7 +15,8 @@ create table users
     username   varchar(50) UNIQUE  NOT NULL,
     email      varchar(100) UNIQUE NOT NULL,
     password   varchar(60)         NOT NULL,
-    profile_id UUID UNIQUE         references binary_contents (id) on delete set null
+    profile_id UUID UNIQUE         references binary_contents (id) on delete set null,
+    role       varchar(20)         NOT NULL
 );
 
 create table user_statuses
