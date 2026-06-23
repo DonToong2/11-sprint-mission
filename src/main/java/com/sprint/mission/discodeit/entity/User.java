@@ -42,6 +42,7 @@ public class User extends BaseUpdatableEntity {
   @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private UserStatus status; // 디스코드 접속 상태(온라인, 오프라인)
 
+  // 사용자 권한 : 관리자(ADMIN) / 채널 매니저(CHANNEL_MANAGER) / 일반 사용자(USER)
   private Role role;
 
   // 'id', 'createdAt'는 생성자에서 초기화하세요.
