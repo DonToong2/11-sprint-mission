@@ -1,5 +1,7 @@
 package com.sprint.mission.discodeit.integration;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -67,7 +69,9 @@ public class MessageIntegrationTest {
     mockMvc.perform(multipart("/api/messages")
             .file(new MockMultipartFile(
                 "messageCreateRequest", "", "application/json",
-                objectMapper.writeValueAsBytes(request))))
+                objectMapper.writeValueAsBytes(request)))
+            .with(user("manager").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.content").value("메시지"));
   }
@@ -85,7 +89,9 @@ public class MessageIntegrationTest {
     mockMvc.perform(multipart("/api/messages")
             .file(new MockMultipartFile(
                 "messageCreateRequest", "", "application/json",
-                objectMapper.writeValueAsBytes(request))))
+                objectMapper.writeValueAsBytes(request)))
+            .with(user("manager").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isNotFound());
   }
 
@@ -104,7 +110,9 @@ public class MessageIntegrationTest {
     // when & then
     mockMvc.perform(patch("/api/messages/{messageId}", message.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(gson.toJson(request)))
+            .content(gson.toJson(request))
+            .with(user("manager").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").value("수정"));
   }
@@ -120,7 +128,9 @@ public class MessageIntegrationTest {
     // when & then
     mockMvc.perform(patch("/api/messages/{messageId}", messageId)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(gson.toJson(request)))
+            .content(gson.toJson(request))
+            .with(user("manager").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isNotFound());
   }
 
@@ -137,7 +147,9 @@ public class MessageIntegrationTest {
     UUID messageId = message.getId();
 
     // when & then
-    mockMvc.perform(delete("/api/messages/{messageId}", messageId))
+    mockMvc.perform(delete("/api/messages/{messageId}", messageId)
+            .with(user("manager").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isNoContent());
   }
 
@@ -148,7 +160,9 @@ public class MessageIntegrationTest {
     UUID messageId = UUID.randomUUID();
 
     // when & then
-    mockMvc.perform(delete("/api/messages/{messageId}", messageId))
+    mockMvc.perform(delete("/api/messages/{messageId}", messageId)
+            .with(user("manager").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isNotFound());
   }
 
@@ -166,7 +180,9 @@ public class MessageIntegrationTest {
 
     // when & then
     mockMvc.perform(get("/api/messages")
-            .param("channelId", channel.getId().toString()))
+            .param("channelId", channel.getId().toString())
+            .with(user("manager").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content.length()").value(2));
   }
@@ -180,7 +196,9 @@ public class MessageIntegrationTest {
 
     // when & then
     mockMvc.perform(get("/api/messages")
-            .param("channelId", channelId.toString()))
+            .param("channelId", channelId.toString())
+            .with(user("manager").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content.length()").value(0));
   }

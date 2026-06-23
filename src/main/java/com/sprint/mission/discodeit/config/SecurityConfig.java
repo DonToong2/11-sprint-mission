@@ -83,7 +83,7 @@ public class SecurityConfig {
         )
         .authorizeHttpRequests(auth -> auth
                 // SPA, 정적 리소스
-                .requestMatchers("/", "/index.html", "/facicon.ico", "/error").permitAll()
+                .requestMatchers("/", "/index.html", "/favicon.ico", "/error").permitAll()
                 .requestMatchers("/assets/**").permitAll()
                 // 현재 로그인 유저가 있는지 확인(없으면 401에러 반환)
                 .requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll()

@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.unit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -31,11 +32,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
+
+  @Spy
+  PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
   @Mock
   private UserRepository userRepository;
@@ -59,8 +66,11 @@ public class UserServiceTest {
   @DisplayName("유저 생성 성공(프로필 이미지 있음)")
   void create_success_with_profile() throws IOException {
     // given
+    // BCrypt 암호화를 위한 평문 비밀번호
+    String password = "12345678";
     // 유저 DTO
-    UserCreateRequest request = new UserCreateRequest("테스트", "test@naver.com", "12345678");
+    UserCreateRequest request = new UserCreateRequest(
+        "테스트", "test@naver.com", passwordEncoder.encode(password));
 
     // 프로필
     MultipartFile profile = mock(MultipartFile.class);
@@ -109,8 +119,12 @@ public class UserServiceTest {
   @DisplayName("유저 생성 성공(프로필 이미지 없음)")
   void create_success_no_profile() {
     // given
+    // BCrypt 암호화를 위한 평문 비밀번호
+    String password = "12345678";
+
     // 유저 DTO
-    UserCreateRequest request = new UserCreateRequest("테스트", "test@naver.com", "12345678");
+    UserCreateRequest request = new UserCreateRequest(
+        "테스트", "test@naver.com", passwordEncoder.encode(password));
 
     given(userRepository.existsByUsername("테스트")).willReturn(false);
     given(userRepository.existsByEmail("test@naver.com")).willReturn(false);
@@ -257,8 +271,10 @@ public class UserServiceTest {
   @DisplayName("유저 수정 성공(Password만 수정)")
   void update_password_success() {
     // given
+    // BCrypt 암호화를 위한 평문 비밀번호
+    String password = "12345678";
     // 유저 생성
-    User user = User.create("이름", "test@naver.com", "12345678");
+    User user = User.create("이름", "test@naver.com", passwordEncoder.encode(password));
 
     // 수정 요청
     UserUpdateRequest request = new UserUpdateRequest(null, "null", "1234");
@@ -272,7 +288,7 @@ public class UserServiceTest {
     ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
     then(userRepository).should().save(captor.capture());
     User savedUser = captor.getValue();
-    assertEquals("1234", savedUser.getPassword());
+    assertTrue(passwordEncoder.matches("1234", savedUser.getPassword()));
 
     // userRepository를 대상으로 save 메서드가 User의 아무 필드나 받아서 호출됐는지 확인
     then(userRepository).should().save(any(User.class));

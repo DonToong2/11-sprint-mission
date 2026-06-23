@@ -1,5 +1,7 @@
 package com.sprint.mission.discodeit.integration;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -49,7 +51,8 @@ public class UserIntegrationTest {
                 "userCreateRequest",
                 "",
                 "application/json",
-                gson.toJson(request).getBytes())))
+                gson.toJson(request).getBytes()))
+            .with(csrf()))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.username").value("test"))
         .andExpect(jsonPath("$.email").value("test@naver.com"));
@@ -66,7 +69,8 @@ public class UserIntegrationTest {
                 "userCreateRequest",
                 "",
                 "application/json",
-                gson.toJson(request1).getBytes())))
+                gson.toJson(request1).getBytes()))
+            .with(csrf()))
         .andExpect(status().isCreated());
 
     UserCreateRequest request2 = new UserCreateRequest("test", "tests@naver.com", "12345678");
@@ -77,7 +81,8 @@ public class UserIntegrationTest {
                 "userCreateRequest",
                 "",
                 "application/json",
-                gson.toJson(request2).getBytes())))
+                gson.toJson(request2).getBytes()))
+            .with(csrf()))
         .andExpect(status().isConflict());
   }
 
@@ -92,7 +97,8 @@ public class UserIntegrationTest {
                 "userCreateRequest",
                 "",
                 "application/json",
-                gson.toJson(request1).getBytes())))
+                gson.toJson(request1).getBytes()))
+            .with(csrf()))
         .andExpect(status().isCreated());
 
     UserCreateRequest request2 = new UserCreateRequest("test2", "test@naver.com", "12345678");
@@ -103,7 +109,8 @@ public class UserIntegrationTest {
                 "userCreateRequest",
                 "",
                 "application/json",
-                gson.toJson(request2).getBytes())))
+                gson.toJson(request2).getBytes()))
+            .with(csrf()))
         .andExpect(status().isConflict());
   }
 
@@ -126,7 +133,9 @@ public class UserIntegrationTest {
             .with(req -> {
               req.setMethod("PATCH");
               return req;
-            }))
+            })
+            .with(user("test").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.username").value("testA"));
   }
@@ -149,7 +158,9 @@ public class UserIntegrationTest {
             .with(req -> {
               req.setMethod("PATCH");
               return req;
-            }))
+            })
+            .with(user("test").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isNotFound());
   }
 
@@ -161,7 +172,9 @@ public class UserIntegrationTest {
     UUID userId = savedUser.getId();
 
     // when & then
-    mockMvc.perform(delete("/api/users/{userId}", userId))
+    mockMvc.perform(delete("/api/users/{userId}", userId)
+            .with(user("test").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isNoContent());
   }
 
@@ -172,7 +185,9 @@ public class UserIntegrationTest {
     UUID userId = UUID.randomUUID();
 
     // when & then
-    mockMvc.perform(delete("/api/users/{userId}", userId))
+    mockMvc.perform(delete("/api/users/{userId}", userId)
+            .with(user("test").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isNotFound());
   }
 
@@ -184,9 +199,12 @@ public class UserIntegrationTest {
     User user2 = userRepository.save(User.create("test2", "test2@naver.com", "12345678"));
 
     // when & then
-    mockMvc.perform(get("/api/users"))
+    mockMvc.perform(get("/api/users")
+            .with(user("test").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.length()").value(2));
+        // admin 포함(2+1)
+        .andExpect(jsonPath("$.length()").value(3));
   }
 
   @Test
@@ -195,9 +213,12 @@ public class UserIntegrationTest {
     // given : List 크기가 0을 유도하도록 User 생성X
 
     // when & then
-    mockMvc.perform(get("/api/users"))
+    mockMvc.perform(get("/api/users")
+            .with(user("test").roles("USER"))
+            .with(csrf()))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.length()").value(0));
+        // admin 포함(0+1)
+        .andExpect(jsonPath("$.length()").value(1));
   }
 
 }
