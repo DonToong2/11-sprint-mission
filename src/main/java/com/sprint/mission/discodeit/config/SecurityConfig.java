@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.security.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -46,8 +47,25 @@ public class SecurityConfig {
                 new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
         )
         .authorizeHttpRequests(auth -> auth
-            // 인증된 사용자만 모든 요청 가능
-            .anyRequest().authenticated()
+                // SPA, 정적 리소스
+                .requestMatchers("/", "/index.html", "/facicon.ico", "/error").permitAll()
+                .requestMatchers("/assets/**").permitAll()
+                // 현재 로그인 유저가 있는지 확인(없으면 401에러 반환)
+                .requestMatchers(HttpMethod.GET, "/api/auth/me").permitAll()
+                // Csrf Token 발급
+                .requestMatchers(HttpMethod.GET, "/api/auth/csrf-token").permitAll()
+                // 회원가입
+                .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                // 로그인
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                // 로그아웃
+                .requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
+                // Swagger
+                .requestMatchers("swagger-ui.html", "swagger-ui/**", "v3/api-docs/**").permitAll()
+                // Actuator
+                .requestMatchers("/actuator/**").permitAll()
+//              // 그 외의 모든 요청은 인증된 사용자만 가능
+                .anyRequest().authenticated()
         );
 
     return http.build();
