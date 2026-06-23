@@ -40,6 +40,10 @@ public class AuthController implements AuthApi {
   public ResponseEntity<UserDto> me(
       @AuthenticationPrincipal DiscodeitUserDetails userDetails
   ) {
+    // 500에러 대신 401 에러 반환
+    if (userDetails == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
     return ResponseEntity.status(HttpStatus.OK).body(userDetails.getUserDto());
   }
 
