@@ -1,7 +1,10 @@
 package com.sprint.mission.discodeit.controller.api;
 
+import com.sprint.mission.discodeit.dto.response.UserDto;
+import com.sprint.mission.discodeit.security.DiscodeitUserDetails;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,4 +13,9 @@ public interface AuthApi {
 
   @GetMapping("/csrf-token")
   ResponseEntity<Void> getCsrfToken(CsrfToken csrfToken);
+
+  @GetMapping("/me")
+  ResponseEntity<UserDto> me(
+      @AuthenticationPrincipal DiscodeitUserDetails userDetails
+  );
 }
