@@ -32,7 +32,9 @@ public class SecurityConfig {
             .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
         )
         .formLogin(login -> login
-            // 기본 로그인 페이지 설정
+            // Spring Security 기본 로그인 폼 비활성화("/login")를 위해 로그인 페이지 설정
+            .loginPage("/")
+            // 로그인 요청을 처리하는 URL 지정
             .loginProcessingUrl("/api/auth/login")
             // 로그인 성공 시 loginSuccessHandler 호출
             .successHandler(loginSuccessHandler)
