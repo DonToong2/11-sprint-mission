@@ -35,6 +35,10 @@ public class SecurityConfig {
             .successHandler(loginSuccessHandler)
             // 로그인 실패 시 loginFailureHandler 호출
             .failureHandler(loginFailureHandler)
+        )
+        .logout(logout -> logout
+            // 로그아웃 처리 URL 지정
+            .logoutUrl("/api/auth/logout")
         );
 
     return http.build();
