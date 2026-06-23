@@ -14,6 +14,7 @@ import com.sprint.mission.discodeit.dto.request.UserUpdateRequest;
 import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.User.Role;
 import com.sprint.mission.discodeit.exception.DiscodeitException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
@@ -87,7 +88,8 @@ public class UserServiceTest {
               u.getUsername(),
               u.getEmail(),
               null,
-              true
+              true,
+              Role.USER
           );
         });
 
@@ -125,7 +127,8 @@ public class UserServiceTest {
               u.getUsername(),
               u.getEmail(),
               null,
-              true
+              true,
+              Role.USER
           );
         });
 
@@ -198,7 +201,8 @@ public class UserServiceTest {
               u.getUsername(),
               u.getEmail(),
               null,
-              true
+              true,
+              Role.USER
           );
         });
 
@@ -234,7 +238,8 @@ public class UserServiceTest {
               u.getUsername(),
               u.getEmail(),
               null,
-              true
+              true,
+              Role.USER
           );
         });
 

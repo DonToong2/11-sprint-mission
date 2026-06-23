@@ -20,6 +20,7 @@ import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.User.Role;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.service.MessageService;
@@ -64,7 +65,14 @@ public class MessageControllerTest {
 
     Channel channel = mock(Channel.class);
     User user = mock(User.class);
-    UserDto userDto = new UserDto(user.getId(), "test", "test@naver.com", null, true);
+    UserDto userDto = new UserDto(
+        user.getId(),
+        "test",
+        "test@naver.com",
+        null,
+        true,
+        Role.USER
+    );
 
     Message message = Message.create("메시지", channel, user);
     MessageDto dto = new MessageDto(

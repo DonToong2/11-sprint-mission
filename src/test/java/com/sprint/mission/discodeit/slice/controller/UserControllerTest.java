@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.sprint.mission.discodeit.controller.UserController;
 import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.User.Role;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.exception.user.UsernameAlreadyExistException;
 import com.sprint.mission.discodeit.service.UserService;
@@ -48,7 +49,14 @@ public class UserControllerTest {
   void create_success_user() throws Exception {
     // given
     User user = User.create("test", "test@naver.com", "12345678");
-    UserDto dto = new UserDto(user.getId(), user.getUsername(), user.getEmail(), null, true);
+    UserDto dto = new UserDto(
+        user.getId(),
+        user.getUsername(),
+        user.getEmail(),
+        null,
+        true,
+        Role.USER
+    );
 
     given(userService.create(any(), any())).willReturn(dto);
 
@@ -83,7 +91,13 @@ public class UserControllerTest {
     // given
     UUID userId = UUID.randomUUID();
     User user = User.create("test2", "test@naver.com", "12345678");
-    UserDto dto = new UserDto(user.getId(), user.getUsername(), user.getEmail(), null, true);
+    UserDto dto = new UserDto(
+        user.getId(),
+        user.getUsername(),
+        user.getEmail(),
+        null,
+        true,
+        Role.USER);
 
     given(userService.update(any(), any(), any())).willReturn(dto);
 

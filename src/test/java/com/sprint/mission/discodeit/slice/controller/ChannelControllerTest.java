@@ -19,6 +19,7 @@ import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Channel.ChannelType;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.User.Role;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.service.ChannelService;
 import java.time.Instant;
@@ -79,10 +80,20 @@ public class ChannelControllerTest {
     UUID userId2 = UUID.randomUUID();
 
     UserDto userDto1 = new UserDto(
-        user1.getId(), user1.getUsername(), user1.getEmail(), null, true
+        user1.getId(),
+        user1.getUsername(),
+        user1.getEmail(),
+        null,
+        true,
+        Role.USER
     );
     UserDto userDto2 = new UserDto(
-        user2.getId(), user2.getUsername(), user2.getEmail(), null, true
+        user2.getId(),
+        user2.getUsername(),
+        user2.getEmail(),
+        null,
+        true,
+        Role.USER
     );
 
     ChannelCreatePrivateRequest request = new ChannelCreatePrivateRequest(
