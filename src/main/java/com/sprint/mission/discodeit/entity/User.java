@@ -62,7 +62,12 @@ public class User extends BaseUpdatableEntity {
 
   // 정적 팩토리 메서드
   public static User create(String username, String email, String password) {
-    return new User(username, email, password);
+    User user = new User(username, email, password);
+
+    // 유저 권한 설정(회원가입 시 모든 사용자는 USER 권한을 갖도록 설정)
+    user.role = Role.USER;
+
+    return user;
   }
 
   // get메서드(Lombok의 @Getter 사용)
