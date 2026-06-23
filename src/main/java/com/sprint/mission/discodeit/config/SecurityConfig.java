@@ -1,7 +1,11 @@
 package com.sprint.mission.discodeit.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sprint.mission.discodeit.dto.response.ErrorResponse;
+import com.sprint.mission.discodeit.exception.ErrorCode;
 import com.sprint.mission.discodeit.security.LoginFailureHandler;
 import com.sprint.mission.discodeit.security.LoginSuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +26,7 @@ public class SecurityConfig {
 
   private final LoginSuccessHandler loginSuccessHandler;
   private final LoginFailureHandler loginFailureHandler;
+  private final ObjectMapper objectMapper;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -70,6 +75,34 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/**").permitAll()
 //              // 그 외의 모든 요청은 인증된 사용자만 가능
                 .anyRequest().authenticated()
+        )
+        .exceptionHandling(ex -> ex
+            // 인증 안됨 → 401
+            .authenticationEntryPoint((request, response, authenticationException) -> {
+              response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+              response.setContentType("application/json");
+              response.setCharacterEncoding("UTF-8");
+
+              ErrorResponse errorResponse = ErrorResponse.of(
+                  ErrorCode.UNAUTHORIZED,
+                  HttpServletResponse.SC_UNAUTHORIZED,
+                  authenticationException);
+
+              objectMapper.writeValue(response.getWriter(), errorResponse);
+            })
+            // 권한 없음 → 403
+            .accessDeniedHandler((request, response, accessDeniedException) -> {
+              response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+              response.setContentType("application/json");
+              response.setCharacterEncoding("UTF-8");
+
+              ErrorResponse errorResponse = ErrorResponse.of(
+                  ErrorCode.FORBIDDEN,
+                  HttpServletResponse.SC_FORBIDDEN,
+                  accessDeniedException);
+
+              objectMapper.writeValue(response.getWriter(), errorResponse);
+            })
         );
 
     return http.build();
