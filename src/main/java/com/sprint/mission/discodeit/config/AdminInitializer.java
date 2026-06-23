@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.config;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,15 +15,20 @@ public class AdminInitializer implements ApplicationRunner {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  
+
+  @Value("${admin.username}")
+  private String username;
+
+  @Value("${admin.email}")
+  private String email;
+
+  @Value("${admin.password}")
+  private String password;
+
   @Override
   public void run(ApplicationArguments args) {
 
     if (!userRepository.existsByRole(User.Role.ADMIN)) {
-
-      String username = "admin";
-      String email = "admin@discodeit.com";
-      String password = "1234";
 
       User admin = User.create(username, email, passwordEncoder.encode(password));
 
