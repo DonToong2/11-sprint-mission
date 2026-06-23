@@ -44,6 +44,10 @@ public class SecurityConfig {
             // 로그아웃 시 HttpStatusReturningLogoutSuccessHandler 호출(204 반환)
             .logoutSuccessHandler(
                 new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
+        )
+        .authorizeHttpRequests(auth -> auth
+            // 인증된 사용자만 모든 요청 가능
+            .anyRequest().authenticated()
         );
 
     return http.build();
