@@ -11,6 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,6 +31,28 @@ public class SecurityConfig {
   private final LoginSuccessHandler loginSuccessHandler;
   private final LoginFailureHandler loginFailureHandler;
   private final ObjectMapper objectMapper;
+
+  @Bean
+  static MethodSecurityExpressionHandler methodSecurityExpressionHandler(
+      RoleHierarchy roleHierarchy
+  ) {
+    DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+    handler.setRoleHierarchy(roleHierarchy);
+
+    return handler;
+  }
+
+
+  @Bean
+  public RoleHierarchy roleHierarchy() {
+    // ROLE_ADMIN > ROLE_CHANNEL_MANAGER > ROLE_USER
+    // 관리자는 채널 매니저, 사용자 권한을 포함함(PUBLIC 채널 생성/수정/삭제 권한 포함)
+    // 채널매니저는 사용자 권한을 포함함
+    return RoleHierarchyImpl.fromHierarchy("""
+        ROLE_ADMIN > ROLE_CHANNEL_MANAGER
+        ROLE_CHANNEL_MANAGER > ROLE_USER
+        """);
+  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
