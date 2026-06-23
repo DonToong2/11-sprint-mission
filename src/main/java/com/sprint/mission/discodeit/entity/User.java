@@ -42,6 +42,8 @@ public class User extends BaseUpdatableEntity {
   @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private UserStatus status; // 디스코드 접속 상태(온라인, 오프라인)
 
+  private Role role;
+
   // 'id', 'createdAt'는 생성자에서 초기화하세요.
   public User(String username, String email, UserStatus status, String password) {
     this.username = username;
@@ -85,6 +87,10 @@ public class User extends BaseUpdatableEntity {
     this.profile = profile;
   }
 
+  public void updateRole(Role role) {
+    this.role = role;
+  }
+
   @Override
   public String toString() {
     return "유저 이름 : " + username + "유저 이메일 : " + email;
@@ -102,5 +108,9 @@ public class User extends BaseUpdatableEntity {
     public String getDescription() {
       return description;
     }
+  }
+
+  public enum Role {
+    ADMIN, CHANNEL_MANAGER, USER;
   }
 }
