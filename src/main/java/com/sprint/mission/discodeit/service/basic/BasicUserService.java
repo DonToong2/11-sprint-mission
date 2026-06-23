@@ -165,7 +165,7 @@ public class BasicUserService implements UserService {
       user.updateEmail(dto.newEmail());
     }
     if (dto.newPassword() != null) {
-      user.updatePassword(dto.newPassword());
+      user.updatePassword(passwordEncoder.encode(dto.newPassword()));
     }
 
     userRepository.save(user);
