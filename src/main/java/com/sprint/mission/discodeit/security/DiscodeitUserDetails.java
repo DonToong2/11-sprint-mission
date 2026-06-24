@@ -32,6 +32,34 @@ public class DiscodeitUserDetails implements UserDetails {
     return userDto.username();
   }
 
+  // 계정이 만료되었는지 확인
+  // true : 정상 계정 / false : 계정 만료되어 로그인 차단
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  // 계정이 잠겨있는지 확인
+  // true : 정상 계정 / false : 계정 잠김되어 로그인 차단
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  // 비밀번호가 만료되었는지 확인
+  // true : 비밀번호 만료되지 않음 / false : 비밀번호 변경 필요하여 로그인 차단
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  // 계정이 활성화 되었는지 확인
+  // true : 계정 활성화 / false : 계정 비활성화되어 로그인 차단
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
+
   // Object 클래스의 equals 메서드 오버라이딩
   @Override
   public boolean equals(Object obj) {
