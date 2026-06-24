@@ -17,13 +17,14 @@ public class RedirectController implements RedirectApi {
   @Override
   @GetMapping("/login")
   public ResponseEntity<Void> loginRedirect(HttpServletRequest request) {
-    log.debug("[REDIRECT_TO_HOME_SUCCESS] 리다이렉트 요청 시작 현재 URL=\"{}\"", request.getRequestURI());
+    log.debug("[REDIRECT_TO_HOME_SUCCESS] 리다이렉트 요청 시작 - 현재 URL=\"{}\"",
+        request.getRequestURI());
 
     ResponseEntity<Void> response = ResponseEntity.status(HttpStatus.FOUND)
         .header("Location", "/")
         .build();
 
-    log.info("[REDIRECT_TO_HOME_SUCCESS] 리다이렉트 요청 성공 리다이렉트 URL=\"{}\"",
+    log.info("[REDIRECT_TO_HOME_SUCCESS] 리다이렉트 요청 성공 - 리다이렉트 URL=\"{}\"",
         response.getHeaders().getLocation());
 
     return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/").build();
