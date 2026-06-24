@@ -71,3 +71,6 @@ admin:
   username: "admin"
   email: "admin@discodeit.com"
   password: "1234"
+
+remember-me:
+  key: ${REMEMBER_ME_KEY:discodeit-remember-me-key}

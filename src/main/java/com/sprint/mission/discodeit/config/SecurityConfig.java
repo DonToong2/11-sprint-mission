@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.security.LoginFailureHandler;
 import com.sprint.mission.discodeit.security.LoginSuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,6 +20,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -34,6 +36,9 @@ public class SecurityConfig {
   private final LoginSuccessHandler loginSuccessHandler;
   private final LoginFailureHandler loginFailureHandler;
   private final ObjectMapper objectMapper;
+
+  @Value("${remember-me.key}")
+  private String rememberMeKey;
 
   @Bean
   static MethodSecurityExpressionHandler methodSecurityExpressionHandler(
@@ -77,7 +82,8 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http, SessionRegistry sessionRegistry)
+  public SecurityFilterChain filterChain(HttpSecurity http,
+      UserDetailsService userDetailsService)
       throws Exception {
     http
         .csrf((csrf) -> csrf
@@ -162,7 +168,16 @@ public class SecurityConfig {
                 // true면 새 로그인 불가, false면 새 로그인 허용하되 기존 세션 만료
                 .maxSessionsPreventsLogin(false)
                 // 로그인 사용자/세션 정보를 sessionRegistry로 관리
-                .sessionRegistry(sessionRegistry())));
+                .sessionRegistry(sessionRegistry()))
+        )
+        .rememberMe(remember -> remember
+            // 서버 재시작 시에도 로그인이 유지되도록 설정하는 고정 키
+            .key(rememberMeKey)
+            // 로그인 시 remember-me 파라미터 이름
+            .rememberMeParameter("remember-me")
+            // 토큰 유효기간(7일, 60초 60분 1일 7일)
+            .tokenValiditySeconds(60 * 60 * 24 * 7)
+            .userDetailsService(userDetailsService));
 
     return http.build();
   }
