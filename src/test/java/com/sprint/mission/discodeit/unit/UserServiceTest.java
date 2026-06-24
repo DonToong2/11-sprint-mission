@@ -20,7 +20,6 @@ import com.sprint.mission.discodeit.exception.DiscodeitException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
-import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.io.IOException;
@@ -54,9 +53,6 @@ public class UserServiceTest {
   private BinaryContentStorage binaryContentStorage;
 
   @Mock
-  private UserStatusRepository userStatusRepository;
-
-  @Mock
   private UserMapper userMapper;
 
   @InjectMocks
@@ -87,7 +83,6 @@ public class UserServiceTest {
     // 각 Repository에 저장 후 willAnswer로 결과를 동적으로 가져옴
     given(userRepository.save(any(User.class))).willAnswer(i -> i.getArgument(0));
     given(binaryContentRepository.save(any(BinaryContent.class))).willAnswer(i -> i.getArgument(0));
-    given(userStatusRepository.save(any())).willAnswer(i -> i.getArgument(0));
 
     given(userMapper.toDto(any(User.class)))
         .willAnswer(i -> {
@@ -111,8 +106,6 @@ public class UserServiceTest {
     then(userRepository).should().save(any(User.class));
     then(binaryContentRepository).should().save(any());
     then(binaryContentStorage).should().put(any(), any(byte[].class));
-    then(userStatusRepository).should().save(any());
-    // == verify(userStatusRepository).save(any());
   }
 
   @Test
@@ -130,7 +123,6 @@ public class UserServiceTest {
     given(userRepository.existsByEmail("test@naver.com")).willReturn(false);
 
     given(userRepository.save(any(User.class))).willAnswer(i -> i.getArgument(0));
-    given(userStatusRepository.save(any())).willAnswer(i -> i.getArgument(0));
 
     given(userMapper.toDto(any(User.class)))
         .willAnswer(i -> {
@@ -154,8 +146,6 @@ public class UserServiceTest {
     then(userRepository).should().save(any(User.class));
     then(binaryContentRepository).should((never())).save(any());
     then(binaryContentStorage).should((never())).put(any(), any(byte[].class));
-    then(userStatusRepository).should().save(any());
-    // == verify(userStatusRepository).save(any());
   }
 
   @Test

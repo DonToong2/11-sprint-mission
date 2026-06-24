@@ -11,11 +11,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
   @Override
-  @EntityGraph(attributePaths = {"profile", "status"})
+  @EntityGraph(attributePaths = {"profile"})
   List<User> findAll();
 
   @Override
-  @EntityGraph(attributePaths = {"profile", "status"})
+  @EntityGraph(attributePaths = {"profile"})
   Optional<User> findById(UUID id);
 
   boolean existsByUsername(String username);

@@ -16,7 +16,6 @@ import com.sprint.mission.discodeit.entity.User.Role;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.exception.user.UsernameAlreadyExistException;
 import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.service.UserStatusService;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,9 +38,6 @@ public class UserControllerTest {
 
   @MockitoBean
   private UserService userService;
-
-  @MockitoBean
-  private UserStatusService userStatusService;
 
   @MockitoBean
   private JpaMetamodelMappingContext jpaMetamodelMappingContext;

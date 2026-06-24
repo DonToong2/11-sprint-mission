@@ -14,10 +14,6 @@ public enum ErrorCode {
   // MESSAGE
   MESSAGE_NOT_FOUND("해당 메시지가 존재하지 않습니다."),
 
-  // USER_STATUS
-  USER_STATUS_NOT_FOUND("해당 UserStatus가 존재하지 않습니다."),
-  USER_STATUS_ALREADY_EXISTS("이미 존재하는 UserStatus입니다."),
-
   // READ_STATUS
   READ_STATUS_NOT_FOUND("해당 ReadStatus가 존재하지 않습니다."),
   READ_STATUS_ALREADY_EXISTS("이미 존재하는 ReadStatus입니다."),

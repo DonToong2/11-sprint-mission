@@ -5,9 +5,11 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.security.DiscodeitUserDetails;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
@@ -31,6 +33,7 @@ public class UserMapper {
 
   public boolean isOnline(UUID userId) {
 
+    log.debug("[USER_MAPPER_START: {}", userId);
     return sessionRegistry.getAllPrincipals().stream()
         .filter(principal -> principal instanceof DiscodeitUserDetails)
         .map(principal -> (DiscodeitUserDetails) principal)
