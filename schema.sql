@@ -19,15 +19,6 @@ create table users
     role       varchar(20)         NOT NULL
 );
 
-create table user_statuses
-(
-    id             UUID primary key,
-    created_at     timestamptz not null,
-    updated_at     timestamptz,
-    user_id        uuid unique not null references users (id) on delete cascade,
-    last_active_at timestamptz not null
-);
-
 create table channels
 (
     id          uuid primary key,
