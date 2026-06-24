@@ -32,4 +32,34 @@ public class DiscodeitUserDetails implements UserDetails {
     return userDto.username();
   }
 
+  // Object 클래스의 equals 메서드 오버라이딩
+  @Override
+  public boolean equals(Object obj) {
+    // 메모리 내 객체의 주소는 다르기 때문에 통과됨
+    // DiscodeitUserDetails A != DiscodeitUserDetails B, A가 기존 로그인 B가 신규 로그인
+    // this.equals(obj) → A.equals(B)
+    if (this == obj) {
+      return true;
+    }
+
+    // 비교하려는 Object가 DiscodeitUserDetails 인지 여부 확인 → DiscodeitUserDetails 이기 때문에 통과
+    if (!(obj instanceof DiscodeitUserDetails userDetails)) {
+      return false;
+    }
+
+    // 객체 주소가 아닌 id를 비교
+    // 동시 로그인 시 id가 "abcd"면 "abcd".equals("abcd") → true
+    // userDetails는 2번째 if문에서 자동 형변환 시킴, 실제로는 (DiscodeitUserDetails) obj
+    // 즉 받아온 신규 로그인의 id(obj.userDto)와 기존 로그인의 id(userDto)를 비교
+    // 이후 maximumSession 설정으로 넘어감 → maximumSession 1이면 maxSessionsPreventsLogin 정책으로 넘어감
+    return userDto.id().equals(userDetails.userDto.id());
+  }
+
+  // Object 클래스의 hashCode 메서드 오버라이딩
+  // 같은 Hash 저장소(자료구조)에 들어가기 위해 오버라이딩
+  @Override
+  public int hashCode() {
+    return userDto.id().hashCode();
+  }
+
 }

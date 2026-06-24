@@ -17,6 +17,8 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -42,12 +44,11 @@ public class SecurityConfig {
     return handler;
   }
 
-
   @Bean
   public RoleHierarchy roleHierarchy() {
     // ROLE_ADMIN > ROLE_CHANNEL_MANAGER > ROLE_USER
     // 관리자는 채널 매니저, 사용자 권한을 포함함(PUBLIC 채널 생성/수정/삭제 권한 포함)
-    // 채널매니저는 사용자 권한을 포함함
+    // 채널 매니저는 사용자 권한을 포함함
     return RoleHierarchyImpl.fromHierarchy("""
         ROLE_ADMIN > ROLE_CHANNEL_MANAGER
         ROLE_CHANNEL_MANAGER > ROLE_USER
@@ -55,7 +56,13 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  public SessionRegistry sessionRegistry() {
+    return new SessionRegistryImpl();
+  }
+
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http, SessionRegistry sessionRegistry)
+      throws Exception {
     http
         .csrf((csrf) -> csrf
             // CSRF Token Repository 구현체를 Cookie Csrf Token Repository로 설정(Default는 Http Session Csrf...)
@@ -82,6 +89,7 @@ public class SecurityConfig {
                 new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
         )
         .authorizeHttpRequests(auth -> auth
+                // .permitAll() : 인증 없이 접근 가능
                 // SPA, 정적 리소스
                 .requestMatchers("/", "/index.html", "/favicon.ico", "/error").permitAll()
                 .requestMatchers("/assets/**").permitAll()
@@ -102,6 +110,7 @@ public class SecurityConfig {
 //              // 그 외의 모든 요청은 인증된 사용자만 가능
                 .anyRequest().authenticated()
         )
+        // 예외 처리
         .exceptionHandling(ex -> ex
             // 인증 안됨 → 401
             .authenticationEntryPoint((request, response, authenticationException) -> {
@@ -129,7 +138,14 @@ public class SecurityConfig {
 
               objectMapper.writeValue(response.getWriter(), errorResponse);
             })
-        );
+        )
+        .sessionManagement(management -> management
+            .sessionConcurrency(concurrency -> concurrency
+                // 동시 요청 제한
+                .maximumSessions(1)
+                // true면 새 로그인 불가, false면 새 로그인 허용하되 기존 세션 만료
+                .maxSessionsPreventsLogin(false)
+                .sessionRegistry(sessionRegistry())));
 
     return http.build();
   }
