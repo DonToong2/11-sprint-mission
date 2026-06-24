@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableMethodSecurity
@@ -45,6 +46,11 @@ public class SecurityConfig {
   }
 
   @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Bean
   public RoleHierarchy roleHierarchy() {
     // ROLE_ADMIN > ROLE_CHANNEL_MANAGER > ROLE_USER
     // 관리자는 채널 매니저, 사용자 권한을 포함함(PUBLIC 채널 생성/수정/삭제 권한 포함)
@@ -55,9 +61,19 @@ public class SecurityConfig {
         """);
   }
 
+  // 동시 로그인 제한, 세션 조회, 인증 무효화
+  // 실제 세션이 아닌 SessionInformation을 관리
   @Bean
   public SessionRegistry sessionRegistry() {
     return new SessionRegistryImpl();
+  }
+
+  // SessionInformation.expireNow()는 실제 세션을 만료시키는게 아니라 해당 세션을 인증으로 두지 않음(인증 무효화)
+  // 즉 timeout이 작동 가능하고 timeout 초과 시 세션이 만료되어 해당 세션을 destroy하는 역할
+  // 지정하지 않으면 SessionRegistry에서 실제 세션이 destroy 된지 알 수 없기 때문에 그 세션 정보(SessionInformation)를 계속 가지고 있게 됨
+  @Bean
+  public HttpSessionEventPublisher httpSessionEventPublisher() {
+    return new HttpSessionEventPublisher();
   }
 
   @Bean
@@ -141,18 +157,14 @@ public class SecurityConfig {
         )
         .sessionManagement(management -> management
             .sessionConcurrency(concurrency -> concurrency
-                // 동시 요청 제한
+                // 동시 요청 제한을 1로 지정
                 .maximumSessions(1)
                 // true면 새 로그인 불가, false면 새 로그인 허용하되 기존 세션 만료
                 .maxSessionsPreventsLogin(false)
+                // 로그인 사용자/세션 정보를 sessionRegistry로 관리
                 .sessionRegistry(sessionRegistry())));
 
     return http.build();
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
   }
 
 }
