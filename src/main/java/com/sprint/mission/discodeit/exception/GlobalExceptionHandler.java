@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,6 +52,15 @@ public class GlobalExceptionHandler {
         Map.of("reason", e.getMessage()));
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
+    ErrorResponse response = ErrorResponse.of(
+        ErrorCode.FORBIDDEN, HttpStatus.FORBIDDEN.value(), e,
+        Map.of("reason", e.getMessage()));
+
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
   }
 
   // 추가 : 개발자마저 인지하지 못하는 예외가 있을 수 있기 때문에 예외 최상위 클래스 Exception 예외를 추가, 500번(예외 발생, 서버 코드 문제, 개발자 실수)
