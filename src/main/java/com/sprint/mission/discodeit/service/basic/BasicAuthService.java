@@ -42,6 +42,7 @@ public class BasicAuthService implements AuthService {
     // 현재 로그인 중인 모든 사용자를 조회
     sessionRegistry.getAllPrincipals()
         .stream()
+        // DiscodeitUserDetails 타입만 남기고
         // 특정 userId를 가진 유저를 조회 → 여기서는 권한 수정할 유저를 조회
         // 로그인 중인 사용자 id가 a, b, c, d면 a==dto.userId(), ..., d==dto.userId()
         .filter(principal ->
