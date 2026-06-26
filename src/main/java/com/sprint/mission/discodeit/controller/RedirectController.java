@@ -27,7 +27,7 @@ public class RedirectController implements RedirectApi {
     log.info("[REDIRECT_TO_HOME_SUCCESS] 리다이렉트 요청 성공 - 리다이렉트 URL=\"{}\"",
         response.getHeaders().getLocation());
 
-    return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/").build();
+    return response;
   }
 
 }
