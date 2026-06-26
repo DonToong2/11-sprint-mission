@@ -13,12 +13,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequest;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequest;
+import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.security.DiscodeitUserDetails;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -107,11 +109,21 @@ public class MessageIntegrationTest {
 
     MessageUpdateRequest request = new MessageUpdateRequest("수정");
 
+    DiscodeitUserDetails userDetails = new DiscodeitUserDetails(
+        new UserDto(user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            null,
+            true,
+            user.getRole()),
+        user.getPassword()
+    );
+
     // when & then
     mockMvc.perform(patch("/api/messages/{messageId}", message.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(gson.toJson(request))
-            .with(user("manager").roles("USER"))
+            .with(user(userDetails))
             .with(csrf()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").value("수정"));
@@ -121,15 +133,29 @@ public class MessageIntegrationTest {
   @DisplayName("메시지 수정 실패(메시지가 존재하지 않음)")
   void update_fail_message_notfound_message() throws Exception {
     // given
-    UUID messageId = UUID.randomUUID();
+    User user = userRepository.save(User.create("test", "test@naver.com", "12345678"));
+
+    Channel channel = channelRepository.save(Channel.createPublic("공개", "공개 채널입니다."));
+
+    Message message = Message.create("메시지", channel, user);
 
     MessageUpdateRequest request = new MessageUpdateRequest("수정 메시지");
 
+    DiscodeitUserDetails userDetails = new DiscodeitUserDetails(
+        new UserDto(user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            null,
+            true,
+            user.getRole()),
+        user.getPassword()
+    );
+
     // when & then
-    mockMvc.perform(patch("/api/messages/{messageId}", messageId)
+    mockMvc.perform(patch("/api/messages/{messageId}", message.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(gson.toJson(request))
-            .with(user("manager").roles("USER"))
+            .with(user(userDetails))
             .with(csrf()))
         .andExpect(status().isNotFound());
   }
@@ -144,11 +170,19 @@ public class MessageIntegrationTest {
 
     Message message = messageRepository.save(Message.create("메시지", channel, user));
 
-    UUID messageId = message.getId();
+    DiscodeitUserDetails userDetails = new DiscodeitUserDetails(
+        new UserDto(user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            null,
+            true,
+            user.getRole()),
+        user.getPassword()
+    );
 
     // when & then
-    mockMvc.perform(delete("/api/messages/{messageId}", messageId)
-            .with(user("manager").roles("USER"))
+    mockMvc.perform(delete("/api/messages/{messageId}", message.getId())
+            .with(user(userDetails))
             .with(csrf()))
         .andExpect(status().isNoContent());
   }
@@ -157,11 +191,25 @@ public class MessageIntegrationTest {
   @DisplayName("메시지 삭제 실패(메시지가 존재하지 않음)")
   void delete_fail_message_notfound_message() throws Exception {
     // given
-    UUID messageId = UUID.randomUUID();
+    User user = userRepository.save(User.create("test", "test@naver.com", "12345678"));
+
+    Channel channel = channelRepository.save(Channel.createPublic("공개", "공개 채널입니다."));
+
+    Message message = Message.create("메시지", channel, user);
+
+    DiscodeitUserDetails userDetails = new DiscodeitUserDetails(
+        new UserDto(user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            null,
+            true,
+            user.getRole()),
+        user.getPassword()
+    );
 
     // when & then
-    mockMvc.perform(delete("/api/messages/{messageId}", messageId)
-            .with(user("manager").roles("USER"))
+    mockMvc.perform(delete("/api/messages/{messageId}", message.getId())
+            .with(user(userDetails))
             .with(csrf()))
         .andExpect(status().isNotFound());
   }
