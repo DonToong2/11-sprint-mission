@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,6 +108,7 @@ public class BasicUserService implements UserService {
   // 같은 키, 다른 Value를 put 하면 키는 그대로, Value만 갱신된다.
   @Override
   @Transactional
+  @PreAuthorize("#id == authentication.principal.userDto.id")
   public UserDto update(UUID id, UserUpdateRequest dto, MultipartFile profile) {
 
     // 비밀번호는 X
@@ -167,11 +169,12 @@ public class BasicUserService implements UserService {
   }
 
   // Delete
-  @Override
-  @Transactional
   // 기존 User만 삭제
   // 고도화 이후 : User, UserStatus, 프로필 이미지 삭제
   // 2차 고도화 이후 : User, 프로필 이미지 삭제
+  @Override
+  @Transactional
+  @PreAuthorize("#id == authentication.principal.userDto.id")
   public void delete(UUID id) {
     log.debug("[USER_DELETE_START] 유저 삭제 시작 - 삭제할 유저 ID={}", id);
 
