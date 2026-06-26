@@ -54,6 +54,7 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 
+  // 인증은 되었지만 권한이 없는 경우 예외
   @ExceptionHandler(AccessDeniedException.class)
   public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
     ErrorResponse response = ErrorResponse.of(
