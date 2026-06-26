@@ -1,6 +1,7 @@
-package com.sprint.mission.discodeit.security;
+package com.sprint.mission.discodeit.security.evaluator;
 
 import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
