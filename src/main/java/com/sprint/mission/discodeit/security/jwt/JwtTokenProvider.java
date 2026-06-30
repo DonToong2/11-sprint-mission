@@ -78,6 +78,7 @@ public class JwtTokenProvider {
   }
 
   private String generateToken(
+      TokenType tokenType,
       Map<String, Object> claims,
       String subject,
       Date expiration
@@ -98,7 +99,8 @@ public class JwtTokenProvider {
 
       return signedJWT.serialize();
     } catch (JOSEException e) {
-      throw new JwtSignatureException("Token 생성에 실패하였습니다.", e);
+      String tokenPrefix = (tokenType == TokenType.ACCESS) ? "Access" : "Refresh";
+      throw new JwtSignatureException(tokenPrefix + "Token 생성에 실패하였습니다.", e);
     }
   }
 
