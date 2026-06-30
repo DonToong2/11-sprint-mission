@@ -3,8 +3,8 @@ package com.sprint.mission.discodeit.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.response.ErrorResponse;
 import com.sprint.mission.discodeit.exception.ErrorCode;
+import com.sprint.mission.discodeit.security.handler.JwtLoginSuccessHandler;
 import com.sprint.mission.discodeit.security.handler.LoginFailureHandler;
-import com.sprint.mission.discodeit.security.handler.LoginSuccessHandler;
 import com.sprint.mission.discodeit.security.handler.SpaCsrfTokenRequestHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,8 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final LoginSuccessHandler loginSuccessHandler;
+  //  private final LoginSuccessHandler loginSuccessHandler;
+  private final JwtLoginSuccessHandler jwtLoginSuccessHandler;
   private final LoginFailureHandler loginFailureHandler;
   private final ObjectMapper objectMapper;
 
@@ -98,8 +99,8 @@ public class SecurityConfig {
         .formLogin(login -> login
             // 로그인 요청을 처리하는 URL 지정
             .loginProcessingUrl("/api/auth/login")
-            // 로그인 성공 시 loginSuccessHandler 호출
-            .successHandler(loginSuccessHandler)
+            // 로그인 성공 시 loginSuccessHandler 호출 → jwtLoginSuccessHandler 호출
+            .successHandler(jwtLoginSuccessHandler)
             // 로그인 실패 시 loginFailureHandler 호출
             .failureHandler(loginFailureHandler)
         )
