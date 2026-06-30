@@ -38,14 +38,16 @@ public class JwtTokenProvider {
     Map<String, Object> claims = new HashMap<>();
     claims.put("userId", userId);
 
-    return generateToken(claims, userId, getTokenExpiration(accessTokenExpirationMinutes));
+    return generateToken(TokenType.ACCESS, claims, userId,
+        getTokenExpiration(accessTokenExpirationMinutes));
   }
 
   // Refresh Token 발급
   public String generateRefreshToken(String userId) {
     Map<String, Object> claims = new HashMap<>();
 
-    return generateToken(claims, userId, getTokenExpiration(refreshTokenExpirationMinutes));
+    return generateToken(TokenType.REFRESH, claims, userId,
+        getTokenExpiration(refreshTokenExpirationMinutes));
 
   }
 
