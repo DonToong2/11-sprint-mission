@@ -98,7 +98,7 @@ public class JwtTokenProvider {
 
       return signedJWT.serialize();
     } catch (JOSEException e) {
-      throw new RuntimeException("Token 생성에 실패하였습니다.", e);
+      throw new JwtSignatureException("Token 생성에 실패하였습니다.", e);
     }
   }
 
@@ -109,27 +109,27 @@ public class JwtTokenProvider {
       SignedJWT signedJWT = SignedJWT.parse(token);
 
       if (!signedJWT.verify(createVerifier())) {
-        throw new RuntimeException("JWT 서명 검증에 실패하였습니다.");
+        throw new JwtSignatureException("JWT 서명 검증에 실패하였습니다.");
       }
 
       Date expiration = signedJWT.getJWTClaimsSet().getExpirationTime();
 
       if (expiration.before(new Date())) {
-        throw new RuntimeException("JWT가 만료되었습니다.");
+        throw new JwtExpiredException("JWT가 만료되었습니다.");
       }
 
       return signedJWT.getJWTClaimsSet().getClaims();
     } catch (ParseException e) {
-      throw new RuntimeException("JWT 형식이 올바르지 않습니다.", e);
+      throw new JwtSignatureException("JWT 형식이 올바르지 않습니다.", e);
     } catch (JOSEException e) {
-      throw new RuntimeException("JWT 검증 중 오류가 발생했습니다.", e);
+      throw new JwtSignatureException("JWT 검증 중 오류가 발생했습니다.", e);
     }
   }
 
   // 유효기간 생성(분 단위)
-  public Date getTokenExpiration(int expirationminutes) {
+  public Date getTokenExpiration(int expirationMinutes) {
     Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.MINUTE, expirationminutes);
+    calendar.add(Calendar.MINUTE, expirationMinutes);
     return calendar.getTime();
   }
 
