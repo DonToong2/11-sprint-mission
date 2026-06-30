@@ -55,6 +55,7 @@ public class JwtTokenProvider {
   // 유효성 검사
   public boolean validateToken(String token) {
     try {
+      // Header.Payload.Signature 구조로 분해(각각 객체화)
       SignedJWT signedJWT = SignedJWT.parse(token);
 
       if (!signedJWT.verify(createVerifier())) {
@@ -102,6 +103,7 @@ public class JwtTokenProvider {
   // 만료 검증을 명시적으로 수행
   public Map<String, Object> getClaims(String token) {
     try {
+      // Header.Payload.Signature 구조로 분해(각각 객체화)
       SignedJWT signedJWT = SignedJWT.parse(token);
 
       if (!signedJWT.verify(createVerifier())) {
