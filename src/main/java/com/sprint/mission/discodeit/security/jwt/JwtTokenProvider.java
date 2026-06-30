@@ -9,29 +9,21 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
-  // 비밀키
-  @Value("${jwt.secret}")
-  private String secretKey;
-
-  // Access Token 유효 시간(30분으로 설정)
-  @Value("${jwt.access-token-expiration}")
-  private int accessTokenExpirationMinutes;
-
-  // Refresh Token 유효 시간(30일로 설정)
-  @Value("${jwt.refresh-token-expiration}")
-  private int refreshTokenExpirationMinutes;
+  private final JwtProperties jwtProperties;
 
   // Access Token 발급
   public String generateAccessToken(String userId) {
@@ -39,7 +31,7 @@ public class JwtTokenProvider {
     claims.put("userId", userId);
 
     return generateToken(TokenType.ACCESS, claims, userId,
-        getTokenExpiration(accessTokenExpirationMinutes));
+        getTokenExpiration(jwtProperties.getAccessTokenExpiration()));
   }
 
   // Refresh Token 발급
@@ -47,7 +39,7 @@ public class JwtTokenProvider {
     Map<String, Object> claims = new HashMap<>();
 
     return generateToken(TokenType.REFRESH, claims, userId,
-        getTokenExpiration(refreshTokenExpirationMinutes));
+        getTokenExpiration(jwtProperties.getRefreshTokenExpiration()));
 
   }
 
@@ -139,14 +131,14 @@ public class JwtTokenProvider {
 
   // Signer
   private JWSSigner createSigner() throws JOSEException {
-    byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+    byte[] keyBytes = jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8);
 
     return new MACSigner(keyBytes);
   }
 
   // Verifier
   private JWSVerifier createVerifier() throws JOSEException {
-    byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+    byte[] keyBytes = jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8);
 
     return new MACVerifier(keyBytes);
   }
