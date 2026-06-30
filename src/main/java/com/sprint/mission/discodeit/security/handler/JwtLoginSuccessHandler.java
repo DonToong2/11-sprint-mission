@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.security.jwt.JwtDto;
 import com.sprint.mission.discodeit.security.jwt.JwtTokenProvider;
+import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
 
+  private final JwtProperties jwtProperties;
   private final JwtTokenProvider jwtTokenProvider;
   private final ObjectMapper objectMapper;
 
@@ -51,8 +53,8 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
     // 모든 사이트에 쿠키 적용
     cookie.setPath("/");
 
-    // 쿠키 유효기간을 30일로 설정(추후 JwtProperties 클래스 생성 후 변수로 적용)
-    cookie.setMaxAge(60 * 60 * 24 * 30);
+    // 쿠키 유효기간을 30일로 설정(setMaxAge()는 초 단위이기 때문에 60을 곱하여 초 단위로 변환)
+    cookie.setMaxAge(jwtProperties.getRefreshTokenExpiration() * 60);
 
     // 응답에 쿠키 추가
     response.addCookie(cookie);
