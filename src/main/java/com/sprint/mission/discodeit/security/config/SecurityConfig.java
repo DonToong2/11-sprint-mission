@@ -19,6 +19,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -162,15 +163,18 @@ public class SecurityConfig {
               objectMapper.writeValue(response.getWriter(), errorResponse);
             })
         )
-        .sessionManagement(management -> management
-            .sessionConcurrency(concurrency -> concurrency
-                // 동시 요청 제한을 1로 지정
-                .maximumSessions(1)
-                // true면 새 로그인 불가, false면 새 로그인 허용하되 기존 세션 만료
-                .maxSessionsPreventsLogin(false)
-                // 로그인 사용자/세션 정보를 sessionRegistry로 관리
-                .sessionRegistry(sessionRegistry()))
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         )
+//        .sessionManagement(management -> management
+//            .sessionConcurrency(concurrency -> concurrency
+//                // 동시 요청 제한을 1로 지정
+//                .maximumSessions(1)
+//                // true면 새 로그인 불가, false면 새 로그인 허용하되 기존 세션 만료
+//                .maxSessionsPreventsLogin(false)
+//                // 로그인 사용자/세션 정보를 sessionRegistry로 관리
+//                .sessionRegistry(sessionRegistry()))
+//        )
         .rememberMe(remember -> remember
             // 서버 재시작 시에도 로그인이 유지되도록 설정하는 고정 키
             .key(rememberMeKey)
