@@ -46,12 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       }
 
       // 토큰에서 사용자 식별 정보(subject)를 추출 후 UUID로 변환
-      String userId = jwtTokenProvider.getSubject(token);
-      UUID userIdAsUUID = UUID.fromString(userId);
+      UUID userId = UUID.fromString(jwtTokenProvider.getSubject(token));
 
       // UserDetails 조회
       DiscodeitUserDetails userDetails =
-          (DiscodeitUserDetails) userDetailsService.loadUserById(userIdAsUUID);
+          (DiscodeitUserDetails) userDetailsService.loadUserById(userId);
 
       // Authentication 객체 생성
       UsernamePasswordAuthenticationToken authentication =
