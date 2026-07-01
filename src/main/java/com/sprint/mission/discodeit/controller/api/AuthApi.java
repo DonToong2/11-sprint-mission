@@ -4,12 +4,10 @@ import static com.sprint.mission.discodeit.security.jwt.JwtTokenProvider.REFRESH
 
 import com.sprint.mission.discodeit.dto.request.UserRoleUpdateRequest;
 import com.sprint.mission.discodeit.dto.response.UserDto;
-import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.security.jwt.JwtDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +20,6 @@ public interface AuthApi {
 
   @GetMapping("/csrf-token")
   ResponseEntity<Void> getCsrfToken(CsrfToken csrfToken);
-
-  @GetMapping("/me")
-  ResponseEntity<UserDto> me(
-      @AuthenticationPrincipal DiscodeitUserDetails userDetails
-  );
 
   @PutMapping("/role")
   ResponseEntity<UserDto> updateRole(

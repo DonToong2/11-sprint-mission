@@ -72,9 +72,6 @@ admin:
   email: "admin@discodeit.com"
   password: "1234"
 
-remember-me:
-  key: ${REMEMBER_ME_KEY:discodeit-remember-me-key}
-
 jwt:
   secret-key: "discodeit-jwt-secret-key-anyone-can-not-know"
   access-token-expiration: 30 # 30분
