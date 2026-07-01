@@ -1,7 +1,9 @@
-package com.sprint.mission.discodeit.security.jwt;
+package com.sprint.mission.discodeit.security.jwt.filter;
 
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetailsService;
+import com.sprint.mission.discodeit.security.jwt.provider.JwtTokenProvider;
+import com.sprint.mission.discodeit.security.jwt.registry.JwtRegistry;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

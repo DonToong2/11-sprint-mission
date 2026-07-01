@@ -1,20 +1,20 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import static com.sprint.mission.discodeit.security.jwt.JwtTokenProvider.REFRESH_TOKEN_COOKIE_NAME;
+import static com.sprint.mission.discodeit.security.jwt.provider.JwtTokenProvider.REFRESH_TOKEN_COOKIE_NAME;
 
 import com.sprint.mission.discodeit.dto.request.UserRoleUpdateRequest;
 import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.exception.auth.RefreshTokenInvalidException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetailsService;
-import com.sprint.mission.discodeit.security.jwt.JwtDto;
-import com.sprint.mission.discodeit.security.jwt.JwtInformation;
-import com.sprint.mission.discodeit.security.jwt.JwtRegistry;
-import com.sprint.mission.discodeit.security.jwt.JwtTokenProvider;
-import com.sprint.mission.discodeit.security.jwt.RefreshTokenInvalidException;
+import com.sprint.mission.discodeit.security.jwt.dto.JwtDto;
+import com.sprint.mission.discodeit.security.jwt.model.JwtInformation;
+import com.sprint.mission.discodeit.security.jwt.provider.JwtTokenProvider;
+import com.sprint.mission.discodeit.security.jwt.registry.JwtRegistry;
 import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import com.sprint.mission.discodeit.service.AuthService;
 import jakarta.servlet.http.Cookie;

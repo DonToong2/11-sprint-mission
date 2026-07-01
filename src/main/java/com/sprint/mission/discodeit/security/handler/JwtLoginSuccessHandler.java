@@ -1,14 +1,14 @@
 package com.sprint.mission.discodeit.security.handler;
 
-import static com.sprint.mission.discodeit.security.jwt.JwtTokenProvider.REFRESH_TOKEN_COOKIE_NAME;
+import static com.sprint.mission.discodeit.security.jwt.provider.JwtTokenProvider.REFRESH_TOKEN_COOKIE_NAME;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
-import com.sprint.mission.discodeit.security.jwt.JwtDto;
-import com.sprint.mission.discodeit.security.jwt.JwtInformation;
-import com.sprint.mission.discodeit.security.jwt.JwtRegistry;
-import com.sprint.mission.discodeit.security.jwt.JwtTokenProvider;
+import com.sprint.mission.discodeit.security.jwt.dto.JwtDto;
+import com.sprint.mission.discodeit.security.jwt.model.JwtInformation;
+import com.sprint.mission.discodeit.security.jwt.provider.JwtTokenProvider;
+import com.sprint.mission.discodeit.security.jwt.registry.JwtRegistry;
 import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

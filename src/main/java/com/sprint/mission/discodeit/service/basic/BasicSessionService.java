@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.security.jwt.JwtRegistry;
+import com.sprint.mission.discodeit.security.jwt.registry.JwtRegistry;
 import com.sprint.mission.discodeit.service.SessionService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

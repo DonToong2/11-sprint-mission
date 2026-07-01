@@ -1,5 +1,6 @@
-package com.sprint.mission.discodeit.security.jwt;
+package com.sprint.mission.discodeit.security.jwt.registry;
 
+import com.sprint.mission.discodeit.security.jwt.model.JwtInformation;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;

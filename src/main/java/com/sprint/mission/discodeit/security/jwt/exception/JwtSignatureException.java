@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.security.jwt;
+package com.sprint.mission.discodeit.security.jwt.exception;
 
 public class JwtSignatureException extends RuntimeException {
 

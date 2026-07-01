@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.security.jwt;
+package com.sprint.mission.discodeit.security.jwt.model;
 
 import java.time.Instant;
 import java.util.UUID;
