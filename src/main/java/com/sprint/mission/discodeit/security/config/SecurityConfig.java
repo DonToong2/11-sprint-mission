@@ -72,9 +72,10 @@ public class SecurityConfig {
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter(
       JwtTokenProvider jwtTokenProvider,
+      JwtRegistry jwtRegistry,
       DiscodeitUserDetailsService userDetailsService
   ) {
-    return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
+    return new JwtAuthenticationFilter(jwtTokenProvider, jwtRegistry, userDetailsService);
   }
 
   @Bean
