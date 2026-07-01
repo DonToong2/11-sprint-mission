@@ -52,7 +52,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
     // JavaScript에 접근 못하게 설정
     cookie.setHttpOnly(true);
 
-    // 모든 사이트에 쿠키 적용
+    // 내 도메인 내의 모든 URI에 쿠키 적용
     cookie.setPath("/");
 
     // 쿠키 유효기간을 30일로 설정(setMaxAge()는 초 단위이기 때문에 60을 곱하여 초 단위로 변환)
