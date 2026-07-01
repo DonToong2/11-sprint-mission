@@ -1,5 +1,7 @@
 package com.sprint.mission.discodeit.security.handler;
 
+import static com.sprint.mission.discodeit.security.jwt.JwtTokenProvider.REFRESH_TOKEN_COOKIE_NAME;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
@@ -45,7 +47,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
     String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
 
     // 토큰을 담기 위한 쿠키 생성
-    Cookie cookie = new Cookie("REFRESH_TOKEN", refreshToken);
+    Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
 
     // JavaScript에 접근 못하게 설정
     cookie.setHttpOnly(true);

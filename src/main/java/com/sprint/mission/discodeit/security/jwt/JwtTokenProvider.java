@@ -23,6 +23,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
+  public static final String REFRESH_TOKEN_COOKIE_NAME = "REFRESH_TOKEN";
+
   private final JwtProperties jwtProperties;
 
   // Access Token 발급
