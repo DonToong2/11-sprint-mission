@@ -11,6 +11,7 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetailsService;
 import com.sprint.mission.discodeit.security.jwt.JwtDto;
+import com.sprint.mission.discodeit.security.jwt.JwtRegistry;
 import com.sprint.mission.discodeit.security.jwt.JwtTokenProvider;
 import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import com.sprint.mission.discodeit.service.AuthService;
@@ -20,8 +21,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.session.SessionInformation;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +32,10 @@ public class BasicAuthService implements AuthService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
 
-  private final SessionRegistry sessionRegistry;
+  private final DiscodeitUserDetailsService userDetailsService;
 
   private final JwtTokenProvider jwtTokenProvider;
-  private final DiscodeitUserDetailsService userDetailsService;
+  private final JwtRegistry jwtRegistry;
   private final JwtProperties jwtProperties;
 
   // Role Update
@@ -52,20 +51,8 @@ public class BasicAuthService implements AuthService {
 
     user.updateRole(dto.newRole());
 
-    // 현재 로그인 중인 모든 사용자를 조회
-    sessionRegistry.getAllPrincipals()
-        .stream()
-        // DiscodeitUserDetails 타입만 남기고
-        // 특정 userId를 가진 유저를 조회 → 여기서는 권한 수정할 유저를 조회
-        // 로그인 중인 사용자 id가 a, b, c, d면 a==dto.userId(), ..., d==dto.userId()
-        .filter(principal ->
-            principal instanceof DiscodeitUserDetails userDetails &&
-                userDetails.getUserDto().id().equals(dto.userId()))
-        // filter 조건에 맞는 사용자의 모든 세션을 찾아 인증 무효화(세션 만료X)
-        .forEach(principal -> {
-          sessionRegistry.getAllSessions(principal, false)
-              .forEach(SessionInformation::expireNow);
-        });
+    // 만약 사용자가 로그인 상태라면 토큰 상태를 무효화시켜 강제 로그아웃
+    jwtRegistry.invalidateJwtInformationByUserId(dto.userId());
 
     log.info("[USER_ROLE_UPDATE_SUCCESS] 유저 권한 수정 완료 - 권한 수정한 유저 ID={}", dto.userId());
 
