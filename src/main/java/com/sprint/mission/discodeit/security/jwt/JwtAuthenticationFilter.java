@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,12 +45,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return;
       }
 
-      // 토큰에서 userId 추출
-      String userId = jwtTokenProvider.getClaims(token).get("userId").toString();
+      // 토큰에서 사용자 식별 정보(subject)를 추출 후 UUID로 변환
+      String userId = jwtTokenProvider.getSubject(token);
+      UUID userIdAsUUID = UUID.fromString(userId);
 
       // UserDetails 조회
       DiscodeitUserDetails userDetails =
-          (DiscodeitUserDetails) userDetailsService.loadUserByUsername(userId);
+          (DiscodeitUserDetails) userDetailsService.loadUserById(userIdAsUUID);
 
       // Authentication 객체 생성
       UsernamePasswordAuthenticationToken authentication =
