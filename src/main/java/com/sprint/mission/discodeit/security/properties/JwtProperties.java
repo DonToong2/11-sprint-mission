@@ -10,4 +10,14 @@ public class JwtProperties {
   private String secretKey;
   private int accessTokenExpiration;
   private int refreshTokenExpiration;
+
+  public JwtProperties(
+      String secretKey,
+      int accessTokenExpiration,
+      int refreshTokenExpiration
+  ) {
+    this.secretKey = secretKey;
+    this.accessTokenExpiration = accessTokenExpiration;
+    this.refreshTokenExpiration = refreshTokenExpiration;
+  }
 }
