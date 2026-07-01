@@ -12,10 +12,9 @@ import com.nimbusds.jwt.SignedJWT;
 import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,27 +28,26 @@ public class JwtTokenProvider {
 
   // Access Token 발급
   public String generateAccessToken(String userId) {
-    Map<String, Object> claims = new HashMap<>();
-    claims.put("userId", userId);
 
-    return generateToken(TokenType.ACCESS, claims, userId,
+    return generateToken(TokenType.ACCESS, userId,
         getTokenExpiration(jwtProperties.getAccessTokenExpiration()));
   }
 
   // Refresh Token 발급
   public String generateRefreshToken(String userId) {
-    Map<String, Object> claims = new HashMap<>();
 
-    return generateToken(TokenType.REFRESH, claims, userId,
+    return generateToken(TokenType.REFRESH, userId,
         getTokenExpiration(jwtProperties.getRefreshTokenExpiration()));
 
   }
 
   // Refresh Token으로 Access Token 갱신(재 발급)
   public String reIssueAccessToken(String refreshToken) {
-    Map<String, Object> claims = getClaims(refreshToken);
+    if (!validateToken(refreshToken)) {
+      throw new JwtExpiredException("Refresh Token이 유효하지 않습니다.");
+    }
 
-    String userId = claims.get("sub").toString();
+    String userId = getSubject(refreshToken);
 
     return generateAccessToken(userId);
   }
@@ -76,19 +74,17 @@ public class JwtTokenProvider {
 
   private String generateToken(
       TokenType tokenType,
-      Map<String, Object> claims,
       String subject,
       Date expiration
   ) {
     try {
       JWSSigner signer = createSigner();
 
-      JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
-          .subject(subject)
-          .issueTime(Calendar.getInstance().getTime())
-          .expirationTime(expiration);
-
-      claims.forEach(builder::claim);
+      // claims set
+      JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
+      builder.subject(subject);
+      builder.issueTime(Calendar.getInstance().getTime());
+      builder.expirationTime(expiration);
 
       SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), builder.build());
 
@@ -101,28 +97,28 @@ public class JwtTokenProvider {
     }
   }
 
-  // claims 추출
-  // 만료 검증을 명시적으로 수행
-  public Map<String, Object> getClaims(String token) {
+  public Instant getExpiration(String token) {
     try {
-      // Header.Payload.Signature 구조로 분해(각각 객체화)
       SignedJWT signedJWT = SignedJWT.parse(token);
-
-      if (!signedJWT.verify(createVerifier())) {
-        throw new JwtSignatureException("JWT 서명 검증에 실패하였습니다.");
-      }
 
       Date expiration = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-      if (expiration.before(new Date())) {
-        throw new JwtExpiredException("JWT가 만료되었습니다.");
-      }
-
-      return signedJWT.getJWTClaimsSet().getClaims();
+      return expiration.toInstant();
     } catch (ParseException e) {
-      throw new JwtSignatureException("JWT 형식이 올바르지 않습니다.", e);
-    } catch (JOSEException e) {
-      throw new JwtSignatureException("JWT 검증 중 오류가 발생했습니다.", e);
+      throw new JwtSignatureException("JWT 형식이 올바르지 않습니다", e);
+    }
+  }
+
+  // 사용자 식별 값(subject) 추출
+  public String getSubject(String token) {
+    try {
+      SignedJWT signedJWT = SignedJWT.parse(token);
+
+      return signedJWT
+          .getJWTClaimsSet()
+          .getSubject();
+    } catch (ParseException e) {
+      throw new JwtSignatureException("JWT 형식이 올바르지 않습니다", e);
     }
   }
 
