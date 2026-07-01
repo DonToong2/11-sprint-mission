@@ -25,4 +25,7 @@ public interface JwtRegistry {
   // 만료된 JwtInformation을 스케줄러를 통해 정리
   void clearExpiredJwtInformation();
 
+  // 특정 Refresh Token을 무효화
+  void invalidateJwtInformationByRefreshToken(String refreshToken);
+
 }

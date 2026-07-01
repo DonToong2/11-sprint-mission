@@ -125,4 +125,13 @@ public class InMemoryJwtRegistry implements JwtRegistry {
       }
     });
   }
+
+  @Override
+  public void invalidateJwtInformationByRefreshToken(String refreshToken) {
+
+    // Refresh Token을 삭제하여 Collection 수정이 필요하기 때문에 forEach를 사용
+    origin.values().forEach(queue ->
+        queue.removeIf(info -> info.refreshToken().equals(refreshToken))
+    );
+  }
 }
