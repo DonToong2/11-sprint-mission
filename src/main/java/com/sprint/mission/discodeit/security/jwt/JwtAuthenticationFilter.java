@@ -17,6 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtTokenProvider jwtTokenProvider;
+  private final JwtRegistry jwtRegistry;
+
   private final DiscodeitUserDetailsService userDetailsService;
 
   @Override
@@ -41,6 +43,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     try {
       // 토큰 유효성 검사(false시 인증 처리 없이 통과)
       if (!jwtTokenProvider.validateToken(token)) {
+        filterChain.doFilter(request, response);
+        return;
+      }
+
+      // Registry 상태 검증
+      if (!jwtRegistry.hasActiveJwtInformationByAccessToken(token)) {
         filterChain.doFilter(request, response);
         return;
       }
