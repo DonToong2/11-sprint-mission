@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.security.jwt.JwtDto;
+import com.sprint.mission.discodeit.security.jwt.JwtInformation;
+import com.sprint.mission.discodeit.security.jwt.JwtRegistry;
 import com.sprint.mission.discodeit.security.jwt.JwtTokenProvider;
 import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import jakarta.servlet.ServletException;
@@ -13,6 +15,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Instant;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -24,6 +28,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
 
   private final JwtProperties jwtProperties;
   private final JwtTokenProvider jwtTokenProvider;
+  private final JwtRegistry jwtRegistry;
   private final ObjectMapper objectMapper;
 
   @Override
@@ -42,9 +47,23 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
     // 토큰 생성에 사용
     String userId = userDetails.getId();
 
-    // Access Token & Refresh Token
+    // Access Token & Refresh Token 발급
     String accessToken = jwtTokenProvider.generateAccessToken(userId);
     String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
+    Instant expiration = jwtTokenProvider.getTokenExpiration(
+        jwtProperties.getRefreshTokenExpiration()).toInstant();
+
+    JwtInformation jwtInformation = new JwtInformation(
+        UUID.fromString(userId),
+        accessToken,
+        refreshToken,
+        expiration);
+
+    // 이전 로그인이 있다면 무효화(동시 로그인 제한)
+    jwtRegistry.invalidateJwtInformationByUserId(UUID.fromString(userId));
+
+    // JwtInformation 레지스트리에 추가
+    jwtRegistry.registerJwtInformation(jwtInformation);
 
     // 토큰을 담기 위한 쿠키 생성
     Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken);
