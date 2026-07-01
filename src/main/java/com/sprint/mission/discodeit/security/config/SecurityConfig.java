@@ -124,6 +124,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 // 로그아웃
                 .requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
+                // Refresh Token
+                .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
                 // Swagger
                 .requestMatchers("swagger-ui.html", "swagger-ui/**", "v3/api-docs/**").permitAll()
                 // Actuator
