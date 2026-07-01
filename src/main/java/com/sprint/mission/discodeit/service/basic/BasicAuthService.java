@@ -12,7 +12,6 @@ import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetailsService;
 import com.sprint.mission.discodeit.security.jwt.JwtDto;
 import com.sprint.mission.discodeit.security.jwt.JwtTokenProvider;
-import com.sprint.mission.discodeit.security.jwt.RefreshTokenInvalidException;
 import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import com.sprint.mission.discodeit.service.AuthService;
 import jakarta.servlet.http.Cookie;
@@ -75,11 +74,6 @@ public class BasicAuthService implements AuthService {
 
   @Override
   public JwtDto refresh(String refreshToken, HttpServletResponse response) {
-
-    // Refresh Token 검증
-    if (refreshToken == null || !jwtTokenProvider.validateToken(refreshToken)) {
-      throw new RefreshTokenInvalidException("유효하지 않은 Refresh Token입니다.");
-    }
 
     // 토큰에서 사용자 식별 정보(subject)를 추출 후 UUID로 변환
     UUID userId = UUID.fromString(jwtTokenProvider.getSubject(refreshToken));

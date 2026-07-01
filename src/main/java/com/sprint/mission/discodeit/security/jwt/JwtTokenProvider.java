@@ -43,8 +43,8 @@ public class JwtTokenProvider {
 
   // Refresh Token으로 Access Token 갱신(재 발급)
   public String reIssueAccessToken(String refreshToken) {
-    if (!validateToken(refreshToken)) {
-      throw new JwtExpiredException("Refresh Token이 유효하지 않습니다.");
+    if (refreshToken == null || !validateToken(refreshToken)) {
+      throw new RefreshTokenInvalidException();
     }
 
     String userId = getSubject(refreshToken);
