@@ -3,9 +3,12 @@ package com.sprint.mission.discodeit.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.response.ErrorResponse;
 import com.sprint.mission.discodeit.exception.ErrorCode;
+import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetailsService;
 import com.sprint.mission.discodeit.security.handler.JwtLoginSuccessHandler;
 import com.sprint.mission.discodeit.security.handler.LoginFailureHandler;
 import com.sprint.mission.discodeit.security.handler.SpaCsrfTokenRequestHandler;
+import com.sprint.mission.discodeit.security.jwt.JwtAuthenticationFilter;
+import com.sprint.mission.discodeit.security.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +29,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -84,9 +88,19 @@ public class SecurityConfig {
     return new HttpSessionEventPublisher();
   }
 
+  // JWT 인증 필터
+  @Bean
+  public JwtAuthenticationFilter jwtAuthenticationFilter(
+      JwtTokenProvider jwtTokenProvider,
+      DiscodeitUserDetailsService userDetailsService
+  ) {
+    return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
+  }
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http,
-      UserDetailsService userDetailsService)
+      UserDetailsService userDetailsService,
+      JwtAuthenticationFilter jwtAuthenticationFilter)
       throws Exception {
     http
         .csrf((csrf) -> csrf
@@ -183,7 +197,9 @@ public class SecurityConfig {
             .rememberMeParameter("remember-me")
             // 토큰 유효기간(7일, 60초 60분 1일 7일)
             .tokenValiditySeconds(60 * 60 * 24 * 7)
-            .userDetailsService(userDetailsService));
+            .userDetailsService(userDetailsService)
+        )
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
