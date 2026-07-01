@@ -11,12 +11,15 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetailsService;
 import com.sprint.mission.discodeit.security.jwt.JwtDto;
+import com.sprint.mission.discodeit.security.jwt.JwtInformation;
 import com.sprint.mission.discodeit.security.jwt.JwtRegistry;
 import com.sprint.mission.discodeit.security.jwt.JwtTokenProvider;
+import com.sprint.mission.discodeit.security.jwt.RefreshTokenInvalidException;
 import com.sprint.mission.discodeit.security.properties.JwtProperties;
 import com.sprint.mission.discodeit.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,11 +75,32 @@ public class BasicAuthService implements AuthService {
     // JwtDto에 담기 위해 UserDto로 추출
     UserDto userDto = userDetails.getUserDto();
 
-    // Refresh Token으로 Access Token 재발급
+    // 서버에 RefreshToken이 존재하지 않을 경우 예외처리
+    if (!jwtRegistry.hasActiveJwtInformationByRefreshToken(refreshToken)) {
+      throw new RefreshTokenInvalidException();
+    }
+
+    // Refresh Token으로 Access Token 발급
     String accessToken = jwtTokenProvider.reIssueAccessToken(refreshToken);
 
     // Refresh Token 회전
     String newRefreshToken = jwtTokenProvider.generateRefreshToken(userId.toString());
+
+    // JwtInformation Dto를 위한 expiration 선언
+    Instant expiration = jwtTokenProvider
+        .getTokenExpiration(jwtProperties.getRefreshTokenExpiration())
+        .toInstant();
+
+    // JwtInformation 생성
+    JwtInformation newJwtInformation = new JwtInformation(
+        userId,
+        accessToken,
+        newRefreshToken,
+        expiration
+    );
+
+    // 기존 Refresh Token을 활용하여 발급받은 Access Token, New Refresh Token를 JwtInformation으로 Registry에 저장(=교체)
+    jwtRegistry.rotateJwtInformation(refreshToken, newJwtInformation);
 
     // Refresh Token 쿠키 교체
     Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, newRefreshToken);
