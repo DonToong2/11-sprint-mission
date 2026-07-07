@@ -16,7 +16,7 @@ public class BinaryContentCreatedEventListener {
   // phase 생략 시 기본값 TransactionPhase.AFTER_COMMIT
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   public void handle(BinaryContentCreatedEvent event) {
-    binaryContentStorage.put(event.id(), event.bytes());
+    binaryContentStorage.put(event.binaryContentId(), event.bytes());
   }
 
 }
