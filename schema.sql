@@ -4,7 +4,8 @@ create table binary_contents
     created_at   timestamptz  not null,
     file_name    varchar(255) not null,
     size         bigint       not null,
-    content_type varchar(100) not null
+    content_type varchar(100) not null,
+    status       varchar(20)  not null
 );
 
 create table users
