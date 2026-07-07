@@ -43,6 +43,8 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
   }
 
   // 저장
+  // 이 메서드를 사용하는 트랜잭션 메서드는 바이너리 데이터 처리로 인한 DB 시간까지 같이 점유
+  // 이벤트 리스너에서 커밋 성공시에만 호출하도록 변경하여 트랜잭션 점유 감소
   @Override
   public UUID put(UUID id, byte[] bytes) {
     Path path = resolvePath(id);
