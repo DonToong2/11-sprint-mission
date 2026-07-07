@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.event.BinaryContentCreatedEvent;
 import com.sprint.mission.discodeit.exception.binarycontent.AttachmentSaveFailedException;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
@@ -19,13 +20,13 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
-import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -45,7 +46,8 @@ public class BasicMessageService implements MessageService {
   private final BinaryContentRepository binaryContentRepository;
   private final MessageMapper messageMapper;
   private final PageResponseMapper pageResponseMapper;
-  private final BinaryContentStorage binaryContentStorage;
+
+  private final ApplicationEventPublisher eventPublisher;
 
   // Create
   @Override
@@ -85,7 +87,14 @@ public class BasicMessageService implements MessageService {
 
         binaryContentRepository.save(binaryContent);
         try {
-          binaryContentStorage.put(binaryContent.getId(), file.getBytes());
+          // 기존 BinaryContentStorage.put 메서드를 이벤트로 처리
+          // 이벤트 리스너에서 AFTER_COMMIT 옵션으로 트랜잭션 커밋 후 전달받은 이벤트를 처리하기 때문에 DB 커넥션 점유 시간 감소
+          eventPublisher.publishEvent(
+              new BinaryContentCreatedEvent(
+                  binaryContent.getId(),
+                  file.getBytes()
+              )
+          );
         } catch (IOException e) {
           log.error("[MESSAGE_CREATE_FAILED] 첨부파일 저장 실패 - 파일명={}, 크기={}",
               file.getOriginalFilename(), file.getSize(), e);
