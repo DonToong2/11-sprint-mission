@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.response.NotificationDto;
 import com.sprint.mission.discodeit.entity.Notification;
+import com.sprint.mission.discodeit.exception.notification.NotificationNotFoundException;
 import com.sprint.mission.discodeit.mapper.NotificationMapper;
 import com.sprint.mission.discodeit.repository.NotificationRepository;
 import com.sprint.mission.discodeit.service.NotificationService;
@@ -37,8 +38,7 @@ public class BasicNotificationService implements NotificationService {
 
     // notificationId에 해당하는 Notification 객체를 가져옴
     Notification notification = notificationRepository.findById(notificationId).orElseThrow(
-        // TODO : NotificationException 중간 계층 예외와 NotificationNotFoundException 하위 비즈니스 예외 클래스 작성
-        () -> new RuntimeException("notificationId : " + notificationId)
+        () -> new NotificationNotFoundException(notificationId)
     );
 
     // Notification 객체 내의 receiverId가 userId가 아닐 경우 403 예외 반환

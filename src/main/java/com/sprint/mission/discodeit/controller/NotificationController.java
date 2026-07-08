@@ -29,7 +29,6 @@ public class NotificationController implements NotificationApi {
   public ResponseEntity<List<NotificationDto>> findAll(
       @AuthenticationPrincipal DiscodeitUserDetails userDetails
   ) {
-    // TODO : Notification.findAll() 구현 후 response로 값을 받아와 return body에 호출
     List<NotificationDto> response = notificationService.findAll(userDetails.getUserDto().id());
 
     return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -41,8 +40,6 @@ public class NotificationController implements NotificationApi {
       @PathVariable UUID notificationId,
       @AuthenticationPrincipal DiscodeitUserDetails userDetails
   ) {
-
-    // TODO : Notification.delete() 구현 후 호출
     notificationService.delete(notificationId, userDetails.getUserDto().id());
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
