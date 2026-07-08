@@ -31,7 +31,7 @@ public class NotificationRequiredEventListener {
     for (ReadStatus readStatus : readStatuses) {
 
       // 메시지 작성자는 제외
-      if (readStatus.getUser().getId().equals(event.userId())) {
+      if (readStatus.getUser().getId().equals(event.authorId())) {
         continue;
       }
 

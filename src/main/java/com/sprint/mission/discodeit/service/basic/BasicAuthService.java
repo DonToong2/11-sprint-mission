@@ -5,6 +5,8 @@ import static com.sprint.mission.discodeit.security.jwt.provider.JwtTokenProvide
 import com.sprint.mission.discodeit.dto.request.UserRoleUpdateRequest;
 import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.User.Role;
+import com.sprint.mission.discodeit.event.RoleUpdatedEvent;
 import com.sprint.mission.discodeit.exception.auth.RefreshTokenInvalidException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
@@ -23,6 +25,7 @@ import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +44,8 @@ public class BasicAuthService implements AuthService {
   private final JwtRegistry jwtRegistry;
   private final JwtProperties jwtProperties;
 
+  private final ApplicationEventPublisher eventPublisher;
+
   // Role Update
   @Override
   @Transactional
@@ -52,7 +57,17 @@ public class BasicAuthService implements AuthService {
         () -> new UserNotFoundException(dto.userId())
     );
 
+    Role beforeRole = user.getRole();
+
     user.updateRole(dto.newRole());
+
+    eventPublisher.publishEvent(
+        new RoleUpdatedEvent(
+            user.getId(),
+            beforeRole,
+            user.getRole()
+        )
+    );
 
     // 만약 사용자가 로그인 상태라면 토큰 상태를 무효화시켜 강제 로그아웃
     jwtRegistry.invalidateJwtInformationByUserId(dto.userId());
