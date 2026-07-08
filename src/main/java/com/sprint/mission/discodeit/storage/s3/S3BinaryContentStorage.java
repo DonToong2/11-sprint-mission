@@ -1,12 +1,12 @@
 package com.sprint.mission.discodeit.storage.s3;
 
 import com.sprint.mission.discodeit.dto.response.BinaryContentDto;
+import com.sprint.mission.discodeit.service.NotificationService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.Duration;
 import java.util.UUID;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -41,17 +41,21 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
   private final String bucket;
   private final long expiration;
 
+  private final NotificationService adminNotificationService;
+
   public S3BinaryContentStorage(
       @Value("${discodeit.storage.s3.access-key}") String accessKey,
       @Value("${discodeit.storage.s3.secret-key}") String secretKey,
       @Value("${discodeit.storage.s3.region}") String region,
       @Value("${discodeit.storage.s3.bucket}") String bucket,
-      @Value("${discodeit.storage.s3.presigned-url-expiration}") long expiration) {
+      @Value("${discodeit.storage.s3.presigned-url-expiration}") long expiration,
+      NotificationService adminNotificationService) {
     this.accessKey = accessKey;
     this.secretKey = secretKey;
     this.region = region;
     this.bucket = bucket;
     this.expiration = expiration;
+    this.adminNotificationService = adminNotificationService;
 
     AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 
@@ -90,18 +94,8 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
       UUID binaryContentId,
       byte[] bytes
   ) {
-    String requestId = MDC.get("requestId");
 
-    // TODO : NotificationService.sendToAdminByAsync() 구현 시 해당 클래스로 이동(책임분리 고려)
-    // 알림 메시지 포맷
-    String message = """
-        ReqeustId: %s
-        BinaryContentId: %s
-        Error: %s
-        """.formatted(requestId, binaryContentId, e.getMessage());
-
-    // TODO : 관리자에게 알림 발송 하도록 NotificationService.sendToAdminByAsync() 메서드 호출(책임분리 고려)
-//    adminNotificationService.sendToAdminByAsync(binaryContentId, e);
+    adminNotificationService.sendToAdminByS3PutFail(binaryContentId, e);
 
     return binaryContentId;
   }
