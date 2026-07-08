@@ -33,12 +33,13 @@ create table channels
 
 create table read_statuses
 (
-    id           uuid primary key,
-    created_at   timestamptz not null,
-    updated_at   timestamptz,
-    user_id      uuid        not null references users (id) on delete cascade,
-    channel_id   uuid        not null references channels (id) on delete cascade,
-    last_read_at timestamptz,
+    id                   uuid primary key,
+    created_at           timestamptz not null,
+    updated_at           timestamptz,
+    user_id              uuid        not null references users (id) on delete cascade,
+    channel_id           uuid        not null references channels (id) on delete cascade,
+    last_read_at         timestamptz,
+    notification_enabled boolean     NOT NULL,
 
     UNIQUE (user_id, channel_id)
 );
