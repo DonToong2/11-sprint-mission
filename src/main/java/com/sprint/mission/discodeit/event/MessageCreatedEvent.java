@@ -5,7 +5,10 @@ import java.util.UUID;
 public record MessageCreatedEvent(
     UUID messageId,
     UUID channelId,
-    UUID userId
+    UUID userId,
+    String channelName,
+    String title,
+    String content
 ) {
 
 }
