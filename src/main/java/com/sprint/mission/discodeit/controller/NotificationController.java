@@ -4,8 +4,10 @@ import com.sprint.mission.discodeit.constant.EndPoints;
 import com.sprint.mission.discodeit.controller.api.NotificationApi;
 import com.sprint.mission.discodeit.dto.response.NotificationDto;
 import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
+import com.sprint.mission.discodeit.service.NotificationService;
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(EndPoints.NOTIFICATION)
+@RequiredArgsConstructor
 public class NotificationController implements NotificationApi {
+
+  private final NotificationService notificationService;
 
   @Override
   @GetMapping
@@ -25,7 +30,9 @@ public class NotificationController implements NotificationApi {
       @AuthenticationPrincipal DiscodeitUserDetails userDetails
   ) {
     // TODO : Notification.findAll() 구현 후 response로 값을 받아와 return body에 호출
-    return ResponseEntity.status(HttpStatus.OK).body(null);
+    List<NotificationDto> response = notificationService.findAll(userDetails.getUserDto().id());
+
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   @Override
@@ -36,6 +43,8 @@ public class NotificationController implements NotificationApi {
   ) {
 
     // TODO : Notification.delete() 구현 후 호출
+    notificationService.delete(notificationId, userDetails.getUserDto().id());
+
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 

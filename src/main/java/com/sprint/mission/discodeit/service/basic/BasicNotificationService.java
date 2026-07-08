@@ -37,6 +37,7 @@ public class BasicNotificationService implements NotificationService {
 
     // notificationId에 해당하는 Notification 객체를 가져옴
     Notification notification = notificationRepository.findById(notificationId).orElseThrow(
+        // TODO : NotificationException 중간 계층 예외와 NotificationNotFoundException 하위 비즈니스 예외 클래스 작성
         () -> new RuntimeException("notificationId : " + notificationId)
     );
 
