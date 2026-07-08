@@ -50,7 +50,14 @@ public class ReadStatus extends BaseUpdatableEntity {
   }
 
   // update
-  public void updateLastReadAt(Instant lastReadAt) {
-    this.lastReadAt = lastReadAt;
+  // 매개변수로는 요청 DTO로 설정됨
+  public void update(Instant lastReadAt, Boolean notificationEnabled) {
+    if (lastReadAt != null) {
+      this.lastReadAt = lastReadAt;
+    }
+
+    if (notificationEnabled != null) {
+      this.notificationEnabled = notificationEnabled;
+    }
   }
 }
