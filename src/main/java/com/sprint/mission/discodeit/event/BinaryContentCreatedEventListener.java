@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.entity.BinaryContent.BinaryContentStatus;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -15,6 +16,8 @@ public class BinaryContentCreatedEventListener {
   private final BinaryContentStorage binaryContentStorage;
   private final BinaryContentService binaryContentService;
 
+  // 비동기 처리(eventTaskExecutor라는 이름을 가진 Executor의 스레드 풀에서 비동기로 실행)
+  @Async("eventTaskExecutor")
   // 커밋 이후에 put 메서드가 실행되도록 설정
   // phase 생략 시 기본값 TransactionPhase.AFTER_COMMIT
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

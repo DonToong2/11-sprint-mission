@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -20,6 +21,7 @@ public class NotificationRequiredEventListener {
   private final NotificationRepository notificationRepository;
   private final UserRepository userRepository;
 
+  @Async("eventTaskExecutor")
   // phase 생략 시 default는 AFTER_COMMIT
   @TransactionalEventListener
   public void on(MessageCreatedEvent event) {
@@ -47,6 +49,7 @@ public class NotificationRequiredEventListener {
     }
   }
 
+  @Async("eventTaskExecutor")
   @TransactionalEventListener
   public void on(RoleUpdatedEvent event) {
 
