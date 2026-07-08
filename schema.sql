@@ -59,3 +59,12 @@ create table message_attachments
     message_id    uuid not null references messages (id) on delete cascade,
     attachment_id uuid not null references binary_contents (id) on delete cascade
 );
+
+create table notifications
+(
+    id          uuid primary key,
+    created_at  timestamptz  not null,
+    receiver_id uuid         not null,
+    title       varchar(255) not null,
+    content     varchar(255) not null
+);
