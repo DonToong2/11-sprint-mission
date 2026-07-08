@@ -95,7 +95,7 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
       byte[] bytes
   ) {
 
-    adminNotificationService.sendToAdminByS3PutFail(binaryContentId, e);
+    adminNotificationService.notifyAdminOfS3PutFailure(binaryContentId, e);
 
     return binaryContentId;
   }

@@ -59,7 +59,7 @@ public class BasicNotificationService implements NotificationService {
 
   @Override
   @Transactional
-  public void sendToAdminByS3PutFail(UUID binaryContentId, Exception e) {
+  public void notifyAdminOfS3PutFailure(UUID binaryContentId, Exception e) {
 
     // 관리자가 2명 이상일수도 있기 때문에 find가 아닌 findAll을 사용(List 타입)
     List<User> admins = userRepository.findAllByRole(Role.ADMIN);
@@ -72,7 +72,7 @@ public class BasicNotificationService implements NotificationService {
 
     // 알림 메시지 제목
     String title = "S3 파일 업로드 실패";
-    
+
     String requestId = MDC.get("requestId");
 
     // 알림 메시지 포맷
