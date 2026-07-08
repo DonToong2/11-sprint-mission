@@ -6,10 +6,14 @@ import java.io.InputStream;
 import java.net.URI;
 import java.time.Duration;
 import java.util.UUID;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -63,6 +67,10 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
   }
 
   @Override
+  @Retryable(
+      maxAttempts = 3, // 최대 3회(재시도 횟수 정책, default 3)
+      backoff = @Backoff(delay = 1000, multiplier = 2) // 2, 4, 8초 후 재시도(대기시간 정책)
+  )
   public UUID put(UUID id, byte[] bytes) {
     PutObjectRequest request = PutObjectRequest.builder()
         .bucket(bucket)
@@ -72,6 +80,30 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
     s3Client.putObject(request, RequestBody.fromBytes(bytes));
 
     return id;
+  }
+
+  @Recover
+  // Retryable 실패 시 이 메서드를 실행
+  // @Recover 추적을 쉽게 하기 위해서 이 메서드에 사용되지 않는 byte[] 타입도 같이 매개변수로 설정
+  public UUID recover(
+      Exception e,
+      UUID binaryContentId,
+      byte[] bytes
+  ) {
+    String requestId = MDC.get("requestId");
+
+    // TODO : NotificationService.sendToAdminByAsync() 구현 시 해당 클래스로 이동(책임분리 고려)
+    // 알림 메시지 포맷
+    String message = """
+        ReqeustId: %s
+        BinaryContentId: %s
+        Error: %s
+        """.formatted(requestId, binaryContentId, e.getMessage());
+
+    // TODO : 관리자에게 알림 발송 하도록 NotificationService.sendToAdminByAsync() 메서드 호출(책임분리 고려)
+//    adminNotificationService.sendToAdminByAsync(binaryContentId, e);
+
+    return binaryContentId;
   }
 
   @Override
