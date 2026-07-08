@@ -30,6 +30,7 @@ public class BinaryContent extends BaseUpdatableEntity {
   private String contentType; // 데이터 타입(.png 등)
 
   // status varchar(20) not null
+  // 기본값은 진행중(PROCESSING)으로 설정
   @Enumerated(EnumType.STRING)
   @Column(name = "status", length = 20, nullable = false)
   private BinaryContentStatus status = BinaryContentStatus.PROCESSING;
