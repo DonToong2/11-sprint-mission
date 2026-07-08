@@ -1,0 +1,42 @@
+package com.sprint.mission.discodeit.controller;
+
+import com.sprint.mission.discodeit.constant.EndPoints;
+import com.sprint.mission.discodeit.controller.api.NotificationApi;
+import com.sprint.mission.discodeit.dto.response.NotificationDto;
+import com.sprint.mission.discodeit.security.auth.DiscodeitUserDetails;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(EndPoints.NOTIFICATION)
+public class NotificationController implements NotificationApi {
+
+  @Override
+  @GetMapping
+  public ResponseEntity<List<NotificationDto>> findAll(
+      @AuthenticationPrincipal DiscodeitUserDetails userDetails
+  ) {
+    // TODO : Notification.findAll() 구현 후 response로 값을 받아와 return body에 호출
+    return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  @Override
+  @DeleteMapping("/{notificationId}")
+  public ResponseEntity<Void> delete(
+      @PathVariable UUID notificationId,
+      @AuthenticationPrincipal DiscodeitUserDetails userDetails
+  ) {
+
+    // TODO : Notification.delete() 구현 후 호출
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+}
