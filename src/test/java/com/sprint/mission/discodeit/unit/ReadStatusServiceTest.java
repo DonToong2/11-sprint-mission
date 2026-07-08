@@ -35,7 +35,7 @@ public class ReadStatusServiceTest {
   private BasicReadStatusService readStatusService;
 
   @Test
-  @DisplayName("ReadStatus 수정 시 lastReadAt과 notificationenabled가 둘 다 null일 경우 null 값을 가지지 않고 update 되지 않음")
+  @DisplayName("ReadStatus 수정 시 요청 lastReadAt과 notificationEnabled가 둘 다 null일 경우 기존 값으로 유지")
   void update_null_lastReadAt_and_notificationEnabled() {
     // given
     UUID id = UUID.randomUUID();
