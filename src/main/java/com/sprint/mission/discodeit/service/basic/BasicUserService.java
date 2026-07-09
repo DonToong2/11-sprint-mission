@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -109,6 +110,8 @@ public class BasicUserService implements UserService {
   // 모든 사용자를 조회
   @Override
   @Transactional(readOnly = true)
+  // (value만 있을 경우 생략 가능 - JLS(Java Language Specification)의 9.7.3 Single-Element Annotations)
+  @Cacheable("users")
   public List<UserDto> findAll() {
     return userRepository.findAll().stream()
         .map(userMapper::toDto).toList();
