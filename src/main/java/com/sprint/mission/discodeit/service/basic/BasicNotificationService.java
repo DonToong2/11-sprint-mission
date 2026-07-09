@@ -14,6 +14,9 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ public class BasicNotificationService implements NotificationService {
   private final NotificationRepository notificationRepository;
   private final UserRepository userRepository;
   private final NotificationMapper notificationMapper;
+  private final CacheManager cacheManager;
 
   @Override
   @Transactional(readOnly = true)
@@ -43,6 +47,8 @@ public class BasicNotificationService implements NotificationService {
 
   @Override
   @Transactional
+  // userId 키에 해당하는 userNotifications 캐시 데이터만 무효화
+  @CacheEvict(value = "userNotifications", key = "#userId")
   public void delete(UUID notificationId, UUID userId) {
 
     // notificationId에 해당하는 Notification 객체를 가져옴
@@ -90,6 +96,11 @@ public class BasicNotificationService implements NotificationService {
         .toList();
 
     notificationRepository.saveAll(notifications);
+
+    Cache cache = cacheManager.getCache("userNotifications");
+    if (cache != null) {
+      admins.forEach(admin -> cache.evict(admin.getId()));
+    }
   }
 
 }

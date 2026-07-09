@@ -9,6 +9,8 @@ import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -20,6 +22,8 @@ public class NotificationRequiredEventListener {
   private final ReadStatusRepository readStatusRepository;
   private final NotificationRepository notificationRepository;
   private final UserRepository userRepository;
+
+  private final CacheManager cacheManager;
 
   @Async("eventTaskExecutor")
   // phase 생략 시 default는 AFTER_COMMIT
@@ -46,6 +50,13 @@ public class NotificationRequiredEventListener {
 
       // DB 저장
       notificationRepository.save(notification);
+
+      // 캐시 조회 후 해당 채널 참여자의 알림 캐시만 무효화
+      Cache cache = cacheManager.getCache("userNotifications");
+
+      if (cache != null) {
+        cache.evict(readStatus.getUser().getId());
+      }
     }
   }
 
@@ -65,6 +76,12 @@ public class NotificationRequiredEventListener {
 
     // DB 저장
     notificationRepository.save(notification);
+
+    // 캐시 조회 후 해당 사용자의 알림 캐시만 무효화
+    Cache cache = cacheManager.getCache("userNotifications");
+    if (cache != null) {
+      cache.evict(user.getId());
+    }
   }
 
 }
