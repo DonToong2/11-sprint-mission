@@ -73,8 +73,8 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
 
   @Override
   @Retryable(
-      maxAttempts = 3, // 최대 3회(재시도 횟수 정책, default 3)
-      backoff = @Backoff(delay = 1000, multiplier = 2) // 2, 4, 8초 후 재시도(대기시간 정책)
+      maxAttempts = 4, // 첫 실패 후 3회(재시도 횟수 정책, default 3)
+      backoff = @Backoff(delay = 1000, multiplier = 2) // 1, 2, 4초 후 재시도(대기시간 정책)
   )
   public UUID put(UUID id, byte[] bytes) {
     PutObjectRequest request = PutObjectRequest.builder()
