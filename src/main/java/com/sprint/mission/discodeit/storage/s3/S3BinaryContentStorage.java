@@ -6,7 +6,9 @@ import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.io.InputStream;
 import java.net.URI;
 import java.time.Duration;
+import java.util.NoSuchElementException;
 import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,10 +25,12 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+@Slf4j
 @Component
 @ConditionalOnProperty(name = "discodeit.storage.type", havingValue = "s3")
 // name이 "s3"일때만 이 Bean을 등록
@@ -77,14 +81,20 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
       backoff = @Backoff(delay = 1000, multiplier = 2) // 1, 2, 4초 후 재시도(대기시간 정책)
   )
   public UUID put(UUID id, byte[] bytes) {
-    PutObjectRequest request = PutObjectRequest.builder()
-        .bucket(bucket)
-        .key(id.toString())
-        .build();
 
-    s3Client.putObject(request, RequestBody.fromBytes(bytes));
+    try {
+      PutObjectRequest request = PutObjectRequest.builder()
+          .bucket(bucket)
+          .key(id.toString())
+          .build();
 
-    return id;
+      s3Client.putObject(request, RequestBody.fromBytes(bytes));
+
+      return id;
+    } catch (S3Exception e) {
+      log.error("S3에 파일 업로드 실패", e);
+      throw new RuntimeException("S3에 파일 업로드 실패 : " + id.toString(), e);
+    }
   }
 
   @Recover
@@ -103,12 +113,18 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
 
   @Override
   public InputStream get(UUID id) {
-    GetObjectRequest request = GetObjectRequest.builder()
-        .bucket(bucket)
-        .key(id.toString())
-        .build();
 
-    return s3Client.getObject(request);
+    try {
+      GetObjectRequest request = GetObjectRequest.builder()
+          .bucket(bucket)
+          .key(id.toString())
+          .build();
+
+      return s3Client.getObject(request);
+    } catch (S3Exception e) {
+      log.error("S3에서 파일 다운로드 실패", e);
+      throw new NoSuchElementException("File with key " + id.toString() + " does not exist");
+    }
   }
 
   @Override
