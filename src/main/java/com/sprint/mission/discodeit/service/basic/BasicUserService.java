@@ -115,6 +115,8 @@ public class BasicUserService implements UserService {
   // (value만 있을 경우 생략 가능 - JLS(Java Language Specification)의 9.7.3 Single-Element Annotations)
   @Cacheable("users")
   public List<UserDto> findAll() {
+    log.info("DB 사용자 목록 조회 실행");
+
     return userRepository.findAll().stream()
         .map(userMapper::toDto).toList();
   }
