@@ -41,7 +41,7 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
   private final String bucket;
   private final long expiration;
 
-  private final NotificationService adminNotificationService;
+  private final NotificationService notificationService;
 
   public S3BinaryContentStorage(
       @Value("${discodeit.storage.s3.access-key}") String accessKey,
@@ -49,13 +49,13 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
       @Value("${discodeit.storage.s3.region}") String region,
       @Value("${discodeit.storage.s3.bucket}") String bucket,
       @Value("${discodeit.storage.s3.presigned-url-expiration}") long expiration,
-      NotificationService adminNotificationService) {
+      NotificationService notificationService) {
     this.accessKey = accessKey;
     this.secretKey = secretKey;
     this.region = region;
     this.bucket = bucket;
     this.expiration = expiration;
-    this.adminNotificationService = adminNotificationService;
+    this.notificationService = notificationService;
 
     AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 
@@ -95,7 +95,7 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
       byte[] bytes
   ) {
 
-    adminNotificationService.notifyAdminOfS3PutFailure(binaryContentId, e);
+    notificationService.notifyAdminOfS3PutFailure(binaryContentId, e);
 
     return binaryContentId;
   }
