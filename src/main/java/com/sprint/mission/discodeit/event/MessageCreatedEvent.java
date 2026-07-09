@@ -5,6 +5,7 @@ import java.util.UUID;
 public record MessageCreatedEvent(
     UUID channelId,
     UUID authorId,
+    String authorUsername,
     String channelName,
     String content
 ) {

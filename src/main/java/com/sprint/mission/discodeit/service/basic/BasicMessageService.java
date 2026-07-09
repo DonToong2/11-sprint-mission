@@ -116,6 +116,7 @@ public class BasicMessageService implements MessageService {
         new MessageCreatedEvent(
             channel.getId(),
             author.getId(),
+            author.getUsername(),
             channel.getName(),
             message.getContent()
         )

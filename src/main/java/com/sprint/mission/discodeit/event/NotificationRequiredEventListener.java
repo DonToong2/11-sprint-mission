@@ -51,7 +51,7 @@ public class NotificationRequiredEventListener {
       // 알림 생성
       notificationService.create(
           readStatus.getUser().getId(),
-          "보낸사람 #(" + event.channelName() + ")",
+          event.authorUsername() + " #(" + event.channelName() + ")",
           event.content()
       );
 
