@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,6 +42,7 @@ public class BasicUserService implements UserService {
   // Create
   @Override
   @Transactional
+  @CacheEvict(value = "users", allEntries = true)
   public UserDto create(UserCreateRequest dto, MultipartFile profile) {
 
     log.debug("[USER_CREATE_START] 유저 생성 시작 - 유저 이름={}, 유저 이메일={}", dto.username(), dto.email());
