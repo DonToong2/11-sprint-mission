@@ -1,12 +1,12 @@
 package com.sprint.mission.discodeit.event;
 
-import com.sprint.mission.discodeit.entity.Notification;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.repository.NotificationRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.service.NotificationService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
@@ -22,6 +22,7 @@ public class NotificationRequiredEventListener {
   private final ReadStatusRepository readStatusRepository;
   private final NotificationRepository notificationRepository;
   private final UserRepository userRepository;
+  private final NotificationService notificationService;
 
   private final CacheManager cacheManager;
 
@@ -42,14 +43,11 @@ public class NotificationRequiredEventListener {
       }
 
       // 알림 생성
-      Notification notification = new Notification(
-          readStatus.getUser(),
+      notificationService.create(
+          readStatus.getUser().getId(),
           "보낸사람 #(" + event.channelName() + ")",
           event.content()
       );
-
-      // DB 저장
-      notificationRepository.save(notification);
 
       // 캐시 조회 후 해당 채널 참여자의 알림 캐시만 무효화
       Cache cache = cacheManager.getCache("userNotifications");
@@ -68,14 +66,11 @@ public class NotificationRequiredEventListener {
         () -> new UserNotFoundException(event.userId())
     );
 
-    Notification notification = new Notification(
-        user,
+    notificationService.create(
+        user.getId(),
         "권한이 변경되었습니다.",
         event.beforeRole() + "->" + event.newRole()
     );
-
-    // DB 저장
-    notificationRepository.save(notification);
 
     // 캐시 조회 후 해당 사용자의 알림 캐시만 무효화
     Cache cache = cacheManager.getCache("userNotifications");

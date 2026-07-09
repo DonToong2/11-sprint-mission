@@ -27,10 +27,14 @@ public class Notification extends BaseEntity {
   @Column(nullable = false)
   private String content;
 
-  public Notification(User receiver, String title, String content) {
+  private Notification(User receiver, String title, String content) {
     this.receiver = receiver;
     this.title = title;
     this.content = content;
+  }
+
+  public static Notification create(User receiver, String title, String content) {
+    return new Notification(receiver, title, content);
   }
 
 }

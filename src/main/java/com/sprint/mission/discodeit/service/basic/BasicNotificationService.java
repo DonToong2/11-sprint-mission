@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.entity.Notification;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.User.Role;
 import com.sprint.mission.discodeit.exception.notification.NotificationNotFoundException;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.NotificationMapper;
 import com.sprint.mission.discodeit.repository.NotificationRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -31,6 +32,20 @@ public class BasicNotificationService implements NotificationService {
   private final UserRepository userRepository;
   private final NotificationMapper notificationMapper;
   private final CacheManager cacheManager;
+
+  @Override
+  @Transactional
+  @CacheEvict(value = "userNotifications", key = "#receiverId")
+  public NotificationDto create(UUID receiverId, String title, String content) {
+
+    User receiver = userRepository.findById(receiverId).orElseThrow(
+        () -> new UserNotFoundException(receiverId));
+
+    Notification notification = notificationRepository.save(
+        Notification.create(receiver, title, content));
+
+    return notificationMapper.toDto(notification);
+  }
 
   @Override
   @Transactional(readOnly = true)
@@ -92,7 +107,7 @@ public class BasicNotificationService implements NotificationService {
 
     // List<User> → List<Notification>
     List<Notification> notifications = admins.stream()
-        .map(admin -> new Notification(admin, title, message))
+        .map(admin -> Notification.create(admin, title, message))
         .toList();
 
     notificationRepository.saveAll(notifications);
