@@ -75,7 +75,7 @@ public class NotificationRequiredEventListener {
     notificationService.create(
         user.getId(),
         "권한이 변경되었습니다.",
-        event.beforeRole() + "->" + event.newRole()
+        event.beforeRole() + " -> " + event.newRole()
     );
 
     // 캐시 조회 후 해당 사용자의 알림 캐시만 무효화
