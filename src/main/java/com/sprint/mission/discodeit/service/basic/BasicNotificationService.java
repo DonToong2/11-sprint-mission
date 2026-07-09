@@ -3,7 +3,6 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.dto.response.NotificationDto;
 import com.sprint.mission.discodeit.entity.Notification;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.entity.User.Role;
 import com.sprint.mission.discodeit.exception.notification.NotificationNotFoundException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.NotificationMapper;
@@ -13,17 +12,12 @@ import com.sprint.mission.discodeit.service.NotificationService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BasicNotificationService implements NotificationService {
@@ -31,7 +25,6 @@ public class BasicNotificationService implements NotificationService {
   private final NotificationRepository notificationRepository;
   private final UserRepository userRepository;
   private final NotificationMapper notificationMapper;
-  private final CacheManager cacheManager;
 
   @Override
   @Transactional
@@ -80,42 +73,42 @@ public class BasicNotificationService implements NotificationService {
     notificationRepository.delete(notification);
   }
 
-  @Override
-  @Transactional
-  public void notifyAdminOfS3PutFailure(UUID binaryContentId, Exception e) {
-
-    // 관리자가 2명 이상일수도 있기 때문에 find가 아닌 findAll을 사용(List 타입)
-    List<User> admins = userRepository.findAllByRole(Role.ADMIN);
-
-    // 관리자가 없을 때
-    if (admins.isEmpty()) {
-      log.error("관리자 계정이 존재하지 않습니다. error={}", e.getMessage());
-      return;
-    }
-
-    // 알림 메시지 제목
-    String title = "S3 파일 업로드 실패";
-
-    String requestId = MDC.get("requestId");
-
-    // 알림 메시지 포맷
-    String message = """
-        RequestId: %s
-        BinaryContentId: %s
-        Error: %s
-        """.formatted(requestId, binaryContentId, e.getMessage());
-
-    // List<User> → List<Notification>
-    List<Notification> notifications = admins.stream()
-        .map(admin -> Notification.create(admin, title, message))
-        .toList();
-
-    notificationRepository.saveAll(notifications);
-
-    Cache cache = cacheManager.getCache("userNotifications");
-    if (cache != null) {
-      admins.forEach(admin -> cache.evict(admin.getId()));
-    }
-  }
+//  @Override
+//  @Transactional
+//  public void notifyAdminOfS3PutFailure(UUID binaryContentId, Exception e) {
+//
+//    // 관리자가 2명 이상일수도 있기 때문에 find가 아닌 findAll을 사용(List 타입)
+//    List<User> admins = userRepository.findAllByRole(Role.ADMIN);
+//
+//    // 관리자가 없을 때
+//    if (admins.isEmpty()) {
+//      log.error("관리자 계정이 존재하지 않습니다. error={}", e.getMessage());
+//      return;
+//    }
+//
+//    // 알림 메시지 제목
+//    String title = "S3 파일 업로드 실패";
+//
+//    String requestId = MDC.get("requestId");
+//
+//    // 알림 메시지 포맷
+//    String message = """
+//        RequestId: %s
+//        BinaryContentId: %s
+//        Error: %s
+//        """.formatted(requestId, binaryContentId, e.getMessage());
+//
+//    // List<User> → List<Notification>
+//    List<Notification> notifications = admins.stream()
+//        .map(admin -> Notification.create(admin, title, message))
+//        .toList();
+//
+//    notificationRepository.saveAll(notifications);
+//
+//    Cache cache = cacheManager.getCache("userNotifications");
+//    if (cache != null) {
+//      admins.forEach(admin -> cache.evict(admin.getId()));
+//    }
+//  }
 
 }

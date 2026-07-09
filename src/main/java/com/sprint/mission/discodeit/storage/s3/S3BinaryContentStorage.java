@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.storage.s3;
 
 import com.sprint.mission.discodeit.dto.response.BinaryContentDto;
-import com.sprint.mission.discodeit.service.NotificationService;
+import com.sprint.mission.discodeit.event.S3UploadFailedEvent;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.io.InputStream;
 import java.net.URI;
@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
@@ -41,7 +42,7 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
   private final String bucket;
   private final long expiration;
 
-  private final NotificationService notificationService;
+  private final ApplicationEventPublisher eventPublisher;
 
   public S3BinaryContentStorage(
       @Value("${discodeit.storage.s3.access-key}") String accessKey,
@@ -49,13 +50,13 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
       @Value("${discodeit.storage.s3.region}") String region,
       @Value("${discodeit.storage.s3.bucket}") String bucket,
       @Value("${discodeit.storage.s3.presigned-url-expiration}") long expiration,
-      NotificationService notificationService) {
+      ApplicationEventPublisher eventPublisher) {
     this.accessKey = accessKey;
     this.secretKey = secretKey;
     this.region = region;
     this.bucket = bucket;
     this.expiration = expiration;
-    this.notificationService = notificationService;
+    this.eventPublisher = eventPublisher;
 
     AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 
@@ -95,7 +96,7 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
       byte[] bytes
   ) {
 
-    notificationService.notifyAdminOfS3PutFailure(binaryContentId, e);
+    eventPublisher.publishEvent(new S3UploadFailedEvent(binaryContentId, e));
 
     return binaryContentId;
   }

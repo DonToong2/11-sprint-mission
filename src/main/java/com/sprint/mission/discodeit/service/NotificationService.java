@@ -13,6 +13,4 @@ public interface NotificationService {
 
   // 알림 확인
   void delete(UUID notificationId, UUID userId);
-
-  void notifyAdminOfS3PutFailure(UUID binaryContentId, Exception e);
 }
