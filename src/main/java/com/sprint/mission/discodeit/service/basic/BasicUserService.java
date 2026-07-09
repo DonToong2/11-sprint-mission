@@ -125,6 +125,7 @@ public class BasicUserService implements UserService {
   @Override
   @Transactional
   @PreAuthorize("#id == authentication.principal.userDto.id")
+  @CacheEvict(value = "users", allEntries = true)
   public UserDto update(UUID id, UserUpdateRequest dto, MultipartFile profile) {
 
     // 비밀번호는 X
@@ -200,6 +201,7 @@ public class BasicUserService implements UserService {
   @Override
   @Transactional
   @PreAuthorize("#id == authentication.principal.userDto.id")
+  @CacheEvict(value = "users", allEntries = true)
   public void delete(UUID id) {
     log.debug("[USER_DELETE_START] 유저 삭제 시작 - 삭제할 유저 ID={}", id);
 
