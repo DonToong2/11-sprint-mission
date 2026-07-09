@@ -20,6 +20,11 @@ spring:
     open-in-view: false
 
   cache:
+    type: caffeine
+    cache-names:
+      - users
+      - userChannels
+      - userNotifications
     caffeine:
       spec: >
         maximumSize=100,
@@ -34,7 +39,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info, metrics, loggers
+        include: health, info, metrics, loggers, caches
+  metrics:
+    enable:
+      cache: true
   endpoint:
     health:
       show-details: always
