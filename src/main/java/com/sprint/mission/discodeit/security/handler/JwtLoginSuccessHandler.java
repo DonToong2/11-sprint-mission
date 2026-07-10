@@ -55,7 +55,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
     String accessToken = jwtTokenProvider.generateAccessToken(userId);
     String refreshToken = jwtTokenProvider.generateRefreshToken(userId);
     Instant expiration = jwtTokenProvider.getTokenExpiration(
-        jwtProperties.getRefreshTokenExpiration()).toInstant();
+        jwtProperties.getRefreshTokenExpiration());
 
     JwtInformation jwtInformation = new JwtInformation(
         UUID.fromString(userId),

@@ -15,8 +15,8 @@ import com.sprint.mission.discodeit.security.jwt.model.TokenType;
 import com.sprint.mission.discodeit.security.jwt.properties.JwtProperties;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.time.Duration;
 import java.time.Instant;
-import java.util.Calendar;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -81,7 +81,7 @@ public class JwtTokenProvider {
   private String generateToken(
       TokenType tokenType,
       String subject,
-      Date expiration
+      Instant expiration
   ) {
     try {
       JWSSigner signer = createSigner();
@@ -89,8 +89,8 @@ public class JwtTokenProvider {
       // claims set
       JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
       builder.subject(subject); // sub
-      builder.issueTime(Calendar.getInstance().getTime()); // iat
-      builder.expirationTime(expiration); // exp
+      builder.issueTime(Date.from(Instant.now())); // iat
+      builder.expirationTime(Date.from(expiration)); // exp
 
       builder.claim("tokenType", tokenType.name()); // tokenType(커스텀 Payload 필드)
 
@@ -131,10 +131,8 @@ public class JwtTokenProvider {
   }
 
   // 유효기간 생성(분 단위)
-  public Date getTokenExpiration(int expirationMinutes) {
-    Calendar calendar = Calendar.getInstance();
-    calendar.add(Calendar.MINUTE, expirationMinutes);
-    return calendar.getTime();
+  public Instant getTokenExpiration(int expirationMinutes) {
+    return Instant.now().plus(Duration.ofMinutes(expirationMinutes));
   }
 
   // Signer

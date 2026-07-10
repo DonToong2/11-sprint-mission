@@ -103,8 +103,7 @@ public class BasicAuthService implements AuthService {
 
     // JwtInformation Dto를 위한 expiration 선언
     Instant expiration = jwtTokenProvider
-        .getTokenExpiration(jwtProperties.getRefreshTokenExpiration())
-        .toInstant();
+        .getTokenExpiration(jwtProperties.getRefreshTokenExpiration());
 
     // JwtInformation 생성
     JwtInformation newJwtInformation = new JwtInformation(
