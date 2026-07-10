@@ -51,8 +51,9 @@ public class JwtLogoutHandler implements LogoutHandler {
     // 쿠키 생성
     Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, null);
 
-    // JavaScript 차단, 내 도메인 내의 모든 URI에 쿠키 적용
+    // JavaScript 차단, HTTPS에서만 접근 가능하도록 설정, 내 도메인 내의 모든 URI에 쿠키 적용
     cookie.setHttpOnly(true);
+    cookie.setSecure(true);
     cookie.setPath("/");
 
     // 즉시 만료되도록 유도

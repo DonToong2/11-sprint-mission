@@ -122,6 +122,9 @@ public class BasicAuthService implements AuthService {
     // JavaScript 접근 차단
     cookie.setHttpOnly(true);
 
+    // HTTPS에서만 접근 가능하도록 설정
+    cookie.setSecure(true);
+
     // 내 도메인 내의 모든 URI에 쿠키 적용
     cookie.setPath("/");
 
