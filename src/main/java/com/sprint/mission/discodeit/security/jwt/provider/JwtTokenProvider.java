@@ -73,7 +73,7 @@ public class JwtTokenProvider {
     } catch (JOSEException | ParseException e) {
       // parse(), getJWTClaimsSet()는 ParseException 체크드 예외
       // createVerifier()는 JOSEException 체크드 예외
-      
+
       return false;
     }
   }
@@ -88,9 +88,11 @@ public class JwtTokenProvider {
 
       // claims set
       JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
-      builder.subject(subject);
-      builder.issueTime(Calendar.getInstance().getTime());
-      builder.expirationTime(expiration);
+      builder.subject(subject); // sub
+      builder.issueTime(Calendar.getInstance().getTime()); // iat
+      builder.expirationTime(expiration); // exp
+
+      builder.claim("tokenType", tokenType.name()); // tokenType(커스텀 Payload 필드)
 
       SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), builder.build());
 
