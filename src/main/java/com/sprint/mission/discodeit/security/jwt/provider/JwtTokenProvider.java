@@ -70,7 +70,10 @@ public class JwtTokenProvider {
       // 만료 시간(expiration)이 지금(new Date())보다 뒤인지 체크
       return expiration.after(new Date());
 
-    } catch (Exception e) {
+    } catch (JOSEException | ParseException e) {
+      // parse(), getJWTClaimsSet()는 ParseException 체크드 예외
+      // createVerifier()는 JOSEException 체크드 예외
+      
       return false;
     }
   }
