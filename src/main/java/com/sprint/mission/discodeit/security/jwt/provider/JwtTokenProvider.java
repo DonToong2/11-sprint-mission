@@ -12,7 +12,7 @@ import com.nimbusds.jwt.SignedJWT;
 import com.sprint.mission.discodeit.exception.auth.RefreshTokenInvalidException;
 import com.sprint.mission.discodeit.security.jwt.exception.JwtSignatureException;
 import com.sprint.mission.discodeit.security.jwt.model.TokenType;
-import com.sprint.mission.discodeit.security.properties.JwtProperties;
+import com.sprint.mission.discodeit.security.jwt.properties.JwtProperties;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.time.Instant;
