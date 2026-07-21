@@ -111,7 +111,7 @@ public class BasicMessageService implements MessageService {
 
     messageRepository.save(message);
 
-    // 메시지 저장(생성) 성공 후 알림 이벤트 발행
+    // 메시지 저장(생성) 성공 후 알림 + WebSocket 구독자에게 메시지 송신(서버 → 클라이언트)을 위한 이벤트 발행
     eventPublisher.publishEvent(
         new MessageCreatedEvent(
             channel.getId(),
