@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator' // Actuator
     implementation 'org.springframework.boot:spring-boot-starter-cache' // Cache
     implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-websocket' // WebSocket
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0' // Swagger UI
     implementation 'org.springframework.retry:spring-retry' // Retry
     implementation 'org.springframework.kafka:spring-kafka' // Kafka
