@@ -1,13 +1,12 @@
 package com.sprint.mission.discodeit.event;
 
-import java.util.UUID;
+import com.sprint.mission.discodeit.dto.response.MessageDto;
+import java.time.Instant;
 
-public record MessageCreatedEvent(
-    UUID channelId,
-    UUID authorId,
-    String authorUsername,
-    String channelName,
-    String content
-) {
+public class MessageCreatedEvent extends CreatedEvent<MessageDto> {
+
+  public MessageCreatedEvent(MessageDto data, Instant createdAt) {
+    super(data, createdAt);
+  }
 
 }

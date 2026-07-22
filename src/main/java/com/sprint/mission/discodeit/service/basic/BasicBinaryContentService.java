@@ -34,7 +34,13 @@ public class BasicBinaryContentService implements BinaryContentService {
 
     // 기존 BinaryContentStorage.put 메서드를 이벤트로 처리
     // 이벤트 리스너에서 AFTER_COMMIT 옵션으로 트랜잭션 커밋 후 전달받은 이벤트를 처리하기 때문에 DB 커넥션 점유 시간 감소
-    eventPublisher.publishEvent(new BinaryContentCreatedEvent(binaryContent.getId(), dto.bytes()));
+    eventPublisher.publishEvent(
+        new BinaryContentCreatedEvent(
+            binaryContent,
+            binaryContent.getCreatedAt(),
+            dto.bytes()
+        )
+    );
 
     return binaryContentMapper.toDto(binaryContent);
   }

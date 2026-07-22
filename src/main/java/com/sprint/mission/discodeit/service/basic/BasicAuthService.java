@@ -62,7 +62,8 @@ public class BasicAuthService implements AuthService {
         new RoleUpdatedEvent(
             user.getId(),
             beforeRole,
-            user.getRole()
+            dto.newRole(),
+            user.getUpdatedAt()
         )
     );
 

@@ -1,7 +1,9 @@
 package com.sprint.mission.discodeit.event;
 
 import java.time.Instant;
+import lombok.Getter;
 
+@Getter
 public abstract class DeletedEvent<T> {
 
   private final T data;

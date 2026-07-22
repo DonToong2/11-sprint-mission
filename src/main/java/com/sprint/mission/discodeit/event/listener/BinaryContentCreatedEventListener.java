@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.event.listener;
 
+import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.BinaryContent.BinaryContentStatus;
 import com.sprint.mission.discodeit.event.BinaryContentCreatedEvent;
 import com.sprint.mission.discodeit.service.BinaryContentService;
@@ -24,14 +25,16 @@ public class BinaryContentCreatedEventListener {
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   public void handle(BinaryContentCreatedEvent event) {
 
+    BinaryContent binaryContent = event.getData();
+
     try {
-      binaryContentStorage.put(event.binaryContentId(), event.bytes());
+      binaryContentStorage.put(binaryContent.getId(), event.getBytes());
 
       // 성공 시 BinaryContent Status를 성공 상태로 변경
-      binaryContentService.updateStatus(event.binaryContentId(), BinaryContentStatus.SUCCESS);
+      binaryContentService.updateStatus(binaryContent.getId(), BinaryContentStatus.SUCCESS);
     } catch (Exception e) {
       // 실패 시 BinaryContent Status를 실패 상태로 변경
-      binaryContentService.updateStatus(event.binaryContentId(), BinaryContentStatus.FAIL);
+      binaryContentService.updateStatus(binaryContent.getId(), BinaryContentStatus.FAIL);
     }
   }
 

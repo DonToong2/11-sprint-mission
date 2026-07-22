@@ -84,7 +84,8 @@ public class BasicUserService implements UserService {
       // 이벤트 리스너에서 AFTER_COMMIT 옵션으로 트랜잭션 커밋 후 전달받은 이벤트를 처리하기 때문에 DB 커넥션 점유 시간 감소
       eventPublisher.publishEvent(
           new BinaryContentCreatedEvent(
-              savedProfileImage.getId(),
+              savedProfileImage,
+              savedProfileImage.getCreatedAt(),
               getBytes(profile)
           )
       );
@@ -169,7 +170,8 @@ public class BasicUserService implements UserService {
       // 이벤트 리스너에서 AFTER_COMMIT 옵션으로 트랜잭션 커밋 후 전달받은 이벤트를 처리하기 때문에 DB 커넥션 점유 시간 감소
       eventPublisher.publishEvent(
           new BinaryContentCreatedEvent(
-              savedProfileImage.getId(),
+              savedProfileImage,
+              savedProfileImage.getCreatedAt(),
               getBytes(profile)
           )
       );

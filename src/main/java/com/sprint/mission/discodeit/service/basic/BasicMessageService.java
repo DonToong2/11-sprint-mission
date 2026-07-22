@@ -92,7 +92,8 @@ public class BasicMessageService implements MessageService {
           // 이벤트 리스너에서 AFTER_COMMIT 옵션으로 트랜잭션 커밋 후 전달받은 이벤트를 처리하기 때문에 DB 커넥션 점유 시간 감소
           eventPublisher.publishEvent(
               new BinaryContentCreatedEvent(
-                  binaryContent.getId(),
+                  binaryContent,
+                  binaryContent.getCreatedAt(),
                   file.getBytes()
               )
           );
@@ -111,14 +112,12 @@ public class BasicMessageService implements MessageService {
 
     messageRepository.save(message);
 
+    MessageDto messageDto = messageMapper.toDto(message);
     // 메시지 저장(생성) 성공 후 알림 + WebSocket 구독자에게 메시지 송신(서버 → 클라이언트)을 위한 이벤트 발행
     eventPublisher.publishEvent(
         new MessageCreatedEvent(
-            channel.getId(),
-            author.getId(),
-            author.getUsername(),
-            channel.getName(),
-            message.getContent()
+            messageDto,
+            messageDto.createdAt()
         )
     );
 

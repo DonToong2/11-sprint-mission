@@ -2,6 +2,8 @@ package com.sprint.mission.discodeit.event.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sprint.mission.discodeit.dto.response.ChannelDto;
+import com.sprint.mission.discodeit.dto.response.MessageDto;
 import com.sprint.mission.discodeit.entity.Notification;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
@@ -13,6 +15,7 @@ import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.repository.NotificationRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.NotificationService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ public class NotificationRequiredTopicListener {
   private final NotificationRepository notificationRepository;
   private final UserRepository userRepository;
   private final NotificationService notificationService;
+  private final ChannelService channelService;
 
   private final ObjectMapper objectMapper;
 
@@ -40,22 +44,26 @@ public class NotificationRequiredTopicListener {
       // Json → Java 객체로 역직렬화
       MessageCreatedEvent event = objectMapper.readValue(kafkaEvent, MessageCreatedEvent.class);
 
+      MessageDto message = event.getData();
+      ChannelDto channel = channelService.find(message.channelId());
+
       // 알림이 활성화된 ChannelId로 ReadStatus를 조회
       List<ReadStatus> readStatuses =
-          readStatusRepository.findByChannelIdAndNotificationEnabledTrue(event.channelId());
+          readStatusRepository.findByChannelIdAndNotificationEnabledTrue(
+              message.channelId());
 
       for (ReadStatus readStatus : readStatuses) {
 
         // 메시지 작성자는 제외
-        if (readStatus.getUser().getId().equals(event.authorId())) {
+        if (readStatus.getUser().getId().equals(message.author().id())) {
           continue;
         }
 
         // 알림 생성
         notificationService.create(
             readStatus.getUser().getId(),
-            event.authorUsername() + " #(" + event.channelName() + ")",
-            event.content()
+            message.author().username() + " #(" + channel.name() + ")",
+            message.content()
         );
 
         // Caffeine 캐시는 로컬 캐시이기 때문에 서버마다 독립된 메모리를 사용
@@ -75,14 +83,14 @@ public class NotificationRequiredTopicListener {
       // Json → Java 객체로 역직렬화
       RoleUpdatedEvent event = objectMapper.readValue(kafkaEvent, RoleUpdatedEvent.class);
 
-      User user = userRepository.findById(event.userId()).orElseThrow(
-          () -> new UserNotFoundException(event.userId())
+      User user = userRepository.findById(event.getUserId()).orElseThrow(
+          () -> new UserNotFoundException(event.getUserId())
       );
 
       notificationService.create(
           user.getId(),
           "권한이 변경되었습니다.",
-          event.beforeRole() + " -> " + event.newRole()
+          event.getFrom().name() + " -> " + event.getTo().name()
       );
 
     } catch (JsonProcessingException e) {

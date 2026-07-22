@@ -16,6 +16,7 @@ public class WebSocketRequiredEventListener {
   // MessageService.create 메서드 후 클라이언트로 메시지 전송(클라이언트 기준으로는 메시지 수신)
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   public void handleMessage(MessageCreatedEvent event) {
-    messagingTemplate.convertAndSend("/sub/channels." + event.channelId() + ".messages", event);
+    messagingTemplate.convertAndSend("/sub/channels." + event.getData().channelId() + ".messages",
+        event);
   }
 }
