@@ -1,5 +1,6 @@
-package com.sprint.mission.discodeit.event;
+package com.sprint.mission.discodeit.event.listener;
 
+import com.sprint.mission.discodeit.event.MessageCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
