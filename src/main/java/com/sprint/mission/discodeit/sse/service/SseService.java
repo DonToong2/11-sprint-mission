@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.sse.dto.SseMessage;
 import com.sprint.mission.discodeit.sse.repository.SseEmitterRepository;
 import com.sprint.mission.discodeit.sse.repository.SseMessageRepository;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class SseService {
 
+  private static final Duration TIMEOUT = Duration.ofMinutes(30);
   private final SseEmitterRepository emitterRepository;
   private final SseMessageRepository messageRepository;
 
   public SseEmitter connect(UUID receiverId, UUID lastEventId) {
-    SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+    SseEmitter emitter = new SseEmitter(TIMEOUT.toMillis());
 
     // 입력, 반환 둘 다 없음(Runnable)
     emitter.onCompletion(
