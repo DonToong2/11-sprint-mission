@@ -43,7 +43,7 @@ public class BinaryContentCreatedEventListener {
       eventPublisher.publishEvent(new BinaryContentUpdatedEvent(
           null,
           afterBinaryContent,
-          event.getCreatedAt(),
+          Instant.now(),
           event.getChannelId(),
           event.getReceiverId()
       ));

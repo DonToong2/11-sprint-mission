@@ -6,6 +6,9 @@ import com.sprint.mission.discodeit.dto.response.UserDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.event.BinaryContentCreatedEvent;
+import com.sprint.mission.discodeit.event.UserCreatedEvent;
+import com.sprint.mission.discodeit.event.UserDeletedEvent;
+import com.sprint.mission.discodeit.event.UserUpdatedEvent;
 import com.sprint.mission.discodeit.exception.user.UserEmailAlreadyExistsException;
 import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.exception.user.UsernameAlreadyExistException;
@@ -14,6 +17,7 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -97,7 +101,16 @@ public class BasicUserService implements UserService {
 
     log.info("[USER_CREATE_SUCCESS] 유저 생성 완료 - 유저 ID={}, 유저 이름={}", user.getId(),
         user.getUsername());
-    return userMapper.toDto(savedUser);
+
+    UserDto userDto = userMapper.toDto(savedUser);
+
+    eventPublisher.publishEvent(
+        new UserCreatedEvent(
+            userDto,
+            user.getCreatedAt()
+        ));
+
+    return userDto;
   }
 
 
@@ -143,6 +156,8 @@ public class BasicUserService implements UserService {
           return new UserNotFoundException(id);
         }
     );
+
+    UserDto beforeUser = userMapper.toDto(user);
 
     // 이름 중복체크 -> UserName이 존재하지만 UserID가 같지 않을 때(다른 사람이 UserName을 가지고 있을 때)
     if (dto.newUsername() != null && userRepository.existsByUsernameAndIdNot(dto.newUsername(),
@@ -195,11 +210,17 @@ public class BasicUserService implements UserService {
       user.updatePassword(passwordEncoder.encode(dto.newPassword()));
     }
 
-    userRepository.save(user);
+    UserDto afterUser = userMapper.toDto(user);
+
+    eventPublisher.publishEvent(new UserUpdatedEvent(
+        beforeUser,
+        afterUser,
+        Instant.now()
+    ));
 
     log.info("[USER_UPDATE_SUCCESS] 유저 수정 완료 - 수정한 유저 ID={}", id);
 
-    return userMapper.toDto(user);
+    return afterUser;
   }
 
   // Delete
@@ -220,6 +241,8 @@ public class BasicUserService implements UserService {
         }
     );
 
+    UserDto userDto = userMapper.toDto(user);
+
     // user의 프로필 이미지 삭제
     if (user.getProfile() != null) {
       log.debug("[USER_DELETE_PROFILE_START] 유저 프로필 이미지 삭제 시작 - 프로필 이미지 ID={}",
@@ -233,6 +256,11 @@ public class BasicUserService implements UserService {
 
     // user 삭제(cascade에 의해 자동 삭제)
     userRepository.delete(user);
+
+    eventPublisher.publishEvent(new UserDeletedEvent(
+        userDto,
+        Instant.now()
+    ));
 
     log.info("[USER_DELETE_SUCCESS] 유저 삭제 완료 - 유저 ID={}", id);
   }

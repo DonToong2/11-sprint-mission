@@ -1,0 +1,14 @@
+package com.sprint.mission.discodeit.event;
+
+import com.sprint.mission.discodeit.dto.response.UserDto;
+import java.time.Instant;
+import lombok.Getter;
+
+@Getter
+public class UserUpdatedEvent extends UpdatedEvent<UserDto> {
+
+  public UserUpdatedEvent(UserDto from, UserDto to, Instant updatedAt) {
+    super(from, to, updatedAt);
+  }
+
+}
