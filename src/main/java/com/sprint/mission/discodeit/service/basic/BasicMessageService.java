@@ -94,7 +94,9 @@ public class BasicMessageService implements MessageService {
               new BinaryContentCreatedEvent(
                   binaryContent,
                   binaryContent.getCreatedAt(),
-                  file.getBytes()
+                  file.getBytes(),
+                  channel.getId(),
+                  null
               )
           );
         } catch (IOException e) {

@@ -86,7 +86,9 @@ public class BasicUserService implements UserService {
           new BinaryContentCreatedEvent(
               savedProfileImage,
               savedProfileImage.getCreatedAt(),
-              getBytes(profile)
+              getBytes(profile),
+              null,
+              savedUser.getId()
           )
       );
 
@@ -172,7 +174,9 @@ public class BasicUserService implements UserService {
           new BinaryContentCreatedEvent(
               savedProfileImage,
               savedProfileImage.getCreatedAt(),
-              getBytes(profile)
+              getBytes(profile),
+              null,
+              user.getId()
           )
       );
 

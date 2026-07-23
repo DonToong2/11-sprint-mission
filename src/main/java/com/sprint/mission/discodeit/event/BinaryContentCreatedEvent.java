@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.event;
 
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import java.time.Instant;
+import java.util.UUID;
 import lombok.Getter;
 
 // BinaryContentStorage.put 메서드를 트랜잭션에서 분리시키기 위한 객체
@@ -10,9 +11,18 @@ import lombok.Getter;
 public class BinaryContentCreatedEvent extends CreatedEvent<BinaryContent> {
 
   private final byte[] bytes;
+  private final UUID channelId;
+  private final UUID receiverId;
 
-  public BinaryContentCreatedEvent(BinaryContent data, Instant createdAt, byte[] bytes) {
+  public BinaryContentCreatedEvent(
+      BinaryContent data,
+      Instant createdAt,
+      byte[] bytes,
+      UUID channelId,
+      UUID receiverId) {
     super(data, createdAt);
     this.bytes = bytes;
+    this.channelId = channelId;
+    this.receiverId = receiverId;
   }
 }

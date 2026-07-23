@@ -38,7 +38,9 @@ public class BasicBinaryContentService implements BinaryContentService {
         new BinaryContentCreatedEvent(
             binaryContent,
             binaryContent.getCreatedAt(),
-            dto.bytes()
+            dto.bytes(),
+            null,
+            null
         )
     );
 
