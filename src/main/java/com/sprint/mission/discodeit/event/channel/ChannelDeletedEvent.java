@@ -1,6 +1,7 @@
-package com.sprint.mission.discodeit.event;
+package com.sprint.mission.discodeit.event.channel;
 
 import com.sprint.mission.discodeit.dto.response.ChannelDto;
+import com.sprint.mission.discodeit.event.DeletedEvent;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;

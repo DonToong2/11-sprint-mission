@@ -1,6 +1,7 @@
-package com.sprint.mission.discodeit.event;
+package com.sprint.mission.discodeit.event.user;
 
 import com.sprint.mission.discodeit.dto.response.UserDto;
+import com.sprint.mission.discodeit.event.UpdatedEvent;
 import java.time.Instant;
 import lombok.Getter;
 

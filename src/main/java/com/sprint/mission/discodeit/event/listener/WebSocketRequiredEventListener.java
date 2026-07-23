@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.event.listener;
 
 import com.sprint.mission.discodeit.dto.response.MessageDto;
-import com.sprint.mission.discodeit.event.MessageCreatedEvent;
+import com.sprint.mission.discodeit.event.notification.MessageCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class WebSocketRequiredEventListener {
   // WebSocket 전송은 순서가 중요하기 때문에 동기 처리(@Async를 사용하지 않음)
   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
   public void handleMessage(MessageCreatedEvent event) {
-    
+
     MessageDto message = event.getData();
 
     messagingTemplate.convertAndSend("/sub/channels." + event.getData().channelId() + ".messages",

@@ -1,6 +1,7 @@
-package com.sprint.mission.discodeit.event;
+package com.sprint.mission.discodeit.event.binarycontent;
 
 import com.sprint.mission.discodeit.dto.response.BinaryContentDto;
+import com.sprint.mission.discodeit.event.UpdatedEvent;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.Getter;
