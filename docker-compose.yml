@@ -47,7 +47,7 @@ services:
 
     depends_on:
       - postgres
-      - kafka
+      - broker
       - redis
 
     networks:
