@@ -45,8 +45,9 @@ public class BasicNotificationService implements NotificationService {
 
     eventPublisher.publishEvent(
         new NotificationCreatedEvent(
-            receiverId,
-            dto)
+            dto,
+            dto.createdAt()
+        )
     );
 
     return dto;
