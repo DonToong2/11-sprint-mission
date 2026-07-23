@@ -66,7 +66,7 @@ public class SseService {
 
     messageRepository.save(message);
 
-    receiverIds.forEach(receiverId -> emitterRepository.findByReceiverId(receiverId)
+    receiverIds.forEach(receiverId -> emitterRepository.findAllByReceiverId(receiverId)
         .forEach(emitter -> send(emitter, message)));
   }
 

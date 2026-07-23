@@ -18,7 +18,7 @@ public class SseEmitterRepository {
     data.computeIfAbsent(receiverId, key -> new ArrayList<>()).add(sseEmitter);
   }
 
-  public List<SseEmitter> findByReceiverId(UUID receiverId) {
+  public List<SseEmitter> findAllByReceiverId(UUID receiverId) {
     // receiverId가 없으면 비어있는 ArrayList를 반환(NPE 방지)
     return data.getOrDefault(receiverId, new ArrayList<>());
   }
