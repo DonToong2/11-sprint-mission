@@ -1,6 +1,19 @@
 version: "3.7"
 
 services:
+  # Nginx
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - app
+
+    networks:
+      - backend
+
   # Spring Application
   app:
     build: .
@@ -31,10 +44,6 @@ services:
 
     volumes:
       - app-storage:/app/storage
-
-    # TODO: nginx 추가 시 포트 제거 → nginx 포트를 3000:80로 설정
-    ports:
-      - "8081:80"
 
     depends_on:
       - postgres
