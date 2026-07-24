@@ -17,7 +17,9 @@ services:
   # Spring Application
   app:
     build: .
-    container_name: discodeit-app
+    deploy:
+      replicas: 3
+
     environment:
       # Spring Boot
       STORAGE_TYPE: ${STORAGE_TYPE}
