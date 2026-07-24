@@ -8,10 +8,12 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SseService {
@@ -69,7 +71,7 @@ public class SseService {
     messageRepository.save(message);
 
     receiverIds.forEach(receiverId -> emitterRepository.findAllByReceiverId(receiverId)
-        .forEach(emitter -> send(emitter, message)));
+        .forEach(emitter -> send(receiverId, emitter, message)));
   }
 
   // 서버가 모든 클라이언트에게 메시지를 보냄
@@ -80,7 +82,7 @@ public class SseService {
 
     emitterRepository.findAll()
         .forEach((receiverId, emitters) -> // BiConsumer(void)
-            emitters.forEach(emitter -> send(emitter, message))); // Consumer(void)
+            emitters.forEach(emitter -> send(receiverId, emitter, message))); // Consumer(void)
   }
 
   // 30분마다 만료(전송 실패)된 SseEmitter 객체 삭제
@@ -106,14 +108,14 @@ public class SseService {
     }
   }
 
-  private void send(SseEmitter emitter, SseMessage message) {
+  private void send(UUID receiverId, SseEmitter emitter, SseMessage message) {
     try {
       emitter.send(SseEmitter.event()
           .id(message.id().toString())
           .name(message.eventName())
           .data(message.data()));
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      emitterRepository.delete(receiverId, emitter);
     }
   }
 
