@@ -136,6 +136,8 @@ public class SecurityConfig {
                 .requestMatchers("swagger-ui.html", "swagger-ui/**", "v3/api-docs/**").permitAll()
                 // Actuator
                 .requestMatchers("/actuator/**").permitAll()
+                // WebSocket
+                .requestMatchers("/ws/**").permitAll()
 //              // 그 외의 모든 요청은 인증된 사용자만 가능
                 .anyRequest().authenticated()
         )
