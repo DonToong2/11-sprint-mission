@@ -1,9 +1,12 @@
 package com.sprint.mission.discodeit.config;
 
+import com.sprint.mission.discodeit.entity.User.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.security.messaging.access.intercept.AuthorizationChannelInterceptor;
+import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager;
 import org.springframework.security.messaging.context.SecurityContextChannelInterceptor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -40,8 +43,22 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   public void configureClientInboundChannel(ChannelRegistration registration) {
 
     // JwtAuthentication Channel Interceptor 에서 인증 후 SecurityContext Channel Interceptor로 넘어감
-    registration.interceptors(jwtAuthenticationChannelInterceptor,
-        new SecurityContextChannelInterceptor());
+    // SecurityContext Channel Interceptor에서 Authorization Channel Interceptor로 넘어감
+    // 인증 -> security context 등록 -> 인가
+    registration.interceptors(
+        jwtAuthenticationChannelInterceptor,
+        new SecurityContextChannelInterceptor(),
+        authorizationChannelInterceptor()
+    );
   }
 
+  private AuthorizationChannelInterceptor authorizationChannelInterceptor() {
+    return new AuthorizationChannelInterceptor(
+        // 모든 STOMP 메시지(CONNECT, SEND, SUBSCRIBE 등)를 요청했을 때 그 요청을 보낸 사용자의 권한이 USER인지 확인 후 통과됨
+        MessageMatcherDelegatingAuthorizationManager.builder()
+            .anyMessage()
+            .hasRole(Role.USER.name())
+            .build()
+    );
+  }
 }
