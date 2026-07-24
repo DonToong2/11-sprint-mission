@@ -1,14 +1,20 @@
 package com.sprint.mission.discodeit.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.security.messaging.context.SecurityContextChannelInterceptor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+  private final JwtAuthenticationChannelInterceptor jwtAuthenticationChannelInterceptor;
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -18,7 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     // 클라이언트에서 메시지를 서버로 발행하는 경로 접두사
     registry.setApplicationDestinationPrefixes("/pub");
-    
+
   }
 
   @Override
@@ -27,6 +33,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // "/ws"에서 WebSocket, SockJS 클라이언트 연결을 지원
     registry.addEndpoint("/ws").withSockJS();
 
+  }
+
+  // JWT 인증을 WebSocket 인증 단계에도 추가(이 과정을 거치지 않으면 401 에러가 나오면서 정상 동작이 되지 않음)
+  @Override
+  public void configureClientInboundChannel(ChannelRegistration registration) {
+
+    // JwtAuthentication Channel Interceptor 에서 인증 후 SecurityContext Channel Interceptor로 넘어감
+    registration.interceptors(jwtAuthenticationChannelInterceptor,
+        new SecurityContextChannelInterceptor());
   }
 
 }
