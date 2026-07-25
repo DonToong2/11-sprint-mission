@@ -43,7 +43,7 @@ EXPOSE 80
 
 # 환경변수 설정(프로젝트 정보)
 ENV PROJECT_NAME=discodeit
-ENV PROJECT_VERSION=1.2-M8
+ENV PROJECT_VERSION=3.0-M12
 
 # 환경변수 설정(JVM)
 ENV JVM_OPTS=""
