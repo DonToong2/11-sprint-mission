@@ -71,7 +71,7 @@ public class RedisJwtRegistry implements JwtRegistry {
   }
 
   @Override
-  @CacheEvict(value = "user", key = "'all'")
+  @CacheEvict(value = "users", key = "'all'")
   public void invalidateJwtInformationByUserId(UUID userId) {
     String userKey = getUserKey(userId);
 
@@ -86,6 +86,10 @@ public class RedisJwtRegistry implements JwtRegistry {
     }
 
     redisTemplate.delete(userKey);
+
+    eventPublisher.publishEvent(
+        new UserLogInOutEvent(userId, false)
+    );
   }
 
   @Override
