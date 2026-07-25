@@ -37,7 +37,9 @@ public class NotificationRequiredTopicListener {
 
   private final ObjectMapper objectMapper;
 
-  @KafkaListener(topics = "discodeit.MessageCreatedEvent")
+  @KafkaListener(
+      topics = "discodeit.MessageCreatedEvent",
+      groupId = "${spring.application.name}-notification")
   public void onMessageCreatedEvent(String kafkaEvent) {
 
     try {
@@ -76,7 +78,9 @@ public class NotificationRequiredTopicListener {
 
   }
 
-  @KafkaListener(topics = "discodeit.RoleUpdatedEvent")
+  @KafkaListener(
+      topics = "discodeit.RoleUpdatedEvent",
+      groupId = "${spring.application.name}-notification")
   public void onRoleUpdatedEvent(String kafkaEvent) {
 
     try {
@@ -99,7 +103,9 @@ public class NotificationRequiredTopicListener {
 
   }
 
-  @KafkaListener(topics = "discodeit.S3UploadFailedEvent")
+  @KafkaListener(
+      topics = "discodeit.S3UploadFailedEvent",
+      groupId = "${spring.application.name}-notification")
   public void onS3UploadFailedEvent(String kafkaEvent) {
 
     try {

@@ -11,17 +11,16 @@ import com.sprint.mission.discodeit.event.channel.ChannelUpdatedEvent;
 import com.sprint.mission.discodeit.event.notification.NotificationCreatedEvent;
 import com.sprint.mission.discodeit.event.user.UserCreatedEvent;
 import com.sprint.mission.discodeit.event.user.UserDeletedEvent;
+import com.sprint.mission.discodeit.event.user.UserLogInOutEvent;
 import com.sprint.mission.discodeit.event.user.UserUpdatedEvent;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.sse.service.SseService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-@Component
 @RequiredArgsConstructor
 public class SseRequiredEventListener {
 
@@ -34,8 +33,7 @@ public class SseRequiredEventListener {
 
     NotificationDto dto = event.getData();
 
-    sseService.send(List.of(dto.receiverId()), "notifications.created", dto
-    );
+    sseService.send(List.of(dto.receiverId()), "notifications.created", dto);
   }
 
 
@@ -123,6 +121,12 @@ public class SseRequiredEventListener {
     UserDto dto = event.getData();
 
     sseService.broadcast("users.deleted", dto);
+  }
+
+  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+  public void on(UserLogInOutEvent event) {
+
+    sseService.broadcast("users.updated", event);
   }
 
 }
